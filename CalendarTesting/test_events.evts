@@ -1,0 +1,56 @@
+<Events>
+  <Event ID="1">
+    <StartDateTime>1/10/2018 10:00:00 AM</StartDateTime>
+    <Details>App Dev Homework</Details>
+    <DurationInMinutes>40</DurationInMinutes>
+    <Category>3</Category>
+  </Event>
+  <Event ID="2">
+    <StartDateTime>1/9/2020 12:00:00 AM</StartDateTime>
+    <Details>Honolulu</Details>
+    <DurationInMinutes>1440</DurationInMinutes>
+    <Category>9</Category>
+  </Event>
+  <Event ID="3">
+    <StartDateTime>1/10/2020 12:00:00 AM</StartDateTime>
+    <Details>Honolulu</Details>
+    <DurationInMinutes>1440</DurationInMinutes>
+    <Category>9</Category>
+  </Event>
+  <Event ID="4">
+    <StartDateTime>1/20/2020 11:00:00 AM</StartDateTime>
+    <Details>On call security</Details>
+    <DurationInMinutes>180</DurationInMinutes>
+    <Category>7</Category>
+  </Event>
+  <Event ID="5">
+    <StartDateTime>1/11/2018 7:30:00 PM</StartDateTime>
+    <Details>staff meeting</Details>
+    <DurationInMinutes>15</DurationInMinutes>
+    <Category>2</Category>
+  </Event>
+  <Event ID="6">
+    <StartDateTime>1/1/2020 12:00:00 AM</StartDateTime>
+    <Details>New Year's</Details>
+    <DurationInMinutes>1440</DurationInMinutes>
+    <Category>8</Category>
+  </Event>
+  <Event ID="7">
+    <StartDateTime>1/12/2020 12:00:00 AM</StartDateTime>
+    <Details>Wendy's birthday</Details>
+    <DurationInMinutes>1440</DurationInMinutes>
+    <Category>11</Category>
+  </Event>
+  <Event ID="8">
+    <StartDateTime>1/11/2018 10:15:00 AM</StartDateTime>
+    <Details>Sprint retrospective</Details>
+    <DurationInMinutes>60</DurationInMinutes>
+    <Category>2</Category>
+  </Event>
+  <Event ID="9">
+    <StartDateTime>1/11/2019 9:30:00 AM</StartDateTime>
+    <Details>training</Details>
+    <DurationInMinutes>60</DurationInMinutes>
+    <Category>2</Category>
+  </Event>
+</Events>
