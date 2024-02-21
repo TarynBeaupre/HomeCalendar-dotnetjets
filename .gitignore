@@ -32,6 +32,9 @@ bld/
 [Oo]ut/
 [Ll]og/
 [Ll]ogs/
+_site/
+articles/
+api/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
@@ -361,3 +364,11 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+#generated files
+log.txt
+newDB.db
+messy.db
+messyDB
+output_test*
+test_output*
