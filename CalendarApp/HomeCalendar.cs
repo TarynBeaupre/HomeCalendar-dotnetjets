@@ -93,6 +93,29 @@ namespace Calendar
             _events = new Events();
         }
 
+        public HomeCalendar(String databaseFile, String eventsXMLFile, bool newDB = false)
+        {
+            // if database exists, and user doesn't want a new database, open existing DB
+            if (!newDB && File.Exists(databaseFile))
+            {
+                Database.existingDatabase(databaseFile);
+            }
+
+            // file did not exist, or user wants a new database, so open NEW DB
+            else
+            {
+                Database.newDatabase(databaseFile);
+                newDB = true;
+            }
+
+            // create the category object
+            _categories = new Categories(Database.dbConnection, newDB);
+
+            // create the _events course
+            _events = new Events();
+            _events.ReadFromFile(eventsXMLFile);
+        }
+
         // -------------------------------------------------------------------
         // Constructor (existing calendar ... must specify file)
         // -------------------------------------------------------------------
