@@ -6,7 +6,7 @@ Team name: dotnetjets
 Team members: Taryn, Eric, Julien
 
 ### Project explained
-Building a <b>Calendar Application<\b> with a <b>User Interface<\b> that stores calendar events in <b>file based database<\b>. 
+Building a <b>Calendar Application</b> with a <b>User Interface</b> that stores calendar events in <b>file based database</b>. 
 </p>
 
 
