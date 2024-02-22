@@ -3,4 +3,4 @@
 ### Our wonderful appDev Project
 -Taryn, Eric, Julien
 
-![Cool AppDev Image]([https://th.bing.com/th/id/OIP.5SjKih2sQZ_ysAcRIOzJhgHaEo?rs=1&pid=ImgDetMain])
+![AppDevImage](https://github.com/TarynBeaupre/HomeCalendar-dotnetjets/blob/4f184d6799bee6bd57a00bf9b70fb29e5dc03532/Markdown/banner.jpg)
