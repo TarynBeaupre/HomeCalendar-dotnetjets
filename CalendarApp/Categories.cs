@@ -23,6 +23,7 @@ namespace Calendar
         private List<Category> _Categories = new List<Category>();
         private string? _FileName;
         private string? _DirName;
+        private SQLiteConnection _Connection;
 
         // ====================================================================
         // Properties
@@ -51,9 +52,10 @@ namespace Calendar
         {
             SetCategoriesToDefaults();
         }
-        public Categories(SQLiteConnection databaseFile, bool newDB = false)
+
+        public Categories(SQLiteConnection categoriesConnection, bool newDB = false)
         {
-            
+            _Connection = categoriesConnection;
         }
 
         // ====================================================================
@@ -82,7 +84,8 @@ namespace Calendar
         /// </example>
         public Category GetCategoryFromId(int i)
         {
-            Category? c = _Categories.Find(x => x.Id == i);
+            //Category? c = _Categories.Find(x => x.Id == i);
+
             if (c == null)
             {
                 throw new Exception("Cannot find category with id " + i.ToString());
@@ -218,6 +221,8 @@ namespace Calendar
             // ---------------------------------------------------------------
             // Add Defaults
             // ---------------------------------------------------------------
+            
+            
             Add("School", Category.CategoryType.Event);
             Add("Personal", Category.CategoryType.Event);
             Add("VideoGames", Category.CategoryType.Event);
@@ -252,12 +257,23 @@ namespace Calendar
         /// ]]></code></example>
         public void Add(String desc, Category.CategoryType type)
         {
+            //------------------- remove me
             int new_num = 1;
             if (_Categories.Count > 0)
             {
                 new_num = (from c in _Categories select c.Id).Max();
                 new_num++;
             }
+            //-----------------------------------
+            //TODO: how to connect?
+            using var cmd = new SQLiteCommand(_Connection);
+            cmd.CommandText = "INSERT INTO categories(Description, TypeId) VALUES(@desc, @typeid)";
+
+            cmd.Parameters.AddWithValue("@desc", desc);
+            cmd.Parameters.AddWithValue("@typeid", type);
+            cmd.Prepare();
+
+            cmd.ExecuteNonQuery();
             _Categories.Add(new Category(new_num, desc, type));
         }
 
