@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SQLite;
 using System.Threading;
+using System.Runtime.CompilerServices;
 
 // ===================================================================
 // Very important notes:
@@ -46,6 +47,39 @@ namespace Calendar
             CloseDatabaseAndReleaseFile();
 
             // your code
+            string connectionString = $"URI=file:{filename}";
+
+            _connection = new SQLiteConnection(connectionString);
+            _connection.Open();
+
+            using var cmd = new SQLiteCommand(_connection);
+
+            // TODO: Determine if I need to do this
+            //cmd.CommandText = @"DROP TABLE IF EXISTS events";
+            //cmd.ExecuteNonQuery();
+            //cmd.CommandText = @"DROP TABLE IF EXISTS categories";
+            //cmd.ExecuteNonQuery();
+            //cmd.CommandText = @"DROP TABLE IF EXISTS categoryTypes";
+            //cmd.ExecuteNonQuery();
+
+            cmd.CommandText = "CREATE TABLE categoryTypes(" +
+                                "Id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                                "Description TEXT)";
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = "CREATE TABLE categories(" +
+                                "Id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                                "Description TEXT," +
+                                "FOREIGN KEY(categoriesTypeId) REFERENCES categoriesType(Id))";
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = "CREATE TABLE events(" +
+                                "Id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                                "StartDateTime TEXT," +
+                                "Details TEXT," +
+                                "DurationInMinutes DOUBLE," +
+                                "FOREIGN KEY(CategoryId) REFERENCES category(Id))";
+            cmd.ExecuteNonQuery();
         }
 
        // ===================================================================
