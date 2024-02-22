@@ -278,8 +278,15 @@ namespace Calendar
         /// ]]></code></example>
         public void Delete(int Id)
         {
-            int i = _Categories.FindIndex(x => x.Id == Id);
-            _Categories.RemoveAt(i);
+            try
+            {
+                int i = _Categories.FindIndex(x => x.Id == Id);
+                _Categories.RemoveAt(i);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
         // ====================================================================
@@ -338,6 +345,9 @@ namespace Calendar
                             break;
                         case "holiday":
                             type = Category.CategoryType.Holiday;
+                            break;
+                        case "availability":
+                            type = Category.CategoryType.Availability;
                             break;
                         default:
                             type = Category.CategoryType.Event;

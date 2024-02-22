@@ -215,8 +215,15 @@ namespace Calendar
         /// ]]></code></example>
         public void Delete(int Id)
         {
-            int i = _Events.FindIndex(x => x.Id == Id);
-            _Events.RemoveAt(i);
+            try
+            {
+                int i = _Events.FindIndex(x => x.Id == Id);
+                _Events.RemoveAt(i);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
 
         }
 
@@ -334,7 +341,7 @@ namespace Calendar
 
                     // child attributes (date, description, DurationInMinutes, category)
                     XmlElement d = doc.CreateElement("StartDateTime");
-                    XmlText dText = doc.CreateTextNode(exp.StartDateTime.ToString());
+                    XmlText dText = doc.CreateTextNode(exp.StartDateTime.ToString("M\\/d\\/yyyy h:mm:ss tt"));
                     ele.AppendChild(d);
                     d.AppendChild(dText);
 

@@ -56,6 +56,10 @@ namespace Calendar
             /// Represents a category associated with a holiday.
             /// </summary>
             Holiday,
+            /// <summary>
+            /// Represents a category associated with an availability.
+            /// </summary>
+            Availability
         };
 
         // ====================================================================
