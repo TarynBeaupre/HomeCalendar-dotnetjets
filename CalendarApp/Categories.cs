@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System.Data.SQLite;
+using System.Xml;
 
 // ============================================================================
 // (c) Sandy Bultena 2018
@@ -49,6 +50,10 @@ namespace Calendar
         public Categories()
         {
             SetCategoriesToDefaults();
+        }
+        public Categories(SQLiteConnection databaseFile, bool newDB = false)
+        {
+            
         }
 
         // ====================================================================
@@ -287,6 +292,11 @@ namespace Calendar
             {
                 Console.WriteLine(e.Message);
             }
+        }
+
+        public void UpdateProperties(int id, string description, Category.CategoryType categoryType)
+        {
+            throw new NotImplementedException();
         }
 
         // ====================================================================
