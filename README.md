@@ -2,7 +2,7 @@
 <p>
   
 ### Application Developpement Project 
-Team name: dotnetjets
+Team name: dotnetjets <br>
 Team members: Taryn, Eric, Julien
 
 ### Project explained
