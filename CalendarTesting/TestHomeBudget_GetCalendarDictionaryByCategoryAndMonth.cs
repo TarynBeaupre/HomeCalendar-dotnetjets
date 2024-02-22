@@ -7,11 +7,10 @@ using System.Dynamic;
 
 namespace CalendarCodeTests
 {
+    [Collection("Sequential")]
     public class TestHomeCalendar_GetCalendarDictionaryByCategoryAndMonth
     {
-        string testInputFile = TestConstants.testCalendarFile;
-
-
+        string testInputFile = TestConstants.testEventsInputFile;
 
         // ========================================================================
         // Get Events By Month Method tests
@@ -21,8 +20,13 @@ namespace CalendarCodeTests
         public void HomeCalendarMethod_GetCalendarDictionaryByCategoryAndMonth_NoStartEnd_NoFilter_VerifyNumberOfRecords()
         {
             // Arrange
+            string folder = TestConstants.GetSolutionDir();
             string inFile = TestConstants.GetSolutionDir() + "\\" + testInputFile;
-            HomeCalendar homeCalendar = new HomeCalendar(inFile);
+            String goodDB = $"{folder}\\{TestConstants.testDBInputFile}";
+            String messyDB = $"{folder}\\messy.db";
+            System.IO.File.Copy(goodDB, messyDB, true);
+            HomeCalendar homeCalendar = new HomeCalendar(messyDB, inFile, false);
+
             int maxRecords = TestConstants.CalendarItemsByCategoryAndMonth_MaxRecords;
             Dictionary<string, object> firstRecord = TestConstants.getCalendarItemsByCategoryAndMonthFirstRecord();
 
@@ -40,13 +44,19 @@ namespace CalendarCodeTests
         public void HomeCalendarMethod_GetCalendarDictionaryByCategoryAndMonth_NoStartEnd_NoFilter_VerifyFirstRecord()
         {
             // Arrange
+            string folder = TestConstants.GetSolutionDir();
             string inFile = TestConstants.GetSolutionDir() + "\\" + testInputFile;
-            HomeCalendar homeCalendar = new HomeCalendar(inFile);
+            String goodDB = $"{folder}\\{TestConstants.testDBInputFile}";
+            String messyDB = $"{folder}\\messy.db";
+            System.IO.File.Copy(goodDB, messyDB, true);
+            HomeCalendar homeCalendar = new HomeCalendar(messyDB, inFile, false);
+
+            int maxRecords = TestConstants.CalendarItemsByMonth_MaxRecords; 
             Dictionary<string,object> firstRecord = TestConstants.getCalendarItemsByCategoryAndMonthFirstRecord();
 
             // Act
-            List<Dictionary<string,object>> CalendarItemsByCategoryAndMonth = homeCalendar.GetCalendarDictionaryByCategoryAndMonth(null, null, false, 9);
-            Dictionary<string,object> firstRecordTest = CalendarItemsByCategoryAndMonth[0];
+            List<Dictionary<string,object>> calendarItemsByCategoryAndMonth = homeCalendar.GetCalendarDictionaryByCategoryAndMonth(null, null, false, 9);
+            Dictionary<string,object> firstRecordTest = calendarItemsByCategoryAndMonth[0];
 
             // Assert
             Assert.True(AssertDictionaryForEventByCategoryAndMonthIsOK(firstRecord,firstRecordTest));
@@ -56,11 +66,15 @@ namespace CalendarCodeTests
         // ========================================================================
 
         [Fact]
-        public void HomeCalendarMethod_GetCalendarDictionaryByCategoryAndMonth_NoStartEnd_NoFilter_VerifyTotalsRecord()
+        public void HomeBudgetMethod_GetBudgetDictionaryByCategoryAndMonth_NoStartEnd_NoFilter_VerifyTotalsRecord()
         {
             // Arrange
+            string folder = TestConstants.GetSolutionDir();
             string inFile = TestConstants.GetSolutionDir() + "\\" + testInputFile;
-            HomeCalendar homeCalendar = new HomeCalendar(inFile);
+            String goodDB = $"{folder}\\{TestConstants.testDBInputFile}";
+            String messyDB = $"{folder}\\messy.db";
+            System.IO.File.Copy(goodDB, messyDB, true);
+            HomeCalendar homeCalendar = new HomeCalendar(messyDB, inFile, false);
             Dictionary<string, object> totalsRecord = TestConstants.getCalendarItemsByCategoryAndMonthTotalsRecord();
 
             // Act
@@ -76,12 +90,16 @@ namespace CalendarCodeTests
         // ========================================================================
 
         [Fact]
-        public void HomeCalendarMethod_GetCalendarDictionaryByCategoryAndMonth_NoStartEnd_FilterbyCategory()
+        public void HomeBudgetMethod_GetBudgetDictionaryByCategoryAndMonth_NoStartEnd_FilterbyCategory()
         {
             // Arrange
+            string folder = TestConstants.GetSolutionDir();
             string inFile = TestConstants.GetSolutionDir() + "\\" + testInputFile;
-            HomeCalendar homeCalendar = new HomeCalendar(inFile);
-            List<Dictionary<string, object>> expectedResults =TestConstants.getCalendarItemsByCategoryAndMonthCat2();
+            String goodDB = $"{folder}\\{TestConstants.testDBInputFile}";
+            String messyDB = $"{folder}\\messy.db";
+            System.IO.File.Copy(goodDB, messyDB, true);
+            HomeCalendar homeCalendar = new HomeCalendar(messyDB, inFile, false);
+            List<Dictionary<string, object>> expectedResults = TestConstants.getCalendarItemsByCategoryAndMonthCat2();
 
             // Act
             List<Dictionary<string, object>> gotResults = homeCalendar.GetCalendarDictionaryByCategoryAndMonth(null, null, true, 2);
@@ -99,13 +117,16 @@ namespace CalendarCodeTests
         // ========================================================================
 
         [Fact]
-        public void HomeCalendarMethod_GetCalendarDictionaryByCategoryAndMonth_2020()
+        public void HomeBudgetMethod_GetBudgetDictionaryByCategoryAndMonth_2020()
         {
             // Arrange
+            string folder = TestConstants.GetSolutionDir();
             string inFile = TestConstants.GetSolutionDir() + "\\" + testInputFile;
-            HomeCalendar homeCalendar = new HomeCalendar(inFile);
+            String goodDB = $"{folder}\\{TestConstants.testDBInputFile}";
+            String messyDB = $"{folder}\\messy.db";
+            System.IO.File.Copy(goodDB, messyDB, true);
+            HomeCalendar homeCalendar = new HomeCalendar(messyDB, inFile, false);
             List<Dictionary<string, object>> expectedResults = TestConstants.getCalendarItemsByCategoryAndMonth2020();
-
             // Act
             List<Dictionary<string, object>> gotResults = homeCalendar.GetCalendarDictionaryByCategoryAndMonth(new DateTime(2020,1,1), new DateTime(2020,12,31), false, 10);
 
@@ -118,9 +139,6 @@ namespace CalendarCodeTests
 
             }
         }
-
-
-
 
         // ========================================================================
 
@@ -166,6 +184,8 @@ namespace CalendarCodeTests
                 return false;
             }
         }
+
+
     }
 }
 

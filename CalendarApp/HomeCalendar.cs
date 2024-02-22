@@ -2,6 +2,7 @@
 // (c) Sandy Bultena 2018
 // * Released under the GNU General Public License
 // ============================================================================
+using System.Data.SQLite;
 
 namespace Calendar
 {

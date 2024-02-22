@@ -82,11 +82,11 @@ namespace CalendarCodeTests
             EventID = 9,
             DurationInMinutes = 60
         };
-
         public static int numberOfCategoriesInFile = 12;
         public static String testCategoriesInputFile = "test_categories.cats";
+        public static String testDBInputFile = "testDBInput.db";
         public static int maxIDInCategoryInFile = 12;
-        public static Category firstCategoryInFile = new Category(12, "Non Standard", Category.CategoryType.Event);
+        public static Category firstCategoryInFile = new Category(1, "School", Category.CategoryType.Event);
         public static int CategoryIDWithAllDayEventType = 9;
         public static int CategoryIDWithAvailabilityType = 6;
         public static string CategoriesOutputTestFile = "test_output.cats";
