@@ -47,7 +47,7 @@ namespace Calendar
             CloseDatabaseAndReleaseFile();
 
             // your code
-            string connectionString = $"URI=file:{filename}";
+            string connectionString = $"Data Source={filename}; Foreign Keys=1";
 
             _connection = new SQLiteConnection(connectionString);
             _connection.Open();
@@ -63,15 +63,15 @@ namespace Calendar
             cmd.ExecuteNonQuery();
 
             cmd.CommandText = "CREATE TABLE IF NOT EXISTS categoryTypes(" +
-                                "CategoryTypeId INTEGER PRIMARY KEY AUTOINCREMENT," +
+                                "Id INTEGER PRIMARY KEY AUTOINCREMENT," +
                                 "Description TEXT)";
             cmd.ExecuteNonQuery();
 
             cmd.CommandText = "CREATE TABLE IF NOT EXISTS categories(" +
-                                "CategoryId INTEGER PRIMARY KEY AUTOINCREMENT," +
+                                "Id INTEGER PRIMARY KEY AUTOINCREMENT," +
                                 "Description TEXT," +
                                 "CategoryTypeId INTEGER," +
-                                "FOREIGN KEY(CategoryTypeId) REFERENCES categoryTypes(CategoryTypeId))";
+                                "FOREIGN KEY(CategoryTypeId) REFERENCES categoryTypes(Id))";
             cmd.ExecuteNonQuery();
 
             cmd.CommandText = "CREATE TABLE IF NOT EXISTS events(" +
@@ -80,7 +80,7 @@ namespace Calendar
                                 "Details TEXT," +
                                 "DurationInMinutes DOUBLE," +
                                 "CategoryId INTEGER," +
-                                "FOREIGN KEY(CategoryId) REFERENCES category(CategoryId))";
+                                "FOREIGN KEY(CategoryId) REFERENCES category(Id))";
             cmd.ExecuteNonQuery();
         }
 
