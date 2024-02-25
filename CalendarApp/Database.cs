@@ -62,23 +62,32 @@ namespace Calendar
             //cmd.CommandText = @"DROP TABLE IF EXISTS categoryTypes";
             //cmd.ExecuteNonQuery();
 
+            cmd.CommandText = "DROP TABLE IF EXISTS categoryTypes";
+            cmd.ExecuteNonQuery();
+            cmd.CommandText = "DROP TABLE IF EXISTS categories";
+            cmd.ExecuteNonQuery();
+            cmd.CommandText = "DROP TABLE IF EXISTS events";
+            cmd.ExecuteNonQuery();
+
             cmd.CommandText = "CREATE TABLE categoryTypes(" +
-                                "Id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                                "CategoryTypeId INTEGER PRIMARY KEY AUTOINCREMENT," +
                                 "Description TEXT)";
             cmd.ExecuteNonQuery();
 
             cmd.CommandText = "CREATE TABLE categories(" +
-                                "Id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                                "CategoryId INTEGER PRIMARY KEY AUTOINCREMENT," +
                                 "Description TEXT," +
-                                "FOREIGN KEY(categoriesTypeId) REFERENCES categoriesType(Id))";
+                                "CategoryTypeId INTEGER," +
+                                "FOREIGN KEY(CategoryTypeId) REFERENCES categoryTypes(CategoryTypeId))";
             cmd.ExecuteNonQuery();
 
             cmd.CommandText = "CREATE TABLE events(" +
-                                "Id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                                "EventId INTEGER PRIMARY KEY AUTOINCREMENT," +
                                 "StartDateTime TEXT," +
                                 "Details TEXT," +
                                 "DurationInMinutes DOUBLE," +
-                                "FOREIGN KEY(CategoryId) REFERENCES category(Id))";
+                                "CategoryId INTEGER," +
+                                "FOREIGN KEY(CategoryId) REFERENCES category(CategoryId))";
             cmd.ExecuteNonQuery();
         }
 
