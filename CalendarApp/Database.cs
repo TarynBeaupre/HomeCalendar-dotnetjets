@@ -54,7 +54,11 @@ namespace Calendar
 
             using var cmd = new SQLiteCommand(_connection);
 
-            // TODO: Determine if I need to do this
+            /*  ==============================================================
+             *  Need to drop tables because this creates a new DB.
+             *  Use the existing database method to connect to an existing DB.
+             *  ==============================================================
+             */
             cmd.CommandText = "DROP TABLE IF EXISTS categoryTypes";
             cmd.ExecuteNonQuery();
             cmd.CommandText = "DROP TABLE IF EXISTS categories";
