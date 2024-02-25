@@ -55,13 +55,6 @@ namespace Calendar
             using var cmd = new SQLiteCommand(_connection);
 
             // TODO: Determine if I need to do this
-            //cmd.CommandText = @"DROP TABLE IF EXISTS events";
-            //cmd.ExecuteNonQuery();
-            //cmd.CommandText = @"DROP TABLE IF EXISTS categories";
-            //cmd.ExecuteNonQuery();
-            //cmd.CommandText = @"DROP TABLE IF EXISTS categoryTypes";
-            //cmd.ExecuteNonQuery();
-
             cmd.CommandText = "DROP TABLE IF EXISTS categoryTypes";
             cmd.ExecuteNonQuery();
             cmd.CommandText = "DROP TABLE IF EXISTS categories";
@@ -69,19 +62,19 @@ namespace Calendar
             cmd.CommandText = "DROP TABLE IF EXISTS events";
             cmd.ExecuteNonQuery();
 
-            cmd.CommandText = "CREATE TABLE categoryTypes(" +
+            cmd.CommandText = "CREATE TABLE IF NOT EXISTS categoryTypes(" +
                                 "CategoryTypeId INTEGER PRIMARY KEY AUTOINCREMENT," +
                                 "Description TEXT)";
             cmd.ExecuteNonQuery();
 
-            cmd.CommandText = "CREATE TABLE categories(" +
+            cmd.CommandText = "CREATE TABLE IF NOT EXISTS categories(" +
                                 "CategoryId INTEGER PRIMARY KEY AUTOINCREMENT," +
                                 "Description TEXT," +
                                 "CategoryTypeId INTEGER," +
                                 "FOREIGN KEY(CategoryTypeId) REFERENCES categoryTypes(CategoryTypeId))";
             cmd.ExecuteNonQuery();
 
-            cmd.CommandText = "CREATE TABLE events(" +
+            cmd.CommandText = "CREATE TABLE IF NOT EXISTS events(" +
                                 "EventId INTEGER PRIMARY KEY AUTOINCREMENT," +
                                 "StartDateTime TEXT," +
                                 "Details TEXT," +
@@ -100,6 +93,10 @@ namespace Calendar
             CloseDatabaseAndReleaseFile();
 
             // your code
+            string connectionString = $"URI=file:{filename}";
+
+            _connection = new SQLiteConnection(connectionString);
+            _connection.Open();
         }
 
        // ===================================================================
