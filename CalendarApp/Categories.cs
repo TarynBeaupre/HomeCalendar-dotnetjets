@@ -56,6 +56,31 @@ namespace Calendar
         public Categories(SQLiteConnection categoriesConnection, bool newDB = false)
         {
             _Connection = categoriesConnection;
+            if (newDB)
+            {
+                SetCategoryTypesToDefaults();
+                SetCategoriesToDefaults();
+            }
+            //create category table
+        }
+
+        private void SetCategoryTypesToDefaults()
+        {
+            //Make this a loop?
+            using var con = Database.dbConnection;
+            con.Open();
+            using var cmd = new SQLiteCommand(con);
+            cmd.CommandText = "INSERT INTO categoryTypes(Description) VALUES('Event')";
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = "INSERT INTO categoryTypes(Description) VALUES('AllDayEvent')";
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = "INSERT INTO categoryTypes(Description) VALUES('Holiday')";
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = "INSERT INTO categoryTypes(Description) VALUES('Availability')";
+            cmd.ExecuteNonQuery();
         }
 
         // ====================================================================
@@ -84,8 +109,13 @@ namespace Calendar
         /// </example>
         public Category GetCategoryFromId(int i)
         {
-            //Category? c = _Categories.Find(x => x.Id == i);
+            using var con = Database.dbConnection;
+            con.Open();
+            //TODO: remove *
+            string stm = "SELECT * FROM categories ";
 
+            Category? c = _Categories.Find(x => x.Id == i);
+            return c;
         }
 
         // ====================================================================
@@ -208,6 +238,7 @@ namespace Calendar
         /// </code></example>
         public void SetCategoriesToDefaults()
         {
+
             // ---------------------------------------------------------------
             // reset any current categories,
             // ---------------------------------------------------------------
@@ -216,8 +247,8 @@ namespace Calendar
             // ---------------------------------------------------------------
             // Add Defaults
             // ---------------------------------------------------------------
-            
-            
+
+
             Add("School", Category.CategoryType.Event);
             Add("Personal", Category.CategoryType.Event);
             Add("VideoGames", Category.CategoryType.Event);
@@ -252,24 +283,24 @@ namespace Calendar
         /// ]]></code></example>
         public void Add(String desc, Category.CategoryType type)
         {
-            //------------------- remove me
-            int new_num = 1;
-            if (_Categories.Count > 0)
-            {
-                new_num = (from c in _Categories select c.Id).Max();
-                new_num++;
-            }
-            //-----------------------------------
             //TODO: how to connect?
-            using var cmd = new SQLiteCommand(_Connection);
-            cmd.CommandText = "INSERT INTO categories(Description, TypeId) VALUES(@desc, @typeid)";
+            try
+            {
+                using var con = Database.dbConnection;
+                con.Open();
+                using var cmd = new SQLiteCommand(con);
+                cmd.CommandText = "INSERT INTO categories(Description, TypeId) VALUES(@desc, @typeid)";
 
-            cmd.Parameters.AddWithValue("@desc", desc);
-            cmd.Parameters.AddWithValue("@typeid", type);
-            cmd.Prepare();
+                cmd.Parameters.AddWithValue("@desc", desc);
+                cmd.Parameters.AddWithValue("@typeid", type);
+                cmd.Prepare();
 
-            cmd.ExecuteNonQuery();
-            _Categories.Add(new Category(new_num, desc, type));
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         // ====================================================================
@@ -296,8 +327,13 @@ namespace Calendar
         {
             try
             {
-                int i = _Categories.FindIndex(x => x.Id == Id);
-                _Categories.RemoveAt(i);
+                //connect to category
+                using var con = Database.dbConnection;
+                con.Open();
+                using var cmd = new SQLiteCommand(con);
+                //find the corresponding category with the id
+                cmd.CommandText = $"DELETE FROM categories WHERE Id = {Id}";
+                //remove the category
             }
             catch (Exception e)
             {
