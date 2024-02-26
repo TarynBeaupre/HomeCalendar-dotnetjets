@@ -84,7 +84,7 @@ namespace Calendar
                                 "Details TEXT," +
                                 "DurationInMinutes DOUBLE," +
                                 "CategoryId INTEGER," +
-                                "FOREIGN KEY(CategoryId) REFERENCES category(Id))";
+                                "FOREIGN KEY(CategoryId) REFERENCES categories(Id))";
             cmd.ExecuteNonQuery();
         }
 
