@@ -97,7 +97,7 @@ namespace Calendar
             CloseDatabaseAndReleaseFile();
 
             // your code
-            string connectionString = $"URI=file:{filename}";
+            string connectionString = $"Data Source={filename}; Foreign Keys=1";
 
             _connection = new SQLiteConnection(connectionString);
             _connection.Open();
