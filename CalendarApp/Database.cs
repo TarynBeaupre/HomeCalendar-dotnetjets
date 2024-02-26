@@ -74,12 +74,12 @@ namespace Calendar
             cmd.CommandText = "CREATE TABLE IF NOT EXISTS categories(" +
                                 "Id INTEGER PRIMARY KEY AUTOINCREMENT," +
                                 "Description TEXT," +
-                                "CategoryTypeId INTEGER," +
-                                "FOREIGN KEY(CategoryTypeId) REFERENCES categoryTypes(Id))";
+                                "TypeId INTEGER," +
+                                "FOREIGN KEY(TypeId) REFERENCES categoryTypes(Id))";
             cmd.ExecuteNonQuery();
 
             cmd.CommandText = "CREATE TABLE IF NOT EXISTS events(" +
-                                "EventId INTEGER PRIMARY KEY AUTOINCREMENT," +
+                                "Id INTEGER PRIMARY KEY AUTOINCREMENT," +
                                 "StartDateTime TEXT," +
                                 "Details TEXT," +
                                 "DurationInMinutes DOUBLE," +
