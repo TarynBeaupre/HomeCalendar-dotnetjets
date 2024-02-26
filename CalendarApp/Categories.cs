@@ -86,11 +86,6 @@ namespace Calendar
         {
             //Category? c = _Categories.Find(x => x.Id == i);
 
-            if (c == null)
-            {
-                throw new Exception("Cannot find category with id " + i.ToString());
-            }
-            return c;
         }
 
         // ====================================================================
