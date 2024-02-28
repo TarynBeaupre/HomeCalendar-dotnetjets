@@ -57,13 +57,31 @@ namespace Calendar
 
         public Categories(SQLiteConnection categoriesConnection, bool newDB = false)
         {
-            _Connection = categoriesConnection;
-            if (newDB)
+            // Create Categories based on existing db file
+            if (!newDB)
             {
-                SetCategoryTypesToDefaults();
+                // Retrieve categories from db file 
+                string query = "SELECT Id, Description, TypeId FROM categories";
+
+                using var cmd = new SQLiteCommand(query, databaseFile);
+                using SQLiteDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    int id = reader.GetInt32(0);
+                    string description = reader.GetString(1);
+                    Category.CategoryType type = (Category.CategoryType)reader.GetInt32(2); // Gets the typeId from db and typecast it to CategoryType
+
+                    Category category = new Category(id, description, type);
+                    _Categories.Add(category);
+                }
+            }
+            else
+            {
+                //? What to do when newDB, Database.newDatabase(newDatabaseFile)?
+                //! Need to set categoryTypes to defaults @Taryn's code
                 SetCategoriesToDefaults();
             }
-            //create category table
         }
 
         private void SetCategoryTypesToDefaults()
