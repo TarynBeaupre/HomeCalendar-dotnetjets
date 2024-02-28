@@ -59,11 +59,11 @@ namespace Calendar
              *  Use the existing database method to connect to an existing DB.
              *  ==============================================================
              */
-            cmd.CommandText = "DROP TABLE IF EXISTS categoryTypes";
+            cmd.CommandText = "DROP TABLE IF EXISTS events";
             cmd.ExecuteNonQuery();
             cmd.CommandText = "DROP TABLE IF EXISTS categories";
             cmd.ExecuteNonQuery();
-            cmd.CommandText = "DROP TABLE IF EXISTS events";
+            cmd.CommandText = "DROP TABLE IF EXISTS categoryTypes";
             cmd.ExecuteNonQuery();
 
             cmd.CommandText = "CREATE TABLE IF NOT EXISTS categoryTypes(" +
