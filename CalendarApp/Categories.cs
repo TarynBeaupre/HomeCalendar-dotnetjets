@@ -1,6 +1,4 @@
 ﻿using System.Data.SQLite;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
 using System.Xml;
 
 // ============================================================================
@@ -41,6 +39,8 @@ namespace Calendar
         /// <value>A directory name. May be null.</value>
         public String? DirName { get { return _DirName; } }
 
+        public SQLiteConnection Connection { get { return _Connection; } }
+
         // ====================================================================
         // Constructor
         // ====================================================================
@@ -57,13 +57,16 @@ namespace Calendar
 
         public Categories(SQLiteConnection categoriesConnection, bool newDB = false)
         {
-            // Create Categories based on existing db file
+            //Opening connection
+            _Connection = categoriesConnection;
+            _Connection.Open();
+            // If the database is a NOT a new database, create Categories based on existing db file
             if (!newDB)
             {
                 // Retrieve categories from db file 
                 string query = "SELECT Id, Description, TypeId FROM categories";
 
-                using var cmd = new SQLiteCommand(query, databaseFile);
+                using var cmd = new SQLiteCommand(query, categoriesConnection);
                 using SQLiteDataReader reader = cmd.ExecuteReader();
 
                 while (reader.Read())
@@ -78,8 +81,9 @@ namespace Calendar
             }
             else
             {
-                //? What to do when newDB, Database.newDatabase(newDatabaseFile)?
-                //! Need to set categoryTypes to defaults @Taryn's code
+                //Set categoryTypes to defaults
+                SetCategoryTypesToDefaults();
+                //Set categories to defaults
                 SetCategoriesToDefaults();
             }
         }
@@ -102,6 +106,7 @@ namespace Calendar
             cmd.CommandText = "INSERT INTO categoryTypes(Description) VALUES('Availability')";
             cmd.ExecuteNonQuery();
             SetCategoriesToDefaults();
+            con.Close();
         }
 
         // ====================================================================
@@ -130,21 +135,31 @@ namespace Calendar
         /// </example>
         public Category GetCategoryFromId(int i)
         {
-            using var con = Database.dbConnection;
+            using var con = _Connection;
             con.Open();
-            //TODO: remove *
-            string stm = "SELECT * FROM categories ";
 
-            Category? c = _Categories.Find(x => x.Id == i);
-            return c;
+            //making a reader to retrieve the categories
+            string stm = $"SELECT Description, TypeId FROM categories WHERE Id = {i}";
+
+            using var cmd = new SQLiteCommand(stm, con);
+            using SQLiteDataReader rdr = cmd.ExecuteReader();
+            string description = "";
+            int id = 0, typeId = 0;
+            while (rdr.Read())
+            {
+                id = rdr.GetInt32(0);
+                description = rdr.GetString(1);
+                typeId = rdr.GetInt32(2);
+            }
+            cmd.ExecuteNonQuery();
+            Category newCategory = new Category(id, description, (Category.CategoryType)typeId);
+            //if returned nothing, return null
+
+            con.Close();
+            //if returned 
+            return newCategory;
         }
 
-        // ====================================================================
-        // populate categories from a file
-        // if filepath is not specified, read/save in AppData file
-        // Throws System.IO.FileNotFoundException if file does not exist
-        // Throws System.Exception if cannot read the file correctly (parsing XML)
-        // ====================================================================
         /// <summary>
         /// Populates the Categories property by reading data from a file.
         /// </summary>
@@ -304,25 +319,32 @@ namespace Calendar
         /// ]]></code></example>
         public void Add(String desc, Category.CategoryType type)
         {
-            //TODO: how to connect?
             try
             {
-                using var con = Database.dbConnection;
+                //Opening connection
+                using var con = _Connection;
                 con.Open();
                 using var cmd = new SQLiteCommand(con);
-                cmd.CommandText = "INSERT INTO categories(Description, TypeId) VALUES(@desc, @typeid)";
+
+                //Insert into categories the new category
+                //Check valid type id?
+                //Check valid description length?
+                cmd.CommandText = "INSERT INTO categories(Description, TypeId) VALUES(@desc, @typeid) RETURNING ID";
 
                 cmd.Parameters.AddWithValue("@desc", desc);
                 cmd.Parameters.AddWithValue("@typeid", type);
                 cmd.Prepare();
 
                 cmd.ExecuteNonQuery();
+                int addedCategoryId = (int)con.LastInsertRowId;
+                Category addedCategory = new Category(addedCategoryId, desc, type);
+                _Categories.Add(addedCategory);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
-          
+
         }
 
         // ====================================================================
