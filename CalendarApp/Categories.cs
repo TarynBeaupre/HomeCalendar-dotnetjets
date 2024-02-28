@@ -367,7 +367,7 @@ namespace Calendar
             {
                 //connect to category
                 using var con = Database.dbConnection;
-                con.Open();
+                //con.Open();
                 using var cmd = new SQLiteCommand(con);
                 //find the corresponding category with the id
                 cmd.CommandText = $"DELETE FROM categories WHERE Id = {Id}";
