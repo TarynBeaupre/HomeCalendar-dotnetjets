@@ -104,7 +104,6 @@ namespace Calendar
 
             cmd.CommandText = "INSERT INTO categoryTypes(Description) VALUES('Availability')";
             cmd.ExecuteNonQuery();
-            SetCategoriesToDefaults();
         }
 
         // ====================================================================
@@ -399,6 +398,8 @@ namespace Calendar
                 Category updatedCategory = new Category(id, description, categoryType);
 
                 // replace category in list
+                // !Important!
+                // THIS WILLL BREAK IF IDS ARE NOT SEQUENTIAL AND STARTING FROM 1. UPDATE THIS
                 _Categories[id - 1] = updatedCategory;
             }
             catch (Exception e)
