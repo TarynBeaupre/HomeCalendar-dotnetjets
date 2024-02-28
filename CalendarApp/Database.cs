@@ -47,6 +47,7 @@ namespace Calendar
             CloseDatabaseAndReleaseFile();
 
             // your code
+            VerifyDBFileExists(filename);
             string connectionString = $"Data Source={filename}; Foreign Keys=1";
 
             _connection = new SQLiteConnection(connectionString);
@@ -97,6 +98,7 @@ namespace Calendar
             CloseDatabaseAndReleaseFile();
 
             // your code
+            VerifyDBFileExists(filename);
             string connectionString = $"Data Source={filename}; Foreign Keys=1";
 
             _connection = new SQLiteConnection(connectionString);
@@ -119,6 +121,13 @@ namespace Calendar
                 // lock from the database file
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
+            }
+        }
+        private static void VerifyDBFileExists(string filename)
+        {
+            if (!File.Exists(filename))
+            {
+                throw new FileNotFoundException($"Database file: {filename}, could not be found.");
             }
         }
     }
