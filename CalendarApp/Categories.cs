@@ -136,24 +136,21 @@ namespace Calendar
             var con = _Connection;
 
             //making a reader to retrieve the categories
-            string stm = $"SELECT Description, TypeId FROM categories WHERE Id = {i}";
+            string stm = $"SELECT Id FROM categories WHERE Id = {i}";
 
             using var cmd = new SQLiteCommand(stm, con);
-            using SQLiteDataReader rdr = cmd.ExecuteReader();
-            string description = "";
-            int id = 0, typeId = 0;
-            while (rdr.Read())
+            SQLiteDataReader reader = cmd.ExecuteReader();
+            int id = 0;
+            while (reader.Read())
             {
-                id = rdr.GetInt32(0);
-                description = rdr.GetString(1);
-                typeId = rdr.GetInt32(2);
+                id = reader.GetInt32(0);
             }
-            cmd.ExecuteNonQuery();
-            Category newCategory = new Category(id, description, (Category.CategoryType)typeId);
+            //doing -1 because the database starts incrementing from 1
+            Category foundCategory = _Categories[id - 1];
             //if returned nothing, return null
 
             //if returned 
-            return newCategory;
+            return foundCategory;
         }
 
         /// <summary>
