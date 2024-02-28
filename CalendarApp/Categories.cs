@@ -324,7 +324,6 @@ namespace Calendar
                 //Check valid type id?
                 //Check valid description length?
                 cmd.CommandText = "INSERT INTO categories(Description, TypeId) VALUES(@desc, @typeid) RETURNING ID";
-
                 cmd.Parameters.AddWithValue("@desc", desc);
                 cmd.Parameters.AddWithValue("@typeid", type);
                 cmd.Prepare();
