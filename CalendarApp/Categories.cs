@@ -382,7 +382,33 @@ namespace Calendar
 
         public void UpdateProperties(int id, string description, Category.CategoryType categoryType)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var con = _Connection;
+                using var cmd = new SQLiteCommand(con);
+
+                //cmd.CommandText = "INSERT INTO categories(Description, TypeId) VALUES(@desc, @typeid) RETURNING ID";
+                cmd.CommandText = "UPDATE categories SET Description = @desc, TypeId = @typeid WHERE Id = @id";
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.Parameters.AddWithValue("@desc", description);
+                int typeid = (int)categoryType;
+                cmd.Parameters.AddWithValue("@typeid", typeid + 1);
+                cmd.Prepare();
+
+                cmd.ExecuteNonQuery();
+                // have to update category object in 
+
+                // create category with same id and give it new desc & type id
+                Category updatedCategory = new Category(id, description, categoryType);
+
+                // replace category in list
+                _Categories[id - 1] = updatedCategory;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            //throw new NotImplementedException();
         }
 
         // ====================================================================
