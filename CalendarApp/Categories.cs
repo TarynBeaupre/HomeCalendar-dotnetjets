@@ -91,7 +91,7 @@ namespace Calendar
         private void SetCategoryTypesToDefaults()
         {
             //Make this a loop?
-            using var con = Database.dbConnection;
+            var con = Database.dbConnection;
             using var cmd = new SQLiteCommand(con);
             cmd.CommandText = "INSERT INTO categoryTypes(Description) VALUES('Event')";
             cmd.ExecuteNonQuery();
