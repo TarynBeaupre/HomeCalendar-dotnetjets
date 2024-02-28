@@ -133,7 +133,7 @@ namespace Calendar
         /// </example>
         public Category GetCategoryFromId(int i)
         {
-            using var con = _Connection;
+            var con = _Connection;
 
             //making a reader to retrieve the categories
             string stm = $"SELECT Description, TypeId FROM categories WHERE Id = {i}";
@@ -318,7 +318,7 @@ namespace Calendar
             try
             {
                 //Opening connection
-                using var con = _Connection;
+                var con = _Connection;
                 using var cmd = new SQLiteCommand(con);
 
                 //Insert into categories the new category
@@ -367,11 +367,12 @@ namespace Calendar
             try
             {
                 //connect to category
-                using var con = Database.dbConnection;
+                var con = Database.dbConnection;
                 using var cmd = new SQLiteCommand(con);
                 //find the corresponding category with the id
                 cmd.CommandText = $"DELETE FROM categories WHERE Id = {Id}";
                 //remove the category
+                _Categories.Remove(GetCategoryFromId(Id));
             }
             catch (Exception e)
             {
