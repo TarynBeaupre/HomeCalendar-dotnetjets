@@ -1,5 +1,6 @@
 ﻿using System.Data.SQLite;
 using System.Xml;
+using static Calendar.Category;
 
 // ============================================================================
 // (c) Sandy Bultena 2018
@@ -325,7 +326,8 @@ namespace Calendar
                 //Check valid description length?
                 cmd.CommandText = "INSERT INTO categories(Description, TypeId) VALUES(@desc, @typeid) RETURNING ID";
                 cmd.Parameters.AddWithValue("@desc", desc);
-                cmd.Parameters.AddWithValue("@typeid", type);
+                int typeid = (int)type;
+                cmd.Parameters.AddWithValue("@typeid", typeid + 1);
                 cmd.Prepare();
 
                 cmd.ExecuteNonQuery();
