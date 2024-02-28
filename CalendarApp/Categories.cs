@@ -59,7 +59,6 @@ namespace Calendar
         {
             //Opening connection
             _Connection = categoriesConnection;
-            _Connection.Open();
             // If the database is a NOT a new database, create Categories based on existing db file
             if (!newDB)
             {
@@ -92,7 +91,6 @@ namespace Calendar
         {
             //Make this a loop?
             using var con = Database.dbConnection;
-            con.Open();
             using var cmd = new SQLiteCommand(con);
             cmd.CommandText = "INSERT INTO categoryTypes(Description) VALUES('Event')";
             cmd.ExecuteNonQuery();
@@ -106,7 +104,6 @@ namespace Calendar
             cmd.CommandText = "INSERT INTO categoryTypes(Description) VALUES('Availability')";
             cmd.ExecuteNonQuery();
             SetCategoriesToDefaults();
-            con.Close();
         }
 
         // ====================================================================
@@ -136,7 +133,6 @@ namespace Calendar
         public Category GetCategoryFromId(int i)
         {
             using var con = _Connection;
-            con.Open();
 
             //making a reader to retrieve the categories
             string stm = $"SELECT Description, TypeId FROM categories WHERE Id = {i}";
@@ -155,7 +151,6 @@ namespace Calendar
             Category newCategory = new Category(id, description, (Category.CategoryType)typeId);
             //if returned nothing, return null
 
-            con.Close();
             //if returned 
             return newCategory;
         }
@@ -323,7 +318,6 @@ namespace Calendar
             {
                 //Opening connection
                 using var con = _Connection;
-                con.Open();
                 using var cmd = new SQLiteCommand(con);
 
                 //Insert into categories the new category
