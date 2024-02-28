@@ -1,5 +1,6 @@
 ﻿using System.Data.SQLite;
 using System.Xml;
+using static Calendar.Category;
 
 // ============================================================================
 // (c) Sandy Bultena 2018
@@ -23,6 +24,7 @@ namespace Calendar
         private List<Category> _Categories = new List<Category>();
         private string? _FileName;
         private string? _DirName;
+        private SQLiteConnection _Connection;
 
         // ====================================================================
         // Properties
@@ -38,6 +40,8 @@ namespace Calendar
         /// <value>A directory name. May be null.</value>
         public String? DirName { get { return _DirName; } }
 
+        public SQLiteConnection Connection { get { return _Connection; } }
+
         // ====================================================================
         // Constructor
         // ====================================================================
@@ -51,9 +55,55 @@ namespace Calendar
         {
             SetCategoriesToDefaults();
         }
-        public Categories(SQLiteConnection databaseFile, bool newDB = false)
+
+        public Categories(SQLiteConnection categoriesConnection, bool newDB = false)
         {
-            
+            //Opening connection
+            _Connection = categoriesConnection;
+            // If the database is a NOT a new database, create Categories based on existing db file
+            if (!newDB)
+            {
+                // Retrieve categories from db file 
+                string query = "SELECT Id, Description, TypeId FROM categories";
+
+                using var cmd = new SQLiteCommand(query, categoriesConnection);
+                using SQLiteDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    int id = reader.GetInt32(0);
+                    string description = reader.GetString(1);
+                    Category.CategoryType type = (Category.CategoryType)reader.GetInt32(2); // Gets the typeId from db and typecast it to CategoryType
+
+                    Category category = new Category(id, description, type);
+                    _Categories.Add(category);
+                }
+            }
+            else
+            {
+                //Set categoryTypes to defaults
+                SetCategoryTypesToDefaults();
+                //Set categories to defaults
+                SetCategoriesToDefaults();
+            }
+        }
+
+        private void SetCategoryTypesToDefaults()
+        {
+            //Make this a loop?
+            var con = Database.dbConnection;
+            using var cmd = new SQLiteCommand(con);
+            cmd.CommandText = "INSERT INTO categoryTypes(Description) VALUES('Event')";
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = "INSERT INTO categoryTypes(Description) VALUES('AllDayEvent')";
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = "INSERT INTO categoryTypes(Description) VALUES('Holiday')";
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = "INSERT INTO categoryTypes(Description) VALUES('Availability')";
+            cmd.ExecuteNonQuery();
         }
 
         // ====================================================================
@@ -82,20 +132,26 @@ namespace Calendar
         /// </example>
         public Category GetCategoryFromId(int i)
         {
-            Category? c = _Categories.Find(x => x.Id == i);
-            if (c == null)
+            var con = _Connection;
+
+            //making a reader to retrieve the categories
+            string stm = $"SELECT Id FROM categories WHERE Id = {i}";
+
+            using var cmd = new SQLiteCommand(stm, con);
+            SQLiteDataReader reader = cmd.ExecuteReader();
+            int id = 0;
+            while (reader.Read())
             {
-                throw new Exception("Cannot find category with id " + i.ToString());
+                id = reader.GetInt32(0);
             }
-            return c;
+            //doing -1 because the database starts incrementing from 1
+            Category foundCategory = _Categories[id - 1];
+            //if returned nothing, return null
+
+            //if returned 
+            return foundCategory;
         }
 
-        // ====================================================================
-        // populate categories from a file
-        // if filepath is not specified, read/save in AppData file
-        // Throws System.IO.FileNotFoundException if file does not exist
-        // Throws System.Exception if cannot read the file correctly (parsing XML)
-        // ====================================================================
         /// <summary>
         /// Populates the Categories property by reading data from a file.
         /// </summary>
@@ -210,6 +266,7 @@ namespace Calendar
         /// </code></example>
         public void SetCategoriesToDefaults()
         {
+
             // ---------------------------------------------------------------
             // reset any current categories,
             // ---------------------------------------------------------------
@@ -218,6 +275,8 @@ namespace Calendar
             // ---------------------------------------------------------------
             // Add Defaults
             // ---------------------------------------------------------------
+
+
             Add("School", Category.CategoryType.Event);
             Add("Personal", Category.CategoryType.Event);
             Add("VideoGames", Category.CategoryType.Event);
@@ -252,13 +311,31 @@ namespace Calendar
         /// ]]></code></example>
         public void Add(String desc, Category.CategoryType type)
         {
-            int new_num = 1;
-            if (_Categories.Count > 0)
+            try
             {
-                new_num = (from c in _Categories select c.Id).Max();
-                new_num++;
+                //Opening connection
+                var con = _Connection;
+                using var cmd = new SQLiteCommand(con);
+
+                //Insert into categories the new category
+                //Check valid type id?
+                //Check valid description length?
+                cmd.CommandText = "INSERT INTO categories(Description, TypeId) VALUES(@desc, @typeid) RETURNING ID";
+                cmd.Parameters.AddWithValue("@desc", desc);
+                int typeid = (int)type;
+                cmd.Parameters.AddWithValue("@typeid", typeid + 1);
+                cmd.Prepare();
+
+                cmd.ExecuteNonQuery();
+                int addedCategoryId = (int)con.LastInsertRowId;
+                Category addedCategory = new Category(addedCategoryId, desc, type);
+                _Categories.Add(addedCategory);
             }
-            _Categories.Add(new Category(new_num, desc, type));
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
         }
 
         // ====================================================================
@@ -285,8 +362,13 @@ namespace Calendar
         {
             try
             {
-                int i = _Categories.FindIndex(x => x.Id == Id);
-                _Categories.RemoveAt(i);
+                //connect to category
+                var con = Database.dbConnection;
+                using var cmd = new SQLiteCommand(con);
+                //find the corresponding category with the id
+                cmd.CommandText = $"DELETE FROM categories WHERE Id = {Id}";
+                //remove the category
+                _Categories.Remove(GetCategoryFromId(Id));
             }
             catch (Exception e)
             {
@@ -296,7 +378,35 @@ namespace Calendar
 
         public void UpdateProperties(int id, string description, Category.CategoryType categoryType)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var con = _Connection;
+                using var cmd = new SQLiteCommand(con);
+
+                //cmd.CommandText = "INSERT INTO categories(Description, TypeId) VALUES(@desc, @typeid) RETURNING ID";
+                cmd.CommandText = "UPDATE categories SET Description = @desc, TypeId = @typeid WHERE Id = @id";
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.Parameters.AddWithValue("@desc", description);
+                int typeid = (int)categoryType;
+                cmd.Parameters.AddWithValue("@typeid", typeid + 1);
+                cmd.Prepare();
+
+                cmd.ExecuteNonQuery();
+                // have to update category object in 
+
+                // create category with same id and give it new desc & type id
+                Category updatedCategory = new Category(id, description, categoryType);
+
+                // replace category in list
+                // !Important!
+                // THIS WILLL BREAK IF IDS ARE NOT SEQUENTIAL AND STARTING FROM 1. UPDATE THIS
+                _Categories[id - 1] = updatedCategory;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            //throw new NotImplementedException();
         }
 
         // ====================================================================
