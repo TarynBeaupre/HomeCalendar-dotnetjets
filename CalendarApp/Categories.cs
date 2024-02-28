@@ -304,19 +304,7 @@ namespace Calendar
             {
                 Console.WriteLine(ex.Message);
             }
-            //connect
-            SQLiteConnection con = Database.dbConnection;
-            con.Open();
-
-            using var cmd = new SQLiteCommand(con);
-
-            cmd.CommandText = "INSERT INTO categories VALUES(@desc, @type)";
-            cmd.Parameters.AddWithValue("@desc", desc);
-            cmd.Parameters.AddWithValue("@type", type);
-            cmd.Prepare();
-
-            cmd.ExecuteNonQuery();
-            Console.WriteLine("Category inserted");
+          
         }
 
         // ====================================================================
