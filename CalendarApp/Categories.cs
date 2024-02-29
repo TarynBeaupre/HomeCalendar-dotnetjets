@@ -1,4 +1,5 @@
 ﻿using System.Data.SQLite;
+using System.Runtime.InteropServices;
 using System.Xml;
 using static Calendar.Category;
 
@@ -277,7 +278,13 @@ namespace Calendar
                 var con = Database.dbConnection;
                 using var cmd = new SQLiteCommand(con);
                 //find the corresponding category with the id
-                cmd.CommandText = $"DELETE FROM categories WHERE Id = {Id}";
+                cmd.CommandText = $"DELETE FROM events WHERE CategoryId = @id";
+                cmd.Parameters.AddWithValue("@id", Id);
+                cmd.ExecuteNonQuery();
+
+                cmd.CommandText = $"DELETE FROM categories WHERE Id = @id";
+                cmd.Parameters.AddWithValue("@id", Id);
+                cmd.Prepare();
                 cmd.ExecuteNonQuery();
             }
             catch (Exception e)
@@ -285,7 +292,12 @@ namespace Calendar
                 Console.WriteLine(e.Message);
             }
         }
-
+        /// <summary>
+        /// Updates properties
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="description"></param>
+        /// <param name="categoryType"></param>
         public void UpdateProperties(int id, string description, Category.CategoryType categoryType)
         {
             try
@@ -294,11 +306,12 @@ namespace Calendar
                 using var cmd = new SQLiteCommand(con);
 
                 //cmd.CommandText = "INSERT INTO categories(Description, TypeId) VALUES(@desc, @typeid) RETURNING ID";
-                cmd.CommandText = "UPDATE categories SET Description = @desc, TypeId = @typeid WHERE Id = @id";
-                cmd.Parameters.AddWithValue("@id", id);
-                cmd.Parameters.AddWithValue("@desc", description);
-                cmd.Parameters.AddWithValue("@typeid", (int)categoryType);
-                cmd.Prepare();
+                int type = (int)categoryType + 1;
+                cmd.CommandText = $"UPDATE categories SET Description = '{description}', TypeId = '{type}' WHERE Id = {id}";
+                //cmd.Parameters.AddWithValue("@id", id);
+                //cmd.Parameters.AddWithValue("@desc", description);
+                //cmd.Parameters.AddWithValue("@typeid", (int)categoryType + 1);
+                //cmd.Prepare();
 
                 cmd.ExecuteNonQuery();
             }
