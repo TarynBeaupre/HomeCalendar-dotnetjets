@@ -1,4 +1,5 @@
-﻿using System.Data.SQLite;
+﻿using System;
+using System.Data.SQLite;
 using System.Runtime.InteropServices;
 using System.Xml;
 using static Calendar.Category;
@@ -71,26 +72,7 @@ namespace Calendar
             //Opening connection
             _Connection = categoriesConnection;
             // If the database is a NOT a new database, create Categories based on existing db file
-            if (!newDB)
-            {
-                // Retrieve categories from db file 
-                string query = "SELECT Id, Description, TypeId FROM categories";
-
-                //! PURPOSE?
-                //using var cmd = new SQLiteCommand(query, categoriesConnection);
-                //using SQLiteDataReader reader = cmd.ExecuteReader();
-
-                //while (reader.Read())
-                //{
-                //    int id = reader.GetInt32(0);
-                //    string description = reader.GetString(1);
-                //    Category.CategoryType type = (Category.CategoryType)reader.GetInt32(2); // Gets the typeId from db and typecast it to CategoryType
-
-                //    Category category = new Category(id, description, type);
-                //    _Categories.Add(category);
-                //}
-            }
-            else
+            if (newDB)
             {
                 //Set categoryTypes to defaults
                 SetCategoryTypesToDefaults();
@@ -101,23 +83,18 @@ namespace Calendar
 
         private void SetCategoryTypesToDefaults()
         {
-            //Make this a loop?
             var con = Database.dbConnection;
             using var cmd = new SQLiteCommand(con);
             cmd.CommandText = "DELETE FROM categoryTypes";
             cmd.ExecuteNonQuery();
 
-            cmd.CommandText = "INSERT INTO categoryTypes(Description) VALUES('Event')";
-            cmd.ExecuteNonQuery();
-
-            cmd.CommandText = "INSERT INTO categoryTypes(Description) VALUES('AllDayEvent')";
-            cmd.ExecuteNonQuery();
-
-            cmd.CommandText = "INSERT INTO categoryTypes(Description) VALUES('Holiday')";
-            cmd.ExecuteNonQuery();
-
-            cmd.CommandText = "INSERT INTO categoryTypes(Description) VALUES('Availability')";
-            cmd.ExecuteNonQuery();
+            for (int i = 1; i <= Enum.GetNames(typeof(CategoryType)).Length; i++)
+            {
+                cmd.CommandText = "INSERT INTO categoryTypes(Description) VALUES(@enum)";
+                cmd.Parameters.AddWithValue("@enum", ((CategoryType)i).ToString());
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+            }
         }
 
         // ====================================================================
@@ -169,9 +146,7 @@ namespace Calendar
                 type = reader.GetInt32(2);
             }
             Category foundCategory = new Category(id, description, (Category.CategoryType)type);
-            //if returned nothing, return null
 
-            //if returned 
             return foundCategory;
         }
 
