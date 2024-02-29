@@ -156,7 +156,6 @@ namespace CalendarCodeTests
         public void CategoriesMethod_Delete_InvalidIDDoesntCrash()
         {
             // Arrange
-            // Arrange
             String folder = TestConstants.GetSolutionDir();
             String goodDB = $"{folder}\\{TestConstants.testDBInputFile}";
             String messyDB = $"{folder}\\messyDB";

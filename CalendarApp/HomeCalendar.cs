@@ -180,7 +180,6 @@ namespace Calendar
                 _FileName = Path.GetFileName(calendarFileName);
 
                 // read the events and categories from their respective files
-                _categories.ReadFromFile(folder + "\\" + filenames[0]);
                 _events.ReadFromFile(folder + "\\" + filenames[1]);
 
                 // Save information about calendar file
@@ -246,7 +245,6 @@ namespace Calendar
             // save the events and categories into their own files
             // ---------------------------------------------------------------
             _events.SaveToFile(eventpath);
-            _categories.SaveToFile(categorypath);
 
             // ---------------------------------------------------------------
             // save filenames of events and categories to calendar file

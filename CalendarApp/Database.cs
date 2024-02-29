@@ -47,8 +47,11 @@ namespace Calendar
             CloseDatabaseAndReleaseFile();
 
             // your code
-            VerifyDBFileExists(filename);
+            //! Why would you be checking if db exists if you deleted it just before
+            //VerifyDBFileExists(filename);
+
             string connectionString = $"Data Source={filename}; Foreign Keys=1";
+
 
             _connection = new SQLiteConnection(connectionString);
             _connection.Open();
