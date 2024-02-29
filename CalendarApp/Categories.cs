@@ -307,10 +307,10 @@ namespace Calendar
 
                 //cmd.CommandText = "INSERT INTO categories(Description, TypeId) VALUES(@desc, @typeid) RETURNING ID";
                 int type = (int)categoryType + 1;
-                cmd.CommandText = $"UPDATE categories SET Description = '{description}', TypeId = '{type}' WHERE Id = {id}";
-                //cmd.Parameters.AddWithValue("@id", id);
-                //cmd.Parameters.AddWithValue("@desc", description);
-                //cmd.Parameters.AddWithValue("@typeid", (int)categoryType + 1);
+                cmd.CommandText = $"UPDATE categories SET Description = @desc, TypeId = @typeid WHERE Id = @id";
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.Parameters.AddWithValue("@desc", description);
+                cmd.Parameters.AddWithValue("@typeid", (int)categoryType);
                 //cmd.Prepare();
 
                 cmd.ExecuteNonQuery();
