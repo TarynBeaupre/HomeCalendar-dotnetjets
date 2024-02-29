@@ -153,10 +153,14 @@ namespace Calendar
             string description = "";
             var con = _Connection;
 
-            //making a reader to retrieve the categories
-            string stm = $"SELECT Id, Description, TypeId FROM categories WHERE Id = {i}";
+            using var cmd = new SQLiteCommand(con);
 
-            using var cmd = new SQLiteCommand(stm, con);
+            //making a reader to retrieve the categories
+            cmd.CommandText = $"SELECT Id, Description, TypeId FROM categories WHERE Id = @id";
+            cmd.Parameters.AddWithValue("@id", i);
+            cmd.Prepare();
+            cmd.ExecuteNonQuery();
+
             SQLiteDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
