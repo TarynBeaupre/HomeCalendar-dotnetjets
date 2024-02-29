@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SQLite;
 using System.Threading;
+using System.Runtime.CompilerServices;
 
 // ===================================================================
 // Very important notes:
@@ -46,6 +47,49 @@ namespace Calendar
             CloseDatabaseAndReleaseFile();
 
             // your code
+            //! Why would you be checking if db exists if you deleted it just before
+            //VerifyDBFileExists(filename);
+
+            string connectionString = $"Data Source={filename}; Foreign Keys=1";
+
+
+            _connection = new SQLiteConnection(connectionString);
+            _connection.Open();
+
+            using var cmd = new SQLiteCommand(_connection);
+
+            /*  ==============================================================
+             *  Need to drop tables because this creates a new DB.
+             *  Use the existing database method to connect to an existing DB.
+             *  ==============================================================
+             */
+            cmd.CommandText = "DROP TABLE IF EXISTS events";
+            cmd.ExecuteNonQuery();
+            cmd.CommandText = "DROP TABLE IF EXISTS categories";
+            cmd.ExecuteNonQuery();
+            cmd.CommandText = "DROP TABLE IF EXISTS categoryTypes";
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = "CREATE TABLE IF NOT EXISTS categoryTypes(" +
+                                "Id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                                "Description TEXT)";
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = "CREATE TABLE IF NOT EXISTS categories(" +
+                                "Id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                                "Description TEXT," +
+                                "TypeId INTEGER," +
+                                "FOREIGN KEY(TypeId) REFERENCES categoryTypes(Id))";
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = "CREATE TABLE IF NOT EXISTS events(" +
+                                "Id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                                "StartDateTime TEXT," +
+                                "Details TEXT," +
+                                "DurationInMinutes DOUBLE," +
+                                "CategoryId INTEGER," +
+                                "FOREIGN KEY(CategoryId) REFERENCES categories(Id))";
+            cmd.ExecuteNonQuery();
         }
 
        // ===================================================================
@@ -57,6 +101,11 @@ namespace Calendar
             CloseDatabaseAndReleaseFile();
 
             // your code
+            VerifyDBFileExists(filename);
+            string connectionString = $"Data Source={filename}; Foreign Keys=1";
+
+            _connection = new SQLiteConnection(connectionString);
+            _connection.Open();
         }
 
        // ===================================================================
@@ -75,6 +124,13 @@ namespace Calendar
                 // lock from the database file
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
+            }
+        }
+        private static void VerifyDBFileExists(string filename)
+        {
+            if (!File.Exists(filename))
+            {
+                throw new FileNotFoundException($"Database file: {filename}, could not be found.");
             }
         }
     }

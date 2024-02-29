@@ -28,17 +28,17 @@ namespace Calendar
         /// Gets or sets the unique identifier of the Category.
         /// </summary>
         /// <value>The Id of the Category.</value>
-        public int Id { get; set; }
+        public int Id { get;}
         /// <summary>
         /// Gets or sets a description of the Category.
         /// </summary>
         /// <value>A string description of the Category.</value>
-        public String Description { get; set; }
+        public String Description { get;}
         /// <summary>
         /// Gets or sets the type of the Category.
         /// </summary>
         /// <value>A CategoryType value representing the type of the Category.</value>
-        public CategoryType Type { get; set; }
+        public CategoryType Type { get;}
         /// <summary>
         /// Represents the types of categories that can be associated with Calendar Items.
         /// </summary>
@@ -47,7 +47,7 @@ namespace Calendar
             /// <summary>
             /// Represents a category associated with a regular event.
             /// </summary>
-            Event,
+            Event = 1,
             /// <summary>
             /// Represents a category associated with an all day event.
             /// </summary>
