@@ -93,6 +93,9 @@ namespace Calendar
             //Make this a loop?
             var con = Database.dbConnection;
             using var cmd = new SQLiteCommand(con);
+            cmd.CommandText = "DELETE FROM categoryTypes";
+            cmd.ExecuteNonQuery();
+
             cmd.CommandText = "INSERT INTO categoryTypes(Description) VALUES('Event')";
             cmd.ExecuteNonQuery();
 
@@ -176,6 +179,7 @@ namespace Calendar
             var con = _Connection;
             using var cmd = new SQLiteCommand(con);
             cmd.CommandText = "DELETE FROM categories"; // Deletes every row in the specified table but not the table itself
+            cmd.ExecuteNonQuery();
             // ---------------------------------------------------------------
             // Add Defaults
             // ---------------------------------------------------------------
@@ -203,6 +207,7 @@ namespace Calendar
             cmd.Parameters.AddWithValue("@id", category.Id);
             cmd.Parameters.AddWithValue("@desc", category.Description);
             cmd.Parameters.AddWithValue("@typeid", category.Type);
+            cmd.ExecuteNonQuery();
         }
 
         /// <summary>
@@ -273,6 +278,7 @@ namespace Calendar
                 using var cmd = new SQLiteCommand(con);
                 //find the corresponding category with the id
                 cmd.CommandText = $"DELETE FROM categories WHERE Id = {Id}";
+                cmd.ExecuteNonQuery();
             }
             catch (Exception e)
             {
