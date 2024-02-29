@@ -40,6 +40,11 @@ namespace Calendar
         /// <value>A directory name. May be null.</value>
         public String? DirName { get { return _DirName; } }
 
+        /// <summary>
+        /// Get the database connection.
+        /// </summary>
+        /// <value>A database connection. Cannot be null and needs to be valid.</value>
+        //TODO: verify the connection
         public SQLiteConnection Connection { get { return _Connection; } }
 
         // ====================================================================
@@ -56,6 +61,11 @@ namespace Calendar
             SetCategoriesToDefaults();
         }
 
+        /// <summary>
+        /// This constructor fills the categories and categoryTypes tables with default values if it is a newly created database. 
+        /// </summary>
+        /// <param name="categoriesConnection">A valid database connection.</param>
+        /// <param name="newDB">If true, sets up default values in the database.</param>
         public Categories(SQLiteConnection categoriesConnection, bool newDB = false)
         {
             //Opening connection
@@ -114,18 +124,21 @@ namespace Calendar
         // get a specific category from the list where the id is the one specified
         // ====================================================================
         /// <summary>
-        /// Retrieves a Category given a Category Id.
+        /// Retrieves a Category from the database given a Category Id.
         /// </summary>
         /// <param name="i">The Category Id.</param>
-        /// <returns>A Category object.</returns>
-        /// <exception cref="Exception">Thrown if no Category object was found with the given Id.</exception>
+        /// <returns>The retrieved Category object.</returns>
+        /// <exception cref="Exception">Thrown if no Category object was found in the database with the given Id.</exception>
         /// <example>
         /// <code>
         /// <![CDATA[
         /// try
         /// {
-        ///     int categoryId = 5;
-        ///     int retrievedCategory = categories.GetCategoryFromId(categoryId);
+        ///   Database.existingDatabase(newDB);
+        ///   SQLiteConnection conn = Database.dbConnection;
+        ///   Categories categories = new Categories(conn, false);
+        ///   int catID = 7;
+        ///   Category category = categories.GetCategoryFromId(catID);
         /// }
         /// catch(Exception ex)
         /// {
@@ -162,12 +175,12 @@ namespace Calendar
         // set categories to default
         // ====================================================================
         /// <summary>
-        /// Initializes default Category objects.
+        /// Initializes default Category objects. Clears any existing categories before adding new ones.
         /// </summary>
         /// <example>
+        /// For this example, assume we have a valid connection to the database:
         /// <code>
         /// <![CDATA[
-        /// Categories categories = new Categories();
         /// SetCategoriesToDefaults();
         /// ]]>
         /// </code></example>
@@ -212,12 +225,12 @@ namespace Calendar
         }
 
         /// <summary>
-        /// Creates and adds a new Category object to the Categories List.
+        /// Creates and adds a new Category object to the Categories table.
         /// </summary>
         /// <param name="desc">A description of the Category.</param>
         /// <param name="type">The type of the Category.</param>
         /// <example>
-        /// The Category.CategoryType is the type of event that the new Category Type will have.
+        /// The Category.CategoryType is the type of event that the new Category Type will have. In the database, this will be stored as its integer value.
         /// <code>
         /// <![CDATA[
         /// Categories categories = new Categories();
@@ -254,16 +267,15 @@ namespace Calendar
         // Delete category
         // ====================================================================
         /// <summary>
-        /// Removes a Category from the Categories List.
+        /// Removes a Category from the Categories table.
         /// </summary>
         /// <param name="Id">The id of the Category to remove.</param>
         /// <example>
         /// <code>
         /// <![CDATA[
-        /// try 
+        /// try
         /// {
-        ///     int indexOfCategoryToRemove = 5;
-        ///     categories.Delete(indedOfCategoryToRemove);
+        ///     categories.Delete(IdToDelete);
         /// }
         /// catch (Exception ex)
         /// {
@@ -293,11 +305,12 @@ namespace Calendar
             }
         }
         /// <summary>
-        /// Updates properties
+        /// Updates properties in the categories table.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="description"></param>
-        /// <param name="categoryType"></param>
+        /// <param name="id">The id of the category to update.</param>
+        /// <param name="description">An updated description.</param>
+        /// <param name="categoryType">A category enum representing the type of category.</param>
+        /// 
         public void UpdateProperties(int id, string description, Category.CategoryType categoryType)
         {
             try
@@ -328,7 +341,7 @@ namespace Calendar
         //        this instance
         // ====================================================================
         /// <summary>
-        /// Creates a new List of Categories.
+        /// Creates a new List of Categories. Reads the categories stored in the database.
         /// </summary>
         /// <returns>A new list of Category objects.</returns>
         /// <example>
