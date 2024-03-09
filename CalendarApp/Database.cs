@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data.SQLite;
-using System.Threading;
-using System.Runtime.CompilerServices;
 
 // ===================================================================
 // Very important notes:
@@ -31,24 +24,37 @@ using System.Runtime.CompilerServices;
 
 namespace Calendar
 {
+    /// <summary>
+    /// Manages existing or new database and creates tables if new database.
+    /// </summary>
     public class Database
     {
-
+        /// <summary>
+        /// Get the database connection.
+        /// </summary>
+        /// <value>A database connection. Cannot be null and needs to be valid.</value>
         public static SQLiteConnection dbConnection { get { return _connection; } }
         private static SQLiteConnection _connection;
 
         // ===================================================================
         // create and open a new database
         // ===================================================================
+        /// <summary>
+        /// Creates a new database with tables and open new connection with it.
+        /// </summary>
+        /// <param name="filename">A database file name. Cannot be null and needs to be valid.</param>
+        /// <example>
+        /// For this example, assume we have a valid filename to the database:
+        /// <code>
+        /// <![CDATA[
+        /// Database.newDatabase("newDB.db");
+        /// ]]>
+        /// </code></example>
         public static void newDatabase(string filename)
         {
 
             // If there was a database open before, close it and release the lock
             CloseDatabaseAndReleaseFile();
-
-            // your code
-            //! Why would you be checking if db exists if you deleted it just before
-            //VerifyDBFileExists(filename);
 
             string connectionString = $"Data Source={filename}; Foreign Keys=1";
 
@@ -92,10 +98,21 @@ namespace Calendar
             cmd.ExecuteNonQuery();
         }
 
-       // ===================================================================
-       // open an existing database
-       // ===================================================================
-       public static void existingDatabase(string filename)
+        // ===================================================================
+        // open an existing database
+        // ===================================================================
+        /// <summary>
+        /// Opens new connection with already existing database.
+        /// </summary>
+        /// <param name="filename">A database file name. Cannot be null and needs to be valid.</param>
+        /// <example>
+        /// For this example, assume we have a valid filename to the database:
+        /// <code>
+        /// <![CDATA[
+        /// Database.existingDatabase("newDB.db");
+        /// ]]>
+        /// </code></example>
+        public static void existingDatabase(string filename)
         {
 
             CloseDatabaseAndReleaseFile();
@@ -108,17 +125,31 @@ namespace Calendar
             _connection.Open();
         }
 
-       // ===================================================================
-       // close existing database, wait for garbage collector to
-       // release the lock before continuing
-       // ===================================================================
-        static public void CloseDatabaseAndReleaseFile()
+        // ===================================================================
+        // close existing database, wait for garbage collector to
+        // release the lock before continuing
+        // ===================================================================
+        /// <summary>
+        /// Close connection to database and remove lock from the database file.
+        /// </summary>
+        /// <example>
+        /// For this example, assume we are opening a new database connection:
+        /// <code>
+        /// <![CDATA[
+        /// CloseDatabaseAndReleaseFile()
+        /// VerifyDBFileExists(filename);
+        /// string connectionString = $"Data Source={filename}; Foreign Keys=1";
+        /// _connection = new SQLiteConnection(connectionString);
+        /// _connection.Open();
+        /// ]]>
+        /// </code></example>
+        public static void CloseDatabaseAndReleaseFile()
         {
             if (Database.dbConnection != null)
             {
                 // close the database connection
                 Database.dbConnection.Close();
-                
+
 
                 // wait for the garbage collector to remove the
                 // lock from the database file
