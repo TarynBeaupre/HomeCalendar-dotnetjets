@@ -52,10 +52,11 @@ namespace Calendar
         // Constructor
         // ====================================================================
         /// <summary>
-        /// Initializes a new instance of the <see cref="Categories"/> class with the default Categories.
+        /// Sets default categories in the categories table within the database
         /// <example>
         /// <code><![CDATA[
-        /// Categories categories = new Categories();]]></code></example>
+        /// SetCategoriesToDefaults();
+        /// ]]></code></example>
         /// </summary>
         public Categories()
         {
@@ -63,7 +64,7 @@ namespace Calendar
         }
 
         /// <summary>
-        /// This constructor fills the categories and categoryTypes tables with default values if it is a newly created database. 
+        /// Fills the categories and categoryTypes tables with default values if it is a newly created database. 
         /// </summary>
         /// <param name="categoriesConnection">A valid database connection.</param>
         /// <param name="newDB">If true, sets up default values in the database.</param>
@@ -101,7 +102,7 @@ namespace Calendar
         // get a specific category from the list where the id is the one specified
         // ====================================================================
         /// <summary>
-        /// Retrieves a Category from the database given a Category Id.
+        /// Retrieves a specific Category from the database given a Category Id.
         /// </summary>
         /// <param name="i">The Category Id.</param>
         /// <returns>The retrieved Category object.</returns>
@@ -171,7 +172,8 @@ namespace Calendar
             // ---------------------------------------------------------------
             var con = _Connection;
             using var cmd = new SQLiteCommand(con);
-            cmd.CommandText = "DELETE FROM categories"; // Deletes every row in the specified table but not the table itself
+            // Deletes every row in the specified table but not the table itself
+            cmd.CommandText = "DELETE FROM categories"; 
             cmd.ExecuteNonQuery();
             // ---------------------------------------------------------------
             // Add Defaults
@@ -246,7 +248,7 @@ namespace Calendar
         // Delete category
         // ====================================================================
         /// <summary>
-        /// Removes a Category from the Categories table.
+        /// Removes a specific Category from the categories table given a Category Id.
         /// </summary>
         /// <param name="Id">The id of the Category to remove.</param>
         /// <example>
@@ -297,13 +299,11 @@ namespace Calendar
                 var con = _Connection;
                 using var cmd = new SQLiteCommand(con);
 
-                //cmd.CommandText = "INSERT INTO categories(Description, TypeId) VALUES(@desc, @typeid) RETURNING ID";
                 int type = (int)categoryType + 1;
                 cmd.CommandText = $"UPDATE categories SET Description = @desc, TypeId = @typeid WHERE Id = @id";
                 cmd.Parameters.AddWithValue("@id", id);
                 cmd.Parameters.AddWithValue("@desc", description);
                 cmd.Parameters.AddWithValue("@typeid", (int)categoryType);
-                //cmd.Prepare();
 
                 cmd.ExecuteNonQuery();
             }
