@@ -3,6 +3,7 @@ using Xunit;
 using System.IO;
 using System.Collections.Generic;
 using Calendar;
+using System.Data.SQLite;
 
 namespace CalendarCodeTests
 {
@@ -27,8 +28,7 @@ namespace CalendarCodeTests
             // Assert 
             Assert.IsType<Events>(Events);
 
-            Assert.True(typeof(Events).GetProperty("FileName").CanWrite == false);
-            Assert.True(typeof(Events).GetProperty("DirName").CanWrite == false);
+            Assert.True(typeof(Events).GetProperty("Connection").CanWrite == false);
 
         }
 
@@ -39,11 +39,10 @@ namespace CalendarCodeTests
         public void EventsMethod_ReadFromFile_NotExist_ThrowsException()
         {
             // Arrange
-            String badFile = "abc.txt";
-            Events Events = new Events();
+            String badDB = "CeciNestPasUneDB.txt";
 
             // Act and Assert
-            Assert.Throws<System.IO.FileNotFoundException>(() => Events.ReadFromFile(badFile));
+            Assert.Throws<System.IO.FileNotFoundException>(() => new Events(badDB));
 
         }
 
@@ -52,14 +51,26 @@ namespace CalendarCodeTests
         [Fact]
         public void EventsMethod_ReadFromFile_ValidateCorrectDataWasRead()
         {
+            //// Arrange
+            //String dir = TestConstants.GetSolutionDir();
+            //Events Events = new Events();
+
+            //// Act
+            //Events.ReadFromFile(dir + "\\" + testInputFile);
+            //List<Event> list = Events.List();
+            //Event firstEvent = list[0];
+
+
             // Arrange
-            String dir = TestConstants.GetSolutionDir();
-            Events Events = new Events();
+            String folder = TestConstants.GetSolutionDir();
+            String goodDB = $"{folder}\\{TestConstants.testDBInputFile}";
+            String goodDBCopy = $"{folder}\\testDBCopy.db";
+            System.IO.File.Copy(goodDB, goodDBCopy, true);
+            Database.existingDatabase(goodDBCopy);
+            SQLiteConnection conn = Database.dbConnection;
 
             // Act
-            Events.ReadFromFile(dir + "\\" + testInputFile);
-            List<Event> list = Events.List();
-            Event firstEvent = list[0];
+            var events = new Events(conn);
 
             // Assert
             Assert.Equal(numberOfEventsInFile, list.Count);
