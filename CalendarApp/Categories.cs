@@ -43,7 +43,7 @@ namespace Calendar
         /// SetCategoriesToDefaults();
         /// ]]></code></example>
         /// </summary>
-        public Categories()
+        private Categories()
         {
             SetCategoriesToDefaults();
         }
