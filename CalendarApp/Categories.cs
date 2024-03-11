@@ -282,7 +282,6 @@ namespace Calendar
             {
                 Console.WriteLine(e.Message);
             }
-            //throw new NotImplementedException();
         }
 
         // ====================================================================
@@ -324,4 +323,4 @@ namespace Calendar
 
     }
 }
-
+    

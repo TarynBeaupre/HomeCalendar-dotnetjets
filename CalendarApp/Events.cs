@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Xml;
 using System.Data.SQLite;
+using static Calendar.Category;
 
 // ============================================================================
 // (c) Sandy Bultena 2018
@@ -68,7 +69,7 @@ namespace Calendar
         /// events.Add(DateTime.Now, eventCategoryId, eventDuration, "Homework");
         /// ]]></code>
         /// </example>
-        public void Add(DateTime date, int category, Double duration, String details)
+        public void Add(DateTime date, int category, double duration, string details)
         {
             try
             {
@@ -87,6 +88,39 @@ namespace Calendar
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+            }
+        }
+
+        // ====================================================================
+        // Update Event
+        // ====================================================================
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="date"></param>
+        /// <param name="category"></param>
+        /// <param name="duration"></param>
+        /// <param name="details"></param>
+        public void Update(int id, DateTime date, int category, double duration, string details)
+        {
+            try
+            {
+                var con = _Connection;
+                using var cmd = new SQLiteCommand(con);
+
+                cmd.CommandText = $"UPDATE events SET Date = @date, Details = @details WHERE Id = @id";
+                cmd.Parameters.AddWithValue("id", id);
+                cmd.Parameters.AddWithValue("@date", date);
+                cmd.Parameters.AddWithValue("@details", details);
+                cmd.Parameters.AddWithValue("@duration", duration);
+                cmd.Parameters.AddWithValue("@categoryid", category);
+
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
             }
         }
 
@@ -128,6 +162,37 @@ namespace Calendar
                 Console.WriteLine(e.Message);
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Id"></param>
+        public void GetEventFromId(int Id)
+        {
+            int id = 0;
+            string description = "";
+            var con = _Connection;
+
+            using var cmd = new SQLiteCommand(con);
+
+            //making a reader to retrieve the categories
+            cmd.CommandText = $"SELECT Id, Description, TypeId FROM categories WHERE Id = @id";
+            cmd.Parameters.AddWithValue("@id", i);
+            cmd.Prepare();
+            cmd.ExecuteNonQuery();
+
+            SQLiteDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                id = reader.GetInt32(0);
+                description = reader.GetString(1);
+                type = reader.GetInt32(2);
+            }
+            Category foundCategory = new Category(id, description, (Category.CategoryType)type);
+
+            return foundCategory;
+        }
+
 
         // ====================================================================
         // Return list of Events
