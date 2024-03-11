@@ -19,7 +19,7 @@ namespace Calendar
     // ====================================================================
     // CLASS: Events
     //        - A collection of Event items,
-    //        - Read / write to file
+    //        - Read / write to database
     //        - etc
     // ====================================================================
     /// <summary>
@@ -39,6 +39,19 @@ namespace Calendar
         public SQLiteConnection Connection { get { return _Connection; } }
 
         // ====================================================================
+        // Constructor
+        // ====================================================================
+        /// <summary>
+        /// Creates a new Events instance and sets up the database connection to use the events table.
+        /// </summary>
+        /// <param name="eventsConnection">A valid database connection</param>
+        public Events(SQLiteConnection eventsConnection) 
+        {
+            _Connection = eventsConnection;
+        }
+
+        /* REMOVE ME (?)
+        // ====================================================================
         // Add Event
         // ====================================================================
         private void Add(Event exp)
@@ -53,6 +66,7 @@ namespace Calendar
             cmd.Parameters.AddWithValue("@categoryid", exp.Category);
             cmd.ExecuteNonQuery();
         }
+        */
 
         /// <summary>
         /// Adds a Event to the Events List.
