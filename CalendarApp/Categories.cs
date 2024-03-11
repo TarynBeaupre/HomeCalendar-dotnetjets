@@ -43,7 +43,7 @@ namespace Calendar
         /// SetCategoriesToDefaults();
         /// ]]></code></example>
         /// </summary>
-        private Categories()
+        public Categories()
         {
             SetCategoriesToDefaults();
         }
@@ -56,7 +56,7 @@ namespace Calendar
         public Categories(SQLiteConnection categoriesConnection, bool newDB = false)
         {
             //Opening connection
-            _Connection = categoriesConnection;
+           _Connection = categoriesConnection;
             // If the database is a NOT a new database, create Categories based on existing db file
             if (newDB)
             {
@@ -69,7 +69,7 @@ namespace Calendar
 
         private void SetCategoryTypesToDefaults()
         {
-            var con = Database.dbConnection;
+            var con = Connection;
             using var cmd = new SQLiteCommand(con);
             cmd.CommandText = "DELETE FROM categoryTypes";
             cmd.ExecuteNonQuery();
@@ -114,7 +114,7 @@ namespace Calendar
         {
             int id = 0, type = 1;
             string description = "";
-            var con = _Connection;
+            var con = Connection;
 
             using var cmd = new SQLiteCommand(con);
 
@@ -155,7 +155,7 @@ namespace Calendar
             // ---------------------------------------------------------------
             // reset any current categories,
             // ---------------------------------------------------------------
-            var con = _Connection;
+            var con = Connection;
             using var cmd = new SQLiteCommand(con);
             // Deletes every row in the specified table but not the table itself
             cmd.CommandText = "DELETE FROM categories"; 
@@ -195,7 +195,7 @@ namespace Calendar
             try
             {
                 //Opening connection
-                var con = _Connection;
+                var con = Connection;
                 using var cmd = new SQLiteCommand(con);
 
                 //Insert into categories the new category
@@ -239,7 +239,7 @@ namespace Calendar
             try
             {
                 //connect to category
-                var con = Database.dbConnection;
+                var con = Connection;
                 using var cmd = new SQLiteCommand(con);
                 //find the corresponding category with the id
                 cmd.CommandText = $"DELETE FROM events WHERE CategoryId = @id";
@@ -267,7 +267,7 @@ namespace Calendar
         {
             try
             {
-                var con = _Connection;
+                var con = Connection;
                 using var cmd = new SQLiteCommand(con);
 
                 int type = (int)categoryType + 1;
