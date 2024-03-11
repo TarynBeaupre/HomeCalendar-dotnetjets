@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Xml;
+using System.Data.SQLite;
 
 // ============================================================================
 // (c) Sandy Bultena 2018
@@ -27,11 +28,17 @@ namespace Calendar
         private static String DefaultFileName = "calendar.txt";
         private List<Event> _Events = new List<Event>();
         private string _FileName;
-        private string _DirName;
+        private string _DirName; private SQLiteConnection _Connection;
 
         // ====================================================================
         // Properties
         // ====================================================================
+        /// <summary>
+        /// Get the database connection.
+        /// </summary>
+        /// <value>A database connection. Cannot be null and needs to be valid.</value>
+        //TODO: verify the connection
+        public SQLiteConnection Connection { get { return _Connection; } }
         /// <summary>
         /// Gets the returned file name field value.
         /// </summary>
@@ -42,6 +49,7 @@ namespace Calendar
         /// </summary>
         /// <value>The directory name containing the associated files.</value>
         public String DirName { get { return _DirName; } }
+
 
         // ====================================================================
         // populate categories from a file
@@ -97,8 +105,6 @@ namespace Calendar
             // ----------------------------------------------------------------
             _DirName = Path.GetDirectoryName(filepath);
             _FileName = Path.GetFileName(filepath);
-
-
         }
 
         // ====================================================================
@@ -164,7 +170,15 @@ namespace Calendar
         // ====================================================================
         private void Add(Event exp)
         {
-            _Events.Add(exp);
+            var con = _Connection;
+            using var cmd = new SQLiteCommand(con);
+            cmd.CommandText = "INSERT INTO events(Id, StartDateTime, Details, DurationInMinutes, CategoryId) VALUES(@id, @startdatetime, @details, @durationminutes, @categoryid) RETURNING ID";
+            cmd.Parameters.AddWithValue("@id", exp.Id);
+            cmd.Parameters.AddWithValue("@startdatetime", exp.StartDateTime);
+            cmd.Parameters.AddWithValue("@details", exp.Details);
+            cmd.Parameters.AddWithValue("@durationminutes", exp.DurationInMinutes);
+            cmd.Parameters.AddWithValue("@categoryid", exp.Category);
+            cmd.ExecuteNonQuery();
         }
 
         /// <summary>
@@ -185,17 +199,24 @@ namespace Calendar
         /// </example>
         public void Add(DateTime date, int category, Double duration, String details)
         {
-            int new_id = 1;
-
-            // if we already have Events, set ID to max
-            if (_Events.Count > 0)
+            try
             {
-                new_id = (from e in _Events select e.Id).Max();
-                new_id++;
+                //Opening connection
+                var con = _Connection;
+                using var cmd = new SQLiteCommand(con);
+
+                cmd.CommandText = "INSERT INTO events(StartDateTime, Details, DurationInMinutes, CategoryId) VALUES(@date, @details, @duration, @categoryid) RETURNING ID";
+                cmd.Parameters.AddWithValue("@date", date);
+                cmd.Parameters.AddWithValue("@details", details);
+                cmd.Parameters.AddWithValue("@duration", duration);
+                cmd.Parameters.AddWithValue("@categoryid", category);
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
             }
-
-            _Events.Add(new Event(new_id, date, category, duration, details));
-
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         // ====================================================================
@@ -217,14 +238,19 @@ namespace Calendar
         {
             try
             {
-                int i = _Events.FindIndex(x => x.Id == Id);
-                _Events.RemoveAt(i);
+                //connect to category
+                var con = Database.dbConnection;
+                using var cmd = new SQLiteCommand(con);
+
+                cmd.CommandText = $"DELETE FROM events WHERE Id = @id";
+                cmd.Parameters.AddWithValue("@id", Id);
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
-
         }
 
         // ====================================================================
@@ -251,9 +277,23 @@ namespace Calendar
         public List<Event> List()
         {
             List<Event> newList = new List<Event>();
-            foreach (Event Event in _Events)
+
+            // Retrieve events from db file 
+            string query = "SELECT Id, StartDateTime, Details, DurationInMinutes, CategoryId FROM events";
+
+            using var cmd = new SQLiteCommand(query, _Connection);
+            using SQLiteDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
             {
-                newList.Add(new Event(Event));
+                int id = reader.GetInt32(0);
+                DateTime StartDateTime = reader.GetDateTime(1);
+                string details = reader.GetString(2);
+                double duration = reader.GetDouble(3);
+                int category = reader.GetInt32(4);
+
+                Event newEvent = new Event(id, StartDateTime, category, duration, details);
+                newList.Add(newEvent);
             }
             return newList;
         }
@@ -264,8 +304,6 @@ namespace Calendar
         // ====================================================================
         private void _ReadXMLFile(String filepath)
         {
-
-
             try
             {
                 XmlDocument doc = new XmlDocument();
