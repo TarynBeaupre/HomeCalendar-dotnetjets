@@ -22,30 +22,15 @@ namespace Calendar
     /// </summary>
     public class Categories
     {
-        private static String DefaultFileName = "calendarCategories.txt";
-        private string? _FileName;
-        private string? _DirName;
         private SQLiteConnection _Connection;
 
         // ====================================================================
         // Properties
         // ====================================================================
         /// <summary>
-        /// Gets the file name.
-        /// </summary>
-        /// <value>A file name. May be null.</value>
-        public String? FileName { get { return _FileName; } }
-        /// <summary>
-        /// Get the directory name.
-        /// </summary>
-        /// <value>A directory name. May be null.</value>
-        public String? DirName { get { return _DirName; } }
-
-        /// <summary>
         /// Get the database connection.
         /// </summary>
         /// <value>A database connection. Cannot be null and needs to be valid.</value>
-        //TODO: verify the connection
         public SQLiteConnection Connection { get { return _Connection; } }
 
         // ====================================================================
@@ -58,7 +43,7 @@ namespace Calendar
         /// SetCategoriesToDefaults();
         /// ]]></code></example>
         /// </summary>
-        public Categories()
+        private Categories()
         {
             SetCategoriesToDefaults();
         }
@@ -191,20 +176,6 @@ namespace Calendar
             Add("US Holidays", Category.CategoryType.Holiday);
         }
 
-        // ====================================================================
-        // Add category
-        // ====================================================================
-        private void Add(Category category)
-        {           
-            var con = _Connection;
-            using var cmd = new SQLiteCommand(con);
-            cmd.CommandText = "INSERT INTO categories(Id, Description, TypeId) VALUES(@id, @desc, @typeid) RETURNING ID";
-            cmd.Parameters.AddWithValue("@id", category.Id);
-            cmd.Parameters.AddWithValue("@desc", category.Description);
-            cmd.Parameters.AddWithValue("@typeid", category.Type);
-            cmd.ExecuteNonQuery();
-        }
-
         /// <summary>
         /// Creates and adds a new Category object to the Categories table.
         /// </summary>
@@ -311,7 +282,6 @@ namespace Calendar
             {
                 Console.WriteLine(e.Message);
             }
-            //throw new NotImplementedException();
         }
 
         // ====================================================================
@@ -353,4 +323,4 @@ namespace Calendar
 
     }
 }
-
+    
