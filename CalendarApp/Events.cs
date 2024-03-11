@@ -7,6 +7,7 @@ using System.IO;
 using System.Xml;
 using System.Data.SQLite;
 using static Calendar.Category;
+using System.Net.NetworkInformation;
 
 // ============================================================================
 // (c) Sandy Bultena 2018
@@ -109,7 +110,7 @@ namespace Calendar
                 var con = _Connection;
                 using var cmd = new SQLiteCommand(con);
 
-                cmd.CommandText = $"UPDATE events SET Date = @date, Details = @details WHERE Id = @id";
+                cmd.CommandText = $"UPDATE events SET Date = @date, Details = @details, Duration = @duration, CategoryId = @category WHERE Id = @id";
                 cmd.Parameters.AddWithValue("id", id);
                 cmd.Parameters.AddWithValue("@date", date);
                 cmd.Parameters.AddWithValue("@details", details);
@@ -164,33 +165,56 @@ namespace Calendar
         }
 
         /// <summary>
-        /// 
+        /// Returns an Event from the database corresponding to the Id given. 
         /// </summary>
-        /// <param name="Id"></param>
-        public void GetEventFromId(int Id)
+        /// <param name="Id">The Event Id.</param>
+        /// <returns>The retrieved Event object.</returns>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// try
+        /// {
+        ///   Database.existingDatabase(newDB);
+        ///   SQLiteConnection conn = Database.dbConnection;
+        ///   Events events = new Events();
+        ///   events.Add(DateTime.Now, 1, 70.00, "English Homework");
+        ///   int eventId = 0;
+        ///   Event event = events.GetCategoryFromId(eventId);
+        /// }
+        /// catch(Exception ex)
+        /// {
+        ///     Console.WriteLine(ex.Message);
+        /// }
+        /// ]]></code></example>
+        public Event GetEventFromId(int id)
         {
-            int id = 0;
-            string description = "";
-            var con = _Connection;
+            int foundId = 0;
+            DateTime date = DateTime.Now;
+            int category = 0;
+            double duration = 0.0;
+            string details = "";
+            var con = Connection;
 
             using var cmd = new SQLiteCommand(con);
 
             //making a reader to retrieve the categories
-            cmd.CommandText = $"SELECT Id, Description, TypeId FROM categories WHERE Id = @id";
-            cmd.Parameters.AddWithValue("@id", i);
+            cmd.CommandText = $"SELECT Id, Date, Category, Duration, Details FROM events WHERE Id = @id";
+            cmd.Parameters.AddWithValue("@id", id);
             cmd.Prepare();
             cmd.ExecuteNonQuery();
 
             SQLiteDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                id = reader.GetInt32(0);
-                description = reader.GetString(1);
-                type = reader.GetInt32(2);
+                foundId = reader.GetInt32(0);
+                date = reader.GetDateTime(1);
+                category = reader.GetInt32(2);
+                duration = reader.GetDouble(3);
+                details = reader.GetString(4);
             }
-            Category foundCategory = new Category(id, description, (Category.CategoryType)type);
+            Event foundEvent = new Event(foundId, date, category, duration, details);
 
-            return foundCategory;
+            return foundEvent;
         }
 
 
