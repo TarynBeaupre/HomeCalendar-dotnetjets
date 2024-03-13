@@ -2,6 +2,7 @@
 // (c) Sandy Bultena 2018
 // * Released under the GNU General Public License
 // ============================================================================
+using System.Data.Common;
 using System.Data.SQLite;
 
 namespace Calendar
@@ -174,10 +175,10 @@ namespace Calendar
             Start = Start ?? new DateTime(1900, 1, 1);
             End = End ?? new DateTime(2500, 1, 1);
 
-            var query = $@"SELECT c.Id, c.Description, c.TypeId, e.Id, e.StartDateTime, e.Details, e.DurationInMinutes, e.CategoryId
-                        FROM categories c
-                        JOIN events e
-                        ON c.Id = e.Category
+            var query = $@"SELECT c.Id, c.Description, e.Id, e.StartDateTime, e.Details, e.DurationInMinutes, e.CategoryId
+                        FROM events e
+                        LEFT JOIN categories c
+                        ON e.CategoryId = c.Id
                         WHERE e.StartDateTime >= {Start} AND e.StartDateTime <= {End}";
                         
             //from c in _categories.List()
@@ -192,6 +193,25 @@ namespace Calendar
             List<CalendarItem> items = new List<CalendarItem>();
             Double totalBusyTime = 0;
 
+
+            using var cmd = new SQLiteCommand(query, _Connection);
+            using SQLiteDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                int categoryId = reader.GetInt32(0);
+                string categoryDescription = reader.GetString(1);
+                int eventCategoryId = reader.GetInt32(2);
+                DateTime eventsStartDateTime = DateTime.Parse(reader.GetString(3));
+                string eventsDetails = reader.GetString(4);
+                int eventsDurationTime = reader.GetInt32(5);
+                int eventsCategoryId = reader.GetInt32(6);
+
+                Category category = new Category(id, description, type);
+                newList.Add(category);
+            }
+
+
             foreach (var e in query.OrderBy(q => q.StartDateTime))
             {
                 // filter out unwanted categories if filter flag is on
@@ -201,7 +221,7 @@ namespace Calendar
                 }
 
                 // keep track of running totals
-                totalBusyTime = totalBusyTime + e.DurationInMinutes;
+                totalBusyTime = totalBusyTime + e.DurationInMinutes; 
                 items.Add(new CalendarItem
                 {
                     CategoryID = e.CatId,
