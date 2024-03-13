@@ -17,8 +17,8 @@ namespace Calendar
     /// </summary>
     public class HomeCalendar
     {
-        Categories _categories; 
-        Events _events;
+        private Categories _categories; 
+        private Events _events;
 
         // ====================================================================
         // Properties
@@ -174,10 +174,16 @@ namespace Calendar
             Start = Start ?? new DateTime(1900, 1, 1);
             End = End ?? new DateTime(2500, 1, 1);
 
-            var query = from c in _categories.List()
-                        join e in _events.List() on c.Id equals e.Category
-                        where e.StartDateTime >= Start && e.StartDateTime <= End
-                        select new { CatId = c.Id, EventId = e.Id, e.StartDateTime, Category = c.Description, e.Details, e.DurationInMinutes };
+            var query = $@"SELECT c.Id, c.Description, c.TypeId, e.Id, e.StartDateTime, e.Details, e.DurationInMinutes, e.CategoryId
+                        FROM categories c
+                        JOIN events e
+                        ON c.Id = e.Category
+                        WHERE e.StartDateTime >= {Start} AND e.StartDateTime <= {End}";
+                        
+            //from c in _categories.List()
+            //join e in _events.List() on c.Id equals e.Category
+            //where e.StartDateTime >= Start && e.StartDateTime <= End
+            //select new { CatId = c.Id, EventId = e.Id, e.StartDateTime, Category = c.Description, e.Details, e.DurationInMinutes };
 
             // ------------------------------------------------------------------------
             // create a CalendarItem list with totals,
