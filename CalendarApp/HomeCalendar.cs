@@ -349,380 +349,389 @@ namespace Calendar
             // -----------------------------------------------------------------------
             // get all items first
             // -----------------------------------------------------------------------
-            List<CalendarItem> items = GetCalendarItems(Start, End, FilterFlag, CategoryID);
+            DateTime realStart = Start ?? new DateTime(1900, 1, 1);
+            DateTime realEnd = End ?? new DateTime(2500, 1, 1);
 
-            // -----------------------------------------------------------------------
-            // Group by year/month
-            // -----------------------------------------------------------------------
-            var GroupedByMonth = items.GroupBy(c => c.StartDateTime.Year.ToString("D4") + "/" + c.StartDateTime.Month.ToString("D2"));
+            var startDate = new DateTime(realStart.Year, realStart.Month, 1);
+            var lastDay = DateTime.DaysInMonth(realStart.Year, realStart.Month);
+            var endDate = new DateTime(realEnd.Year, realEnd.Month, lastDay);
+
+            var query = $@"SELECT substr(Date, 1, 7), e.DurationInMinutes
+                        FROM events e
+                        WHERE e.StartDateTime >= {startDate} AND e.StartDateTime <= {endDate}
+                        GROUP BY MONTH(StartDateTime)";
 
             // -----------------------------------------------------------------------
             // create new list
             // -----------------------------------------------------------------------
-            var summary = new List<CalendarItemsByMonth>();
-            foreach (var MonthGroup in GroupedByMonth)
-            {
-                // calculate totalBusyTime for this month, and create list of items
-                double total = 0;
-                var itemsList = new List<CalendarItem>();
-                foreach (var item in MonthGroup)
-                {
-                    total = total + item.DurationInMinutes;
-                    itemsList.Add(item);
-                }
+            using var cmd = new SQLiteCommand(query, _Connection);
+            using SQLiteDataReader reader = cmd.ExecuteReader();
 
-                // Add new CalendarItemsByMonth to our list
-                summary.Add(new CalendarItemsByMonth
+            List<CalendarItem> items = GetCalendarItems(startDate, endDate, false, 0);
+            List<CalendarItemsByMonth> itemsByMonth = new List<CalendarItemsByMonth>();
+            Double totalBusyTime = 0;
+            while (reader.Read())
+            {
+                int categoryId = reader.GetInt32(0);
+                if (FilterFlag && CategoryID != categoryId)
                 {
-                    Month = MonthGroup.Key,
-                    Items = itemsList,
-                    TotalBusyTime = total
+                    continue;
+                }
+                string month = reader.GetString(0);
+                double eventsDurationTime = reader.GetDouble(1);
+                totalBusyTime += eventsDurationTime;
+                itemsByMonth.Add(new CalendarItemsByMonth
+                {
+                    Month = month,
+                    Items = items,
+                    TotalBusyTime = totalBusyTime,
                 });
             }
+            return itemsByMonth;
+        }
+    }
 
-            return summary;
+
+    // ============================================================================
+    // Group all events by category (ordered by category name)
+    // ============================================================================
+    /// <summary>
+    /// Group all events by category (ordered by category name).
+    /// </summary>
+    /// <param name="Start">The start date and time of the range of events. Inclusive.</param>
+    /// <param name="End">The end date and time of the range of events. Inclusive.</param>
+    /// <param name="FilterFlag">If true, will only return events of a specified category.</param>
+    /// <param name="CategoryID">Specifies a Category Id to filter the Calendar Items. Will be ignored if FilterFlag is false.</param>
+    /// <returns>A list of items containing a category, a list of calendar items of the category and a total busy time for the category.</returns>
+    /// <example>
+    /// For all examples below, assume the calendar file contains the following elements:
+    /// <code>
+    /// |Details              |Start Time              |Duration |Category           |Event ID  |
+    /// |App Dev Homework     |2018-01-10 10:00:00 AM  |40       |Fun                |1         |
+    /// |Honolulu             |2020-01-09 12:00:00 AM  |1440     |Vacation           |2         |
+    /// |Honolulu             |2020-01-10 12:00:00 AM  |1440     |Vacation           |3         |
+    /// |On call security     |2020-01-20 11:00:00 AM  |180      |On call            |4         |
+    /// |staff meeting        |2018-01-11 7:30:00 PM   |15       |Work               |5         |
+    /// |New Year's           |2020-01-01 12:00:00 AM  |1440     |Canadian Holidays  |6         |
+    /// |Wendy's birthday     |2020-01-12 12:00:00 AM  |1440     |Birthdays          |7         |
+    /// |Sprint retrospective |2018-01-11 10:15:00 AM  |60       |Work               |8         |
+    /// </code>
+    /// The date range of returned events is inclusive, and the returned list will be sorted by start date and time (ascending).
+    /// The category ID is used to retrieve the associated Category in the <see cref="Categories"/> class.
+    /// Likewise with the event ID and the <see cref="Events"/> class.
+    /// Busy Time is a variable that represents the total duration of all calendar events in minutes.
+    /// <b>Example 1: Getting a list of calendar items grouped by category:</b>
+    /// <code>
+    /// <![CDATA[
+    /// HomeCalendar calendar = new HomeCalendar();
+    /// calendar.ReadFromFile(filename);
+    /// 
+    /// List<CalendarItemsByCategory> items = calendar.GetCalendarItemsByCategory(null, null, false, 0);
+    /// 
+    /// //print the output via a loop
+    /// for (int j = 0; j < items.Count; j++) //looping all categories
+    ///    {
+    ///        string bar = ("---------------------------------------------------------------------------------------------------------------");
+    ///string s = string.Format("\n|{0,-20} |{1,-25} |{2,-20} |{3,-20} |{4,-15} |", "Category", "Details", "Duration (mins)", "Event ID", "Busy Time");
+    ///Console.WriteLine(s);
+    ///        Console.WriteLine(bar);
+    ///        for (int i = 0; i<items[j].Items.Count; i++) //looping all items in category
+    ///        {
+    ///            string itemString = string.Format("|\x1b[94m{0,-20}\x1b[0m |\x1b[94m{1,-25}\x1b[0m |\u001b[94m{2,-20}\u001b[0m |\u001b[94m{3,-20}\u001b[0m |\u001b[94m{4,-15}\u001b[0m |", items[j].Category, items[j].Items[i].ShortDescription, items[j].Items[i].DurationInMinutes, items[j].Items[i].EventID, items[j].Items[i].BusyTime);
+    ///Console.WriteLine(itemString);
+    ///        }
+    ///}
+    /// ]]>
+    /// </code>
+    /// Sample output:
+    /// <code>
+    /// 
+    ///|Category             |Details            |Duration(mins) |Event ID   |Busy Time    |
+    ///-------------------------------------------------------------------------------------
+    ///|Birthdays            |Wendy's birthday   |1440           |7          |5875         |
+    ///
+    ///|Category             |Details            |Duration(mins) |Event ID   |Busy Time    |
+    ///-------------------------------------------------------------------------------------
+    ///|Canadian Holidays    |New Year's         |1440           |6          |1555         |
+    ///
+    ///|Category             |Details            |Duration(mins) |Event ID   |Busy Time    |
+    ///-------------------------------------------------------------------------------------
+    ///|Fun                  |App Dev Homework   |40             |1          |40           |
+    ///
+    ///|Category             |Details            |Duration(mins) |Event ID   |Busy Time    |
+    ///-------------------------------------------------------------------------------------
+    ///|On call              |On call security   |180            |4          |6055         |
+    ///
+    ///|Category             |Details            |Duration(mins) |Event ID   |Busy Time    |
+    ///-------------------------------------------------------------------------------------
+    ///|Vacation             |Honolulu           |1440           |2          |2995         |
+    ///|Vacation             |Honolulu           |1440           |3          |4435         |
+    ///
+    ///|Category             |Details            |Duration(mins) |Event ID   |Busy Time    |
+    ///-------------------------------------------------------------------------------------
+    ///|Work                 |Sprint retrospective      |60      |8          |100          |
+    ///|Work                 |staff meeting             |15      |5          |115          |
+    /// </code>
+    /// <b>Example 2: Filter flag is true</b>
+    /// If we set the <paramref name="FilterFlag"/> to true, the method will filter the Events and return only the Events with the same category Id.
+    /// In this example, it will return all events of category id '9'.
+    /// <code>
+    /// <![CDATA[
+    /// HomeCalendar calendar = new HomeCalendar();
+    /// calendar.ReadFromFile(filename);
+    /// List<CalendarItemsByCategory> calendarItemsByCategory = calendar.GetCalendarItemsByMonth(null, null, true, 9);
+    /// 
+    /// //print information retrieved, see above example for code.
+    /// ]]>
+    /// </code>
+    /// 
+    /// Sample output:
+    /// <code>
+    /// |Category    |Details          |Duration (mins)      |Event ID   |Busy Time       |
+    /// -----------------------------------------------------------------------------------
+    /// |Vacation    |Honolulu         |1440                 |2          |1440            |
+    /// |Vacation    |Honolulu         |1440                 |3          |2880            |
+    /// </code>
+    /// </example>
+    public List<CalendarItemsByCategory> GetCalendarItemsByCategory(DateTime? Start, DateTime? End, bool FilterFlag, int CategoryID)
+    {
+        // -----------------------------------------------------------------------
+        // get all items first
+        // -----------------------------------------------------------------------
+        List<CalendarItem> filteredItems = GetCalendarItems(Start, End, FilterFlag, CategoryID);
+
+        // -----------------------------------------------------------------------
+        // Group by Category
+        // -----------------------------------------------------------------------
+        var GroupedByCategory = filteredItems.GroupBy(c => c.Category);
+
+        // -----------------------------------------------------------------------
+        // create new list
+        // -----------------------------------------------------------------------
+        var summary = new List<CalendarItemsByCategory>();
+        foreach (var CategoryGroup in GroupedByCategory.OrderBy(g => g.Key))
+        {
+            // calculate totalBusyTime for this category, and create list of items
+            double total = 0;
+            var items = new List<CalendarItem>();
+            foreach (var item in CategoryGroup)
+            {
+                total = total + item.DurationInMinutes;
+                items.Add(item);
+            }
+
+            // Add new CalendarItemsByCategory to our list
+            summary.Add(new CalendarItemsByCategory
+            {
+                Category = CategoryGroup.Key,
+                Items = items,
+                TotalBusyTime = total
+            });
         }
 
-        // ============================================================================
-        // Group all events by category (ordered by category name)
-        // ============================================================================
-        /// <summary>
-        /// Group all events by category (ordered by category name).
-        /// </summary>
-        /// <param name="Start">The start date and time of the range of events. Inclusive.</param>
-        /// <param name="End">The end date and time of the range of events. Inclusive.</param>
-        /// <param name="FilterFlag">If true, will only return events of a specified category.</param>
-        /// <param name="CategoryID">Specifies a Category Id to filter the Calendar Items. Will be ignored if FilterFlag is false.</param>
-        /// <returns>A list of items containing a category, a list of calendar items of the category and a total busy time for the category.</returns>
-        /// <example>
-        /// For all examples below, assume the calendar file contains the following elements:
-        /// <code>
-        /// |Details              |Start Time              |Duration |Category           |Event ID  |
-        /// |App Dev Homework     |2018-01-10 10:00:00 AM  |40       |Fun                |1         |
-        /// |Honolulu             |2020-01-09 12:00:00 AM  |1440     |Vacation           |2         |
-        /// |Honolulu             |2020-01-10 12:00:00 AM  |1440     |Vacation           |3         |
-        /// |On call security     |2020-01-20 11:00:00 AM  |180      |On call            |4         |
-        /// |staff meeting        |2018-01-11 7:30:00 PM   |15       |Work               |5         |
-        /// |New Year's           |2020-01-01 12:00:00 AM  |1440     |Canadian Holidays  |6         |
-        /// |Wendy's birthday     |2020-01-12 12:00:00 AM  |1440     |Birthdays          |7         |
-        /// |Sprint retrospective |2018-01-11 10:15:00 AM  |60       |Work               |8         |
-        /// </code>
-        /// The date range of returned events is inclusive, and the returned list will be sorted by start date and time (ascending).
-        /// The category ID is used to retrieve the associated Category in the <see cref="Categories"/> class.
-        /// Likewise with the event ID and the <see cref="Events"/> class.
-        /// Busy Time is a variable that represents the total duration of all calendar events in minutes.
-        /// <b>Example 1: Getting a list of calendar items grouped by category:</b>
-        /// <code>
-        /// <![CDATA[
-        /// HomeCalendar calendar = new HomeCalendar();
-        /// calendar.ReadFromFile(filename);
-        /// 
-        /// List<CalendarItemsByCategory> items = calendar.GetCalendarItemsByCategory(null, null, false, 0);
-        /// 
-        /// //print the output via a loop
-        /// for (int j = 0; j < items.Count; j++) //looping all categories
-        ///    {
-        ///        string bar = ("---------------------------------------------------------------------------------------------------------------");
-        ///string s = string.Format("\n|{0,-20} |{1,-25} |{2,-20} |{3,-20} |{4,-15} |", "Category", "Details", "Duration (mins)", "Event ID", "Busy Time");
-        ///Console.WriteLine(s);
-        ///        Console.WriteLine(bar);
-        ///        for (int i = 0; i<items[j].Items.Count; i++) //looping all items in category
-        ///        {
-        ///            string itemString = string.Format("|\x1b[94m{0,-20}\x1b[0m |\x1b[94m{1,-25}\x1b[0m |\u001b[94m{2,-20}\u001b[0m |\u001b[94m{3,-20}\u001b[0m |\u001b[94m{4,-15}\u001b[0m |", items[j].Category, items[j].Items[i].ShortDescription, items[j].Items[i].DurationInMinutes, items[j].Items[i].EventID, items[j].Items[i].BusyTime);
-        ///Console.WriteLine(itemString);
-        ///        }
-        ///}
-        /// ]]>
-        /// </code>
-        /// Sample output:
-        /// <code>
-        /// 
-        ///|Category             |Details            |Duration(mins) |Event ID   |Busy Time    |
-        ///-------------------------------------------------------------------------------------
-        ///|Birthdays            |Wendy's birthday   |1440           |7          |5875         |
-        ///
-        ///|Category             |Details            |Duration(mins) |Event ID   |Busy Time    |
-        ///-------------------------------------------------------------------------------------
-        ///|Canadian Holidays    |New Year's         |1440           |6          |1555         |
-        ///
-        ///|Category             |Details            |Duration(mins) |Event ID   |Busy Time    |
-        ///-------------------------------------------------------------------------------------
-        ///|Fun                  |App Dev Homework   |40             |1          |40           |
-        ///
-        ///|Category             |Details            |Duration(mins) |Event ID   |Busy Time    |
-        ///-------------------------------------------------------------------------------------
-        ///|On call              |On call security   |180            |4          |6055         |
-        ///
-        ///|Category             |Details            |Duration(mins) |Event ID   |Busy Time    |
-        ///-------------------------------------------------------------------------------------
-        ///|Vacation             |Honolulu           |1440           |2          |2995         |
-        ///|Vacation             |Honolulu           |1440           |3          |4435         |
-        ///
-        ///|Category             |Details            |Duration(mins) |Event ID   |Busy Time    |
-        ///-------------------------------------------------------------------------------------
-        ///|Work                 |Sprint retrospective      |60      |8          |100          |
-        ///|Work                 |staff meeting             |15      |5          |115          |
-        /// </code>
-        /// <b>Example 2: Filter flag is true</b>
-        /// If we set the <paramref name="FilterFlag"/> to true, the method will filter the Events and return only the Events with the same category Id.
-        /// In this example, it will return all events of category id '9'.
-        /// <code>
-        /// <![CDATA[
-        /// HomeCalendar calendar = new HomeCalendar();
-        /// calendar.ReadFromFile(filename);
-        /// List<CalendarItemsByCategory> calendarItemsByCategory = calendar.GetCalendarItemsByMonth(null, null, true, 9);
-        /// 
-        /// //print information retrieved, see above example for code.
-        /// ]]>
-        /// </code>
-        /// 
-        /// Sample output:
-        /// <code>
-        /// |Category    |Details          |Duration (mins)      |Event ID   |Busy Time       |
-        /// -----------------------------------------------------------------------------------
-        /// |Vacation    |Honolulu         |1440                 |2          |1440            |
-        /// |Vacation    |Honolulu         |1440                 |3          |2880            |
-        /// </code>
-        /// </example>
-        public List<CalendarItemsByCategory> GetCalendarItemsByCategory(DateTime? Start, DateTime? End, bool FilterFlag, int CategoryID)
+        return summary;
+    }
+
+    // ============================================================================
+    // Group all events by category and Month
+    // creates a list of Dictionary objects with:
+    //          one dictionary object per month,
+    //          and one dictionary object for the category total busy times
+    // 
+    // Each per month dictionary object has the following key value pairs:
+    //           "Month", <name of month>
+    //           "TotalBusyTime", <the total durations for the month>
+    //             for each category for which there is an event in the month:
+    //             "items:category", a List<CalendarItem>
+    //             "category", the total busy time for that category for this month
+    // The one dictionary for the category total busy times has the following key value pairs:
+    //             for each category for which there is an event in ANY month:
+    //             "category", the total busy time for that category for all the months
+    // <param name="Start">Start time of the calendar item. Can be null.</param>
+    // <param name="End">End time of the calendar item. Can be null.</param>
+    // <param name="FilterFlag">A filter flag for sorting calendar items by category. If true, will only display items of the category type.</param>
+    // <param name="CategoryID">A category ID that will be filtered for if the flag is true.</param>
+    // <remarks>The Month dictionary object has the following key value pairs: "Month", name of the month</remarks>
+    // <returns>A List of Dictionaries containing the category and object.</returns>
+    // ============================================================================
+    /// <summary>
+    /// Groups all Events by Category and Month using a dictionary for each month and another for the category total busy times.
+    /// </summary>
+    /// <param name="Start">Start time of the calendar item. Can be null. Inclusive. </param>
+    /// <param name="End">End time of the calendar item. Can be null. Inclusive.</param>
+    /// <param name="FilterFlag">A filter flag for sorting calendar items by category. If true, will only display items of the category type.</param>
+    /// <param name="CategoryID">A category ID that will be filtered for if the flag is true.</param>
+    /// <returns>A List of Dictionaries containing the month, total busy time, and events grouped by category and month.</returns>
+    /// <example>
+    /// For all examples below, assume the calendar file contains the following elements:
+    /// <code>
+    /// |Details              |Start Time              |Duration |Category           |Event ID  |
+    /// |App Dev Homework     |2018-01-10 10:00:00 AM  |40       |Fun                |1         |
+    /// |Honolulu             |2020-01-09 12:00:00 AM  |1440     |Vacation           |2         |
+    /// |Honolulu             |2020-01-10 12:00:00 AM  |1440     |Vacation           |3         |
+    /// |On call security     |2020-01-20 11:00:00 AM  |180      |On call            |4         |
+    /// |staff meeting        |2018-01-11 7:30:00 PM   |15       |Work               |5         |
+    /// |New Year's           |2020-01-01 12:00:00 AM  |1440     |Canadian Holidays  |6         |
+    /// |Wendy's birthday     |2020-01-12 12:00:00 AM  |1440     |Birthdays          |7         |
+    /// |Sprint retrospective |2018-01-11 10:15:00 AM  |60       |Work               |8         |
+    /// </code>
+    /// 
+    /// <b>Example 1: Getting a list of calendar items grouped by month:</b>
+    /// 
+    /// <code>
+    /// <![CDATA[
+    /// HomeCalendar homeCalendar = new HomeCalendar();
+    /// List<Dictionary<string, object>> calendarDictionary = homeCalendar.GetCalendarDictionaryByCategoryAndMonth(startDateTime, endDateTime, false, 9);
+    /// 
+    /// foreach (var monthRecord in calendarDictionary)
+    ///    {
+    ///       Console.WriteLine($"\nMonth: {monthRecord["Month"]}");
+    ///       //checking if the record contains a total busy time
+    ///       if (monthRecord.ContainsKey("TotalBusyTime"))
+    ///         Console.WriteLine($"Total Busy Time: {monthRecord["TotalBusyTime"]} minutes");
+    ///
+    ///       //looping over each category and their events and printing their details
+    ///       foreach (var categoryRecord in monthRecord.Keys)
+    ///       {
+    ///           //check if the key starts with "items:" since this means it corresponds to a category
+    ///           if (categoryRecord.StartsWith("items:"))
+    ///           {
+    ///               string categoryName = categoryRecord.Substring(6); //taking the category name for printing
+    ///               List<CalendarItem> eventRecords = (List<CalendarItem>)monthRecord[categoryRecord];
+    ///               Console.WriteLine($"Category: {categoryName}, Total Busy Time: {monthRecord[categoryName]} minutes");
+    ///
+    ///               //looping over each calendar item and printing its details
+    ///               foreach (var eventItem in eventRecords)
+    ///                   Console.WriteLine($"Event: {eventItem.ShortDescription}, Start Time: {eventItem.StartDateTime}, Duration: {eventItem.DurationInMinutes} minutes");
+    ///           }
+    ///       }
+    ///   }
+    /// ]]>
+    /// </code>
+    /// 
+    /// Sample output:
+    /// <code>
+    /// Month: 2018/01
+    /// Total Busy Time: 115 minutes
+    ///
+    /// Category: Fun , Total Busy Time: 40 minutes
+    /// Event: App Dev Homework, Start Time: 2018-01-10 10:00:00 AM, Duration: 40 minutes
+    /// Category: Work , Total Busy Time: 75 minutes
+    /// Event: Sprint retrospective, Start Time: 2018-01-11 10:15:00 AM, Duration: 60 minutes
+    /// Event: staff meeting, Start Time: 2018-01-11 7:30:00 PM, Duration: 15 minutes
+    ///
+    ///  Month: 2020/01
+    /// Total Busy Time: 5940 minutes
+    ///
+    /// Category: Birthdays , Total Busy Time: 1440 minutes
+    /// Event: Wendy's birthday, Start Time: 2020-01-12 12:00:00 AM, Duration: 1440 minutes
+    /// Category: Canadian Holidays, Total Busy Time: 1440 minutes
+    /// Event: New Year's, Start Time: 2020-01-01 12:00:00 AM, Duration: 1440 minutes
+    /// Category: On call, Total Busy Time: 180 minutes
+    /// Event: On call security, Start Time: 2020-01-20 11:00:00 AM, Duration: 180 minutes
+    /// Category: Vacation , Total Busy Time: 2880 minutes
+    /// Event: Honolulu, Start Time: 2020-01-09 12:00:00 AM, Duration: 1440 minutes
+    /// Event: Honolulu, Start Time: 2020-01-10 12:00:00 AM, Duration: 1440 minutes
+    /// </code>
+    /// 
+    /// <b>Example 2: Filter Flag is true</b>
+    /// 
+    /// If we set the <paramref name="FilterFlag"/> to true, the method will filter the Events and return only the Events with the same category Id.
+    /// In this example, it will return all events of category id '9'.
+    /// <code>
+    /// <![CDATA[
+    /// HomeCalendar homeCalendar = new HomeCalendar();
+    /// List<Dictionary<string, object>> calendarDictionary = homeCalendar.GetCalendarDictionaryByCategoryAndMonth(startDateTime, endDateTime, true, 9);
+    /// 
+    /// // print information about the dictionary (see the nested foreach from example 1)
+    /// ]]>
+    /// </code>
+    /// Sample output:
+    /// <code>
+    /// Month: 2020/01
+    /// Total Busy Time: 2880 minutes
+    ///
+    /// Category: Vacation , Total Busy Time: 2880 minutes
+    /// Event: Honolulu, Start Time: 2020-01-09 12:00:00 AM, Duration: 1440 minutes
+    /// Event: Honolulu, Start Time: 2020-01-10 12:00:00 AM, Duration: 1440 minutes
+    /// </code>
+    /// </example>
+    public List<Dictionary<string, object>> GetCalendarDictionaryByCategoryAndMonth(DateTime? Start, DateTime? End, bool FilterFlag, int CategoryID)
+    {
+        // -----------------------------------------------------------------------
+        // get all items by month 
+        // -----------------------------------------------------------------------
+        List<CalendarItemsByMonth> GroupedByMonth = GetCalendarItemsByMonth(Start, End, FilterFlag, CategoryID);
+
+        // -----------------------------------------------------------------------
+        // loop over each month
+        // -----------------------------------------------------------------------
+        var summary = new List<Dictionary<string, object>>();
+        var totalBusyTimePerCategory = new Dictionary<String, Double>();
+
+        foreach (var MonthGroup in GroupedByMonth)
         {
-            // -----------------------------------------------------------------------
-            // get all items first
-            // -----------------------------------------------------------------------
-            List<CalendarItem> filteredItems = GetCalendarItems(Start, End, FilterFlag, CategoryID);
+            // create record object for this month
+            Dictionary<string, object> record = new Dictionary<string, object>();
+            record["Month"] = MonthGroup.Month;
+            record["TotalBusyTime"] = MonthGroup.TotalBusyTime;
+
+            // break up the month items into categories
+            var GroupedByCategory = MonthGroup.Items.GroupBy(c => c.Category);
 
             // -----------------------------------------------------------------------
-            // Group by Category
+            // loop over each category
             // -----------------------------------------------------------------------
-            var GroupedByCategory = filteredItems.GroupBy(c => c.Category);
-
-            // -----------------------------------------------------------------------
-            // create new list
-            // -----------------------------------------------------------------------
-            var summary = new List<CalendarItemsByCategory>();
             foreach (var CategoryGroup in GroupedByCategory.OrderBy(g => g.Key))
             {
-                // calculate totalBusyTime for this category, and create list of items
-                double total = 0;
-                var items = new List<CalendarItem>();
+
+                // calculate totals for the cat/month, and create list of items
+                double totalCategoryBusyTimeForThisMonth = 0;
+                var details = new List<CalendarItem>();
+
                 foreach (var item in CategoryGroup)
                 {
-                    total = total + item.DurationInMinutes;
-                    items.Add(item);
+                    totalCategoryBusyTimeForThisMonth = totalCategoryBusyTimeForThisMonth + item.DurationInMinutes;
+                    details.Add(item);
                 }
 
-                // Add new CalendarItemsByCategory to our list
-                summary.Add(new CalendarItemsByCategory
+                // add new properties and values to our record object
+                record["items:" + CategoryGroup.Key] = details;
+                record[CategoryGroup.Key] = totalCategoryBusyTimeForThisMonth;
+
+                // keep track of totals for each category
+                if (totalBusyTimePerCategory.TryGetValue(CategoryGroup.Key, out Double currentTotalBusyTimeForCategory))
                 {
-                    Category = CategoryGroup.Key,
-                    Items = items,
-                    TotalBusyTime = total
-                });
+                    totalBusyTimePerCategory[CategoryGroup.Key] = currentTotalBusyTimeForCategory + totalCategoryBusyTimeForThisMonth;
+                }
+                else
+                {
+                    totalBusyTimePerCategory[CategoryGroup.Key] = totalCategoryBusyTimeForThisMonth;
+                }
             }
 
-            return summary;
+            // add record to collection
+            summary.Add(record);
         }
+        // ---------------------------------------------------------------------------
+        // add final record which is the totals for each category
+        // ---------------------------------------------------------------------------
+        Dictionary<string, object> totalsRecord = new Dictionary<string, object>();
+        totalsRecord["Month"] = "TOTALS";
 
-        // ============================================================================
-        // Group all events by category and Month
-        // creates a list of Dictionary objects with:
-        //          one dictionary object per month,
-        //          and one dictionary object for the category total busy times
-        // 
-        // Each per month dictionary object has the following key value pairs:
-        //           "Month", <name of month>
-        //           "TotalBusyTime", <the total durations for the month>
-        //             for each category for which there is an event in the month:
-        //             "items:category", a List<CalendarItem>
-        //             "category", the total busy time for that category for this month
-        // The one dictionary for the category total busy times has the following key value pairs:
-        //             for each category for which there is an event in ANY month:
-        //             "category", the total busy time for that category for all the months
-        // <param name="Start">Start time of the calendar item. Can be null.</param>
-        // <param name="End">End time of the calendar item. Can be null.</param>
-        // <param name="FilterFlag">A filter flag for sorting calendar items by category. If true, will only display items of the category type.</param>
-        // <param name="CategoryID">A category ID that will be filtered for if the flag is true.</param>
-        // <remarks>The Month dictionary object has the following key value pairs: "Month", name of the month</remarks>
-        // <returns>A List of Dictionaries containing the category and object.</returns>
-        // ============================================================================
-        /// <summary>
-        /// Groups all Events by Category and Month using a dictionary for each month and another for the category total busy times.
-        /// </summary>
-        /// <param name="Start">Start time of the calendar item. Can be null. Inclusive. </param>
-        /// <param name="End">End time of the calendar item. Can be null. Inclusive.</param>
-        /// <param name="FilterFlag">A filter flag for sorting calendar items by category. If true, will only display items of the category type.</param>
-        /// <param name="CategoryID">A category ID that will be filtered for if the flag is true.</param>
-        /// <returns>A List of Dictionaries containing the month, total busy time, and events grouped by category and month.</returns>
-        /// <example>
-        /// For all examples below, assume the calendar file contains the following elements:
-        /// <code>
-        /// |Details              |Start Time              |Duration |Category           |Event ID  |
-        /// |App Dev Homework     |2018-01-10 10:00:00 AM  |40       |Fun                |1         |
-        /// |Honolulu             |2020-01-09 12:00:00 AM  |1440     |Vacation           |2         |
-        /// |Honolulu             |2020-01-10 12:00:00 AM  |1440     |Vacation           |3         |
-        /// |On call security     |2020-01-20 11:00:00 AM  |180      |On call            |4         |
-        /// |staff meeting        |2018-01-11 7:30:00 PM   |15       |Work               |5         |
-        /// |New Year's           |2020-01-01 12:00:00 AM  |1440     |Canadian Holidays  |6         |
-        /// |Wendy's birthday     |2020-01-12 12:00:00 AM  |1440     |Birthdays          |7         |
-        /// |Sprint retrospective |2018-01-11 10:15:00 AM  |60       |Work               |8         |
-        /// </code>
-        /// 
-        /// <b>Example 1: Getting a list of calendar items grouped by month:</b>
-        /// 
-        /// <code>
-        /// <![CDATA[
-        /// HomeCalendar homeCalendar = new HomeCalendar();
-        /// List<Dictionary<string, object>> calendarDictionary = homeCalendar.GetCalendarDictionaryByCategoryAndMonth(startDateTime, endDateTime, false, 9);
-        /// 
-        /// foreach (var monthRecord in calendarDictionary)
-        ///    {
-        ///       Console.WriteLine($"\nMonth: {monthRecord["Month"]}");
-        ///       //checking if the record contains a total busy time
-        ///       if (monthRecord.ContainsKey("TotalBusyTime"))
-        ///         Console.WriteLine($"Total Busy Time: {monthRecord["TotalBusyTime"]} minutes");
-        ///
-        ///       //looping over each category and their events and printing their details
-        ///       foreach (var categoryRecord in monthRecord.Keys)
-        ///       {
-        ///           //check if the key starts with "items:" since this means it corresponds to a category
-        ///           if (categoryRecord.StartsWith("items:"))
-        ///           {
-        ///               string categoryName = categoryRecord.Substring(6); //taking the category name for printing
-        ///               List<CalendarItem> eventRecords = (List<CalendarItem>)monthRecord[categoryRecord];
-        ///               Console.WriteLine($"Category: {categoryName}, Total Busy Time: {monthRecord[categoryName]} minutes");
-        ///
-        ///               //looping over each calendar item and printing its details
-        ///               foreach (var eventItem in eventRecords)
-        ///                   Console.WriteLine($"Event: {eventItem.ShortDescription}, Start Time: {eventItem.StartDateTime}, Duration: {eventItem.DurationInMinutes} minutes");
-        ///           }
-        ///       }
-        ///   }
-        /// ]]>
-        /// </code>
-        /// 
-        /// Sample output:
-        /// <code>
-        /// Month: 2018/01
-        /// Total Busy Time: 115 minutes
-        ///
-        /// Category: Fun , Total Busy Time: 40 minutes
-        /// Event: App Dev Homework, Start Time: 2018-01-10 10:00:00 AM, Duration: 40 minutes
-        /// Category: Work , Total Busy Time: 75 minutes
-        /// Event: Sprint retrospective, Start Time: 2018-01-11 10:15:00 AM, Duration: 60 minutes
-        /// Event: staff meeting, Start Time: 2018-01-11 7:30:00 PM, Duration: 15 minutes
-        ///
-        ///  Month: 2020/01
-        /// Total Busy Time: 5940 minutes
-        ///
-        /// Category: Birthdays , Total Busy Time: 1440 minutes
-        /// Event: Wendy's birthday, Start Time: 2020-01-12 12:00:00 AM, Duration: 1440 minutes
-        /// Category: Canadian Holidays, Total Busy Time: 1440 minutes
-        /// Event: New Year's, Start Time: 2020-01-01 12:00:00 AM, Duration: 1440 minutes
-        /// Category: On call, Total Busy Time: 180 minutes
-        /// Event: On call security, Start Time: 2020-01-20 11:00:00 AM, Duration: 180 minutes
-        /// Category: Vacation , Total Busy Time: 2880 minutes
-        /// Event: Honolulu, Start Time: 2020-01-09 12:00:00 AM, Duration: 1440 minutes
-        /// Event: Honolulu, Start Time: 2020-01-10 12:00:00 AM, Duration: 1440 minutes
-        /// </code>
-        /// 
-        /// <b>Example 2: Filter Flag is true</b>
-        /// 
-        /// If we set the <paramref name="FilterFlag"/> to true, the method will filter the Events and return only the Events with the same category Id.
-        /// In this example, it will return all events of category id '9'.
-        /// <code>
-        /// <![CDATA[
-        /// HomeCalendar homeCalendar = new HomeCalendar();
-        /// List<Dictionary<string, object>> calendarDictionary = homeCalendar.GetCalendarDictionaryByCategoryAndMonth(startDateTime, endDateTime, true, 9);
-        /// 
-        /// // print information about the dictionary (see the nested foreach from example 1)
-        /// ]]>
-        /// </code>
-        /// Sample output:
-        /// <code>
-        /// Month: 2020/01
-        /// Total Busy Time: 2880 minutes
-        ///
-        /// Category: Vacation , Total Busy Time: 2880 minutes
-        /// Event: Honolulu, Start Time: 2020-01-09 12:00:00 AM, Duration: 1440 minutes
-        /// Event: Honolulu, Start Time: 2020-01-10 12:00:00 AM, Duration: 1440 minutes
-        /// </code>
-        /// </example>
-        public List<Dictionary<string, object>> GetCalendarDictionaryByCategoryAndMonth(DateTime? Start, DateTime? End, bool FilterFlag, int CategoryID)
+        foreach (var cat in categories.List())
         {
-            // -----------------------------------------------------------------------
-            // get all items by month 
-            // -----------------------------------------------------------------------
-            List<CalendarItemsByMonth> GroupedByMonth = GetCalendarItemsByMonth(Start, End, FilterFlag, CategoryID);
-
-            // -----------------------------------------------------------------------
-            // loop over each month
-            // -----------------------------------------------------------------------
-            var summary = new List<Dictionary<string, object>>();
-            var totalBusyTimePerCategory = new Dictionary<String, Double>();
-
-            foreach (var MonthGroup in GroupedByMonth)
+            try
             {
-                // create record object for this month
-                Dictionary<string, object> record = new Dictionary<string, object>();
-                record["Month"] = MonthGroup.Month;
-                record["TotalBusyTime"] = MonthGroup.TotalBusyTime;
-
-                // break up the month items into categories
-                var GroupedByCategory = MonthGroup.Items.GroupBy(c => c.Category);
-
-                // -----------------------------------------------------------------------
-                // loop over each category
-                // -----------------------------------------------------------------------
-                foreach (var CategoryGroup in GroupedByCategory.OrderBy(g => g.Key))
-                {
-
-                    // calculate totals for the cat/month, and create list of items
-                    double totalCategoryBusyTimeForThisMonth = 0;
-                    var details = new List<CalendarItem>();
-
-                    foreach (var item in CategoryGroup)
-                    {
-                        totalCategoryBusyTimeForThisMonth = totalCategoryBusyTimeForThisMonth + item.DurationInMinutes;
-                        details.Add(item);
-                    }
-
-                    // add new properties and values to our record object
-                    record["items:" + CategoryGroup.Key] = details;
-                    record[CategoryGroup.Key] = totalCategoryBusyTimeForThisMonth;
-
-                    // keep track of totals for each category
-                    if (totalBusyTimePerCategory.TryGetValue(CategoryGroup.Key, out Double currentTotalBusyTimeForCategory))
-                    {
-                        totalBusyTimePerCategory[CategoryGroup.Key] = currentTotalBusyTimeForCategory + totalCategoryBusyTimeForThisMonth;
-                    }
-                    else
-                    {
-                        totalBusyTimePerCategory[CategoryGroup.Key] = totalCategoryBusyTimeForThisMonth;
-                    }
-                }
-
-                // add record to collection
-                summary.Add(record);
+                totalsRecord.Add(cat.Description, totalBusyTimePerCategory[cat.Description]);
             }
-            // ---------------------------------------------------------------------------
-            // add final record which is the totals for each category
-            // ---------------------------------------------------------------------------
-            Dictionary<string, object> totalsRecord = new Dictionary<string, object>();
-            totalsRecord["Month"] = "TOTALS";
-
-            foreach (var cat in categories.List())
-            {
-                try
-                {
-                    totalsRecord.Add(cat.Description, totalBusyTimePerCategory[cat.Description]);
-                }
-                catch { }
-            }
-            summary.Add(totalsRecord);
-
-
-            return summary;
+            catch { }
         }
-        #endregion GetList
+        summary.Add(totalsRecord);
+
+
+        return summary;
     }
+    #endregion GetList
+}
 }
