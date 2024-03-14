@@ -194,15 +194,27 @@ namespace Calendar
             DateTime notNullEnd = End ?? new DateTime(2500, 1, 1);
 
             using var cmd = new SQLiteCommand(_Connection);
-            cmd.CommandText = $@"SELECT c.Id, c.Description, e.Id, e.StartDateTime, e.Details, e.DurationInMinutes, e.CategoryId
+            if (Start is null)
+            {
+                cmd.CommandText = @"SELECT c.Id, c.Description, e.Id, e.StartDateTime, e.Details, e.DurationInMinutes, e.CategoryId
+                        FROM events e
+                        LEFT JOIN categories c
+                        ON e.CategoryId = c.Id
+                        ORDER BY e.StartDateTime";
+            }
+            else
+            {
+                cmd.CommandText = @"SELECT c.Id, c.Description, e.Id, e.StartDateTime, e.Details, e.DurationInMinutes, e.CategoryId
                         FROM events e
                         LEFT JOIN categories c
                         ON e.CategoryId = c.Id
                         WHERE e.StartDateTime >= @start AND e.StartDateTime <= @end
                         ORDER BY e.StartDateTime";
+                cmd.Parameters.AddWithValue("@start", notNullStart.ToString(@"M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture));
+                cmd.Parameters.AddWithValue("@end", notNullEnd.ToString(@"M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture));
+            }
 
-            cmd.Parameters.AddWithValue("@start", notNullStart.ToString(@"M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture));
-            cmd.Parameters.AddWithValue("@end", notNullEnd.ToString(@"M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture));
+
 
             //from c in _categories.List()
             //join e in _events.List() on c.Id equals e.Category
