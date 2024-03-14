@@ -2,8 +2,10 @@
 // (c) Sandy Bultena 2018
 // * Released under the GNU General Public License
 // ============================================================================
+using System;
 using System.Data.SQLite;
 using System.Globalization;
+using System.Security.Cryptography;
 
 namespace Calendar
 {
@@ -370,16 +372,22 @@ namespace Calendar
             var startDate = new DateTime(realStart.Year, realStart.Month, 1);
             var lastDay = DateTime.DaysInMonth(realStart.Year, realStart.Month);
             var endDate = new DateTime(realEnd.Year, realEnd.Month, lastDay);
-
-            var query = $@"SELECT substr(Date, 1, 7), e.DurationInMinutes
+            using var cmd = new SQLiteCommand(_Connection);
+            cmd.CommandText = @"SELECT e.CategoryId, STRFTIME('%m-%Y', e.StartDateTime) as month, e.DurationInMinutes
                         FROM events e
-                        WHERE e.StartDateTime >= {startDate} AND e.StartDateTime <= {endDate}
-                        GROUP BY MONTH(StartDateTime)";
-
+                        GROUP BY STRFTIME('%m-%Y', e.StartDateTime);";
+            if (Start is not null)
+            {
+                cmd.CommandText = @"SELECT e.CategoryId, STRFTIME('%m-%Y', e.StartDateTime) as month, e.DurationInMinutes
+                        FROM events e
+                        WHERE e.StartDateTime >= @start AND e.StartDateTime <= @end
+                        GROUP BY STRFTIME('%m-%Y', e.StartDateTime);";
+                cmd.Parameters.AddWithValue("@start", realStart.ToString(@"M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture));
+                cmd.Parameters.AddWithValue("@end", realEnd.ToString(@"M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture));
+            }
             // -----------------------------------------------------------------------
             // create new list
             // -----------------------------------------------------------------------
-            using var cmd = new SQLiteCommand(query, _Connection);
             using SQLiteDataReader reader = cmd.ExecuteReader();
 
             List<CalendarItem> items = GetCalendarItems(startDate, endDate, false, 0);
@@ -390,12 +398,13 @@ namespace Calendar
                 int categoryId = reader.GetInt32(0);
                 if (FilterFlag && CategoryID != categoryId)
                     continue;
-                string month = reader.GetString(0);
-                double eventsDurationTime = reader.GetDouble(1);
+                string month = reader.GetString(1);
+                string stringMonth = month.ToString();
+                double eventsDurationTime = reader.GetDouble(2);
                 totalBusyTime += eventsDurationTime;
                 itemsByMonth.Add(new CalendarItemsByMonth
                 {
-                    Month = month,
+                    Month = stringMonth,
                     Items = items,
                     TotalBusyTime = totalBusyTime,
                 });
