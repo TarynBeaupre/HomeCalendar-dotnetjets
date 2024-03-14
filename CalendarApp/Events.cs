@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Xml;
 using System.Data.SQLite;
+using System.Globalization;
 using static Calendar.Category;
 using System.Net.NetworkInformation;
 
@@ -45,7 +46,7 @@ namespace Calendar
         /// Creates a new Events instance and sets up the database connection to use the events table.
         /// </summary>
         /// <param name="eventsConnection">A valid database connection</param>
-        public Events(SQLiteConnection eventsConnection) 
+        public Events(SQLiteConnection eventsConnection)
         {
             _Connection = eventsConnection;
         }
@@ -93,7 +94,7 @@ namespace Calendar
                 using var cmd = new SQLiteCommand(con);
 
                 cmd.CommandText = "INSERT INTO events(StartDateTime, Details, DurationInMinutes, CategoryId) VALUES(@date, @details, @duration, @categoryid)";
-                cmd.Parameters.AddWithValue("@date", date);
+                cmd.Parameters.AddWithValue("@date", date.ToString(@"M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture));
                 cmd.Parameters.AddWithValue("@details", details);
                 cmd.Parameters.AddWithValue("@duration", duration);
                 cmd.Parameters.AddWithValue("@categoryid", category);
@@ -266,7 +267,7 @@ namespace Calendar
             while (reader.Read())
             {
                 int id = reader.GetInt32(0);
-                DateTime StartDateTime = reader.GetDateTime(1);
+                DateTime StartDateTime = DateTime.ParseExact(reader.GetString(1), @"M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                 string details = reader.GetString(2);
                 double duration = reader.GetDouble(3);
                 int category = reader.GetInt32(4);
