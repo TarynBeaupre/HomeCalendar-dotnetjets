@@ -195,26 +195,24 @@ namespace Calendar
             DateTime notNullStart = Start ?? new DateTime(1900, 1, 1);
             DateTime notNullEnd = End ?? new DateTime(2500, 1, 1);
 
+            bool isStartNull = Start is null;
+            bool isEndNull = End is null;
+
             using var cmd = new SQLiteCommand(_Connection);
-            if (Start is null)
-            {
-                cmd.CommandText = @"SELECT c.Id, c.Description, e.Id, e.StartDateTime, e.Details, e.DurationInMinutes, e.CategoryId
-                        FROM events e
-                        LEFT JOIN categories c
-                        ON e.CategoryId = c.Id
-                        ORDER BY e.StartDateTime";
-            }
-            else
-            {
-                cmd.CommandText = @"SELECT c.Id, c.Description, e.Id, e.StartDateTime, e.Details, e.DurationInMinutes, e.CategoryId
-                        FROM events e
-                        LEFT JOIN categories c
-                        ON e.CategoryId = c.Id
-                        WHERE e.StartDateTime >= @start AND e.StartDateTime <= @end
-                        ORDER BY e.StartDateTime";
+            
+            // I am so sorry for writing this - Eric
+            cmd.CommandText = $"SELECT c.Id, c.Description, e.Id, e.StartDateTime, e.Details, e.DurationInMinutes, e.CategoryId\n" +
+                               "FROM events e\n" +
+                               "LEFT JOIN categories c\n" +
+                               "ON e.CategoryId = c.Id\n" +
+                               $"{(!isStartNull || !isEndNull ? "WHERE " : "")}" + 
+                               $"{(!isStartNull ? $"e.StartDateTime >= @start {(!isEndNull ? "AND " : "")}" : "")}" + 
+                               $"{(!isEndNull ? "e.StartDateTime <= @end" : "")}\n" +
+                               "ORDER BY e.StartDateTime";
+            if (Start is not null)
                 cmd.Parameters.AddWithValue("@start", notNullStart.ToString(@"M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture));
+            if (End is not null)
                 cmd.Parameters.AddWithValue("@end", notNullEnd.ToString(@"M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture));
-            }
 
 
 
@@ -521,12 +519,12 @@ namespace Calendar
             // -----------------------------------------------------------------------
             // get all items first
             // -----------------------------------------------------------------------
-            List<CalendarItem> filteredItems = GetCalendarItems(Start, End, FilterFlag, CategoryID);
+            List<CalendarItem> filteredItems = GetCalendarItems(Start, End, FilterFlag, CategoryID); //Get the cats
 
             // -----------------------------------------------------------------------
             // Group by Category
             // -----------------------------------------------------------------------
-            var GroupedByCategory = filteredItems.GroupBy(c => c.Category);
+            var GroupedByCategory = filteredItems.GroupBy(c => c.Category); //Group by cats
 
             // -----------------------------------------------------------------------
             // create new list
@@ -553,6 +551,41 @@ namespace Calendar
             }
 
             return summary;
+
+            // ------------------------------------------------------------------------
+            // return joined list within time frame
+            // ------------------------------------------------------------------------
+            // Get the item within a certain time frame AND Grouped by categoryId
+            Start = Start ?? new DateTime(1900, 1, 1);
+            End = End ?? new DateTime(2500, 1, 1);
+
+            var query = $@"SELECT Id, Description
+                        FROM categoryTypes
+                        GROUP BY Id";
+
+            // ------------------------------------------------------------------------
+            // create a CalendarItem list with totals,
+            // ------------------------------------------------------------------------
+
+            using var cmd = new SQLiteCommand(query, _Connection);
+            using SQLiteDataReader reader = cmd.ExecuteReader();
+
+            List<int> categoryIdList = new List<int>(); 
+            List<CalendarItemsByCategory> items = new List<CalendarItemsByCategory>();
+            Double totalBusyTime = 0;
+            while (reader.Read())
+            {
+                int currentId = reader.GetInt32(0);
+                categoryIdList.Add(currentId);
+            }
+            foreach(int categoryId in categoryIdList) 
+            {
+                var currentItem = GetCalendarItems(Start, End, FilterFlag, categoryId)
+                items.Add(currentItem);
+                //Have to also get the category name and the totalBusyTime
+            }
+
+            return items;
         }
 
         // ============================================================================
