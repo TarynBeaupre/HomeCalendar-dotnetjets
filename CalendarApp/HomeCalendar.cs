@@ -349,39 +349,47 @@ namespace Calendar
             // -----------------------------------------------------------------------
             // get all items first
             // -----------------------------------------------------------------------
-            List<CalendarItem> items = GetCalendarItems(Start, End, FilterFlag, CategoryID);
+            DateTime realStart = Start ?? new DateTime(1900, 1, 1);
+            DateTime realEnd = End ?? new DateTime(2500, 1, 1);
 
-            // -----------------------------------------------------------------------
-            // Group by year/month
-            // -----------------------------------------------------------------------
-            var GroupedByMonth = items.GroupBy(c => c.StartDateTime.Year.ToString("D4") + "/" + c.StartDateTime.Month.ToString("D2"));
+            var startDate = new DateTime(realStart.Year, realStart.Month, 1);
+            var lastDay = DateTime.DaysInMonth(realStart.Year, realStart.Month);
+            var endDate = new DateTime(realEnd.Year, realEnd.Month, lastDay);
+
+            var query = $@"SELECT substr(Date, 1, 7), e.DurationInMinutes
+                        FROM events e
+                        WHERE e.StartDateTime >= {startDate} AND e.StartDateTime <= {endDate}
+                        GROUP BY MONTH(StartDateTime)";
 
             // -----------------------------------------------------------------------
             // create new list
             // -----------------------------------------------------------------------
-            var summary = new List<CalendarItemsByMonth>();
-            foreach (var MonthGroup in GroupedByMonth)
-            {
-                // calculate totalBusyTime for this month, and create list of items
-                double total = 0;
-                var itemsList = new List<CalendarItem>();
-                foreach (var item in MonthGroup)
-                {
-                    total = total + item.DurationInMinutes;
-                    itemsList.Add(item);
-                }
+            using var cmd = new SQLiteCommand(query, _Connection);
+            using SQLiteDataReader reader = cmd.ExecuteReader();
 
-                // Add new CalendarItemsByMonth to our list
-                summary.Add(new CalendarItemsByMonth
+            List<CalendarItem> items = GetCalendarItems(startDate, endDate, false, 0);
+            List<CalendarItemsByMonth> itemsByMonth = new List<CalendarItemsByMonth>();
+            Double totalBusyTime = 0;
+            while (reader.Read())
+            {
+                int categoryId = reader.GetInt32(0);
+                if (FilterFlag && CategoryID != categoryId)
+                    continue;
+                string month = reader.GetString(0);
+                double eventsDurationTime = reader.GetDouble(1);
+                totalBusyTime += eventsDurationTime;
+                itemsByMonth.Add(new CalendarItemsByMonth
                 {
-                    Month = MonthGroup.Key,
-                    Items = itemsList,
-                    TotalBusyTime = total
+                    Month = month,
+                    Items = items,
+                    TotalBusyTime = totalBusyTime,
                 });
             }
 
-            return summary;
+            return itemsByMonth;
+
         }
+
 
         // ============================================================================
         // Group all events by category (ordered by category name)
