@@ -3,6 +3,7 @@
 // * Released under the GNU General Public License
 // ============================================================================
 using System.Data.SQLite;
+using System.Globalization;
 
 namespace Calendar
 {
@@ -189,15 +190,19 @@ namespace Calendar
             // ------------------------------------------------------------------------
             // return joined list within time frame
             // ------------------------------------------------------------------------
-            Start = Start ?? new DateTime(1900, 1, 1);
-            End = End ?? new DateTime(2500, 1, 1);
+            DateTime notNullStart = Start ?? new DateTime(1900, 1, 1);
+            DateTime notNullEnd = End ?? new DateTime(2500, 1, 1);
 
-            var query = $@"SELECT c.Id, c.Description, e.Id, e.StartDateTime, e.Details, e.DurationInMinutes, e.CategoryId
+            using var cmd = new SQLiteCommand(_Connection);
+            cmd.CommandText = $@"SELECT c.Id, c.Description, e.Id, e.StartDateTime, e.Details, e.DurationInMinutes, e.CategoryId
                         FROM events e
                         LEFT JOIN categories c
                         ON e.CategoryId = c.Id
-                        WHERE e.StartDateTime >= {Start} AND e.StartDateTime <= {End}
+                        WHERE e.StartDateTime >= @start AND e.StartDateTime <= @end
                         ORDER BY e.StartDateTime";
+
+            cmd.Parameters.AddWithValue("@start", notNullStart.ToString(@"M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture));
+            cmd.Parameters.AddWithValue("@end", notNullEnd.ToString(@"M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture));
 
             //from c in _categories.List()
             //join e in _events.List() on c.Id equals e.Category
@@ -207,8 +212,6 @@ namespace Calendar
             // ------------------------------------------------------------------------
             // create a CalendarItem list with totals,
             // ------------------------------------------------------------------------
-
-            using var cmd = new SQLiteCommand(query, _Connection);
             using SQLiteDataReader reader = cmd.ExecuteReader();
 
             List<CalendarItem> items = new List<CalendarItem>();
@@ -225,7 +228,7 @@ namespace Calendar
                 int eventId = reader.GetInt32(2);
                 DateTime eventsStartDateTime = DateTime.Parse(reader.GetString(3));
                 string eventsDetails = reader.GetString(4);
-                int eventsDurationTime = reader.GetInt32(5);
+                double eventsDurationTime = reader.GetDouble(5);
                 int eventsCategoryId = reader.GetInt32(6);
                 totalBusyTime += eventsDurationTime;
 
