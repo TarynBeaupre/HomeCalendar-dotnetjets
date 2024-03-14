@@ -59,7 +59,7 @@ namespace Calendar
         /// <param name="details">The details of the event.</param>
         /// <example>
         /// <code>
-        /// /// <![CDATA[
+        /// <![CDATA[
         /// Event event = new Event(existingEvent);
         /// updateEvent = event.Add(2022-01-31, 2, 320, "Doing cool programming stuff")
         /// ]]></code></example>
@@ -99,7 +99,7 @@ namespace Calendar
         /// <example>
         /// <code>
         /// For the example below, assume we have an already existing events in the database table
-        /// /// <![CDATA[
+        /// <![CDATA[
         /// Event event = new Event(existingEvent);
         /// updateEvent = event.Update(1, 2022-01-31, 2, 320, "Doing cool programming stuff")
         /// ]]></code></example>
@@ -136,7 +136,7 @@ namespace Calendar
         /// <example>
         /// <code>
         /// For the example below, assume we have an already existing event object
-        /// /// <![CDATA[
+        /// <![CDATA[
         /// Event event = new Event(existingEvent)
         /// int specificId = 2
         /// specificEvent = event.Delete(specificId)
@@ -168,7 +168,7 @@ namespace Calendar
         /// <example>
         /// <code>
         /// For the example below, assume we have an already existing event object
-        /// /// <![CDATA[
+        /// <![CDATA[
         /// Event event = new Event(existingEvent)
         /// int specificId = 2
         /// specificEvent = event.GetEventFromId(specificId)
