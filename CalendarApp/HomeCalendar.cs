@@ -3,6 +3,7 @@
 // * Released under the GNU General Public License
 // ============================================================================
 using System.Data.SQLite;
+using System.Globalization;
 
 namespace Calendar
 {
@@ -189,15 +190,29 @@ namespace Calendar
             // ------------------------------------------------------------------------
             // return joined list within time frame
             // ------------------------------------------------------------------------
-            Start = Start ?? new DateTime(1900, 1, 1);
-            End = End ?? new DateTime(2500, 1, 1);
+            DateTime notNullStart = Start ?? new DateTime(1900, 1, 1);
+            DateTime notNullEnd = End ?? new DateTime(2500, 1, 1);
 
-            var query = $@"SELECT c.Id, c.Description, e.Id, e.StartDateTime, e.Details, e.DurationInMinutes, e.CategoryId
-                        FROM events e
-                        LEFT JOIN categories c
-                        ON e.CategoryId = c.Id
-                        WHERE e.StartDateTime >= {Start} AND e.StartDateTime <= {End}
-                        ORDER BY e.StartDateTime";
+            bool isStartNull = Start is null;
+            bool isEndNull = End is null;
+
+            using var cmd = new SQLiteCommand(_Connection);
+            
+            // I am so sorry for writing this - Eric
+            cmd.CommandText = $"SELECT c.Id, c.Description, e.Id, e.StartDateTime, e.Details, e.DurationInMinutes, e.CategoryId\n" +
+                               "FROM events e\n" +
+                               "LEFT JOIN categories c\n" +
+                               "ON e.CategoryId = c.Id\n" +
+                               $"{(!isStartNull || !isEndNull ? "WHERE " : "")}" + 
+                               $"{(!isStartNull ? $"e.StartDateTime >= @start {(!isEndNull ? "AND " : "")}" : "")}" + 
+                               $"{(!isEndNull ? "e.StartDateTime <= @end" : "")}\n" +
+                               "ORDER BY e.StartDateTime";
+            if (Start is not null)
+                cmd.Parameters.AddWithValue("@start", notNullStart.ToString(@"M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture));
+            if (End is not null)
+                cmd.Parameters.AddWithValue("@end", notNullEnd.ToString(@"M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture));
+
+
 
             //from c in _categories.List()
             //join e in _events.List() on c.Id equals e.Category
@@ -207,8 +222,6 @@ namespace Calendar
             // ------------------------------------------------------------------------
             // create a CalendarItem list with totals,
             // ------------------------------------------------------------------------
-
-            using var cmd = new SQLiteCommand(query, _Connection);
             using SQLiteDataReader reader = cmd.ExecuteReader();
 
             List<CalendarItem> items = new List<CalendarItem>();
@@ -225,7 +238,7 @@ namespace Calendar
                 int eventId = reader.GetInt32(2);
                 DateTime eventsStartDateTime = DateTime.Parse(reader.GetString(3));
                 string eventsDetails = reader.GetString(4);
-                int eventsDurationTime = reader.GetInt32(5);
+                double eventsDurationTime = reader.GetDouble(5);
                 int eventsCategoryId = reader.GetInt32(6);
                 totalBusyTime += eventsDurationTime;
 
@@ -349,39 +362,47 @@ namespace Calendar
             // -----------------------------------------------------------------------
             // get all items first
             // -----------------------------------------------------------------------
-            List<CalendarItem> items = GetCalendarItems(Start, End, FilterFlag, CategoryID);
+            DateTime realStart = Start ?? new DateTime(1900, 1, 1);
+            DateTime realEnd = End ?? new DateTime(2500, 1, 1);
 
-            // -----------------------------------------------------------------------
-            // Group by year/month
-            // -----------------------------------------------------------------------
-            var GroupedByMonth = items.GroupBy(c => c.StartDateTime.Year.ToString("D4") + "/" + c.StartDateTime.Month.ToString("D2"));
+            var startDate = new DateTime(realStart.Year, realStart.Month, 1);
+            var lastDay = DateTime.DaysInMonth(realStart.Year, realStart.Month);
+            var endDate = new DateTime(realEnd.Year, realEnd.Month, lastDay);
+
+            var query = $@"SELECT substr(Date, 1, 7), e.DurationInMinutes
+                        FROM events e
+                        WHERE e.StartDateTime >= {startDate} AND e.StartDateTime <= {endDate}
+                        GROUP BY MONTH(StartDateTime)";
 
             // -----------------------------------------------------------------------
             // create new list
             // -----------------------------------------------------------------------
-            var summary = new List<CalendarItemsByMonth>();
-            foreach (var MonthGroup in GroupedByMonth)
-            {
-                // calculate totalBusyTime for this month, and create list of items
-                double total = 0;
-                var itemsList = new List<CalendarItem>();
-                foreach (var item in MonthGroup)
-                {
-                    total = total + item.DurationInMinutes;
-                    itemsList.Add(item);
-                }
+            using var cmd = new SQLiteCommand(query, _Connection);
+            using SQLiteDataReader reader = cmd.ExecuteReader();
 
-                // Add new CalendarItemsByMonth to our list
-                summary.Add(new CalendarItemsByMonth
+            List<CalendarItem> items = GetCalendarItems(startDate, endDate, false, 0);
+            List<CalendarItemsByMonth> itemsByMonth = new List<CalendarItemsByMonth>();
+            Double totalBusyTime = 0;
+            while (reader.Read())
+            {
+                int categoryId = reader.GetInt32(0);
+                if (FilterFlag && CategoryID != categoryId)
+                    continue;
+                string month = reader.GetString(0);
+                double eventsDurationTime = reader.GetDouble(1);
+                totalBusyTime += eventsDurationTime;
+                itemsByMonth.Add(new CalendarItemsByMonth
                 {
-                    Month = MonthGroup.Key,
-                    Items = itemsList,
-                    TotalBusyTime = total
+                    Month = month,
+                    Items = items,
+                    TotalBusyTime = totalBusyTime,
                 });
             }
 
-            return summary;
+            return itemsByMonth;
+
         }
+
 
         // ============================================================================
         // Group all events by category (ordered by category name)
