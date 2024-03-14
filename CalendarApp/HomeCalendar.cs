@@ -193,26 +193,24 @@ namespace Calendar
             DateTime notNullStart = Start ?? new DateTime(1900, 1, 1);
             DateTime notNullEnd = End ?? new DateTime(2500, 1, 1);
 
+            bool isStartNull = Start is null;
+            bool isEndNull = End is null;
+
             using var cmd = new SQLiteCommand(_Connection);
-            if (Start is null)
-            {
-                cmd.CommandText = @"SELECT c.Id, c.Description, e.Id, e.StartDateTime, e.Details, e.DurationInMinutes, e.CategoryId
-                        FROM events e
-                        LEFT JOIN categories c
-                        ON e.CategoryId = c.Id
-                        ORDER BY e.StartDateTime";
-            }
-            else
-            {
-                cmd.CommandText = @"SELECT c.Id, c.Description, e.Id, e.StartDateTime, e.Details, e.DurationInMinutes, e.CategoryId
-                        FROM events e
-                        LEFT JOIN categories c
-                        ON e.CategoryId = c.Id
-                        WHERE e.StartDateTime >= @start AND e.StartDateTime <= @end
-                        ORDER BY e.StartDateTime";
+            
+            // I am so sorry for writing this - Eric
+            cmd.CommandText = $"SELECT c.Id, c.Description, e.Id, e.StartDateTime, e.Details, e.DurationInMinutes, e.CategoryId\n" +
+                               "FROM events e\n" +
+                               "LEFT JOIN categories c\n" +
+                               "ON e.CategoryId = c.Id\n" +
+                               $"{(!isStartNull || !isEndNull ? "WHERE " : "")}" + 
+                               $"{(!isStartNull ? $"e.StartDateTime >= @start {(!isEndNull ? "AND " : "")}" : "")}" + 
+                               $"{(!isEndNull ? "e.StartDateTime <= @end" : "")}\n" +
+                               "ORDER BY e.StartDateTime";
+            if (Start is not null)
                 cmd.Parameters.AddWithValue("@start", notNullStart.ToString(@"M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture));
+            if (End is not null)
                 cmd.Parameters.AddWithValue("@end", notNullEnd.ToString(@"M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture));
-            }
 
 
 
