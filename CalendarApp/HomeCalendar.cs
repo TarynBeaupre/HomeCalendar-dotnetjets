@@ -2,7 +2,6 @@
 // (c) Sandy Bultena 2018
 // * Released under the GNU General Public License
 // ============================================================================
-using System.Data.Common;
 using System.Data.SQLite;
 
 namespace Calendar
@@ -18,7 +17,7 @@ namespace Calendar
     /// </summary>
     public class HomeCalendar
     {
-        private Categories _categories; 
+        private Categories _categories;
         private Events _events;
         private SQLiteConnection _Connection;
 
@@ -37,7 +36,17 @@ namespace Calendar
         /// <summary>
         /// 
         /// </summary>
-        public SQLiteConnection Connection { get { return _Connection; } }
+        public SQLiteConnection Connection
+        {
+            get { return _Connection; }
+            set
+            {
+                if (value != null)
+                    _Connection = value;
+                else
+                    throw new ArgumentException("Connection to database cannot be null.");
+            }
+        }
 
         /// <summary>
         /// Gets the possible events for Calendar Items.
@@ -59,7 +68,7 @@ namespace Calendar
         /// ]]>
         /// </code>
         /// </example>
-   
+
 
         public HomeCalendar(String databaseFile, bool newDB = false)
         {
@@ -75,11 +84,13 @@ namespace Calendar
                 Database.newDatabase(databaseFile);
                 newDB = true;
             }
+            // Connecting home calendar
+            Connection = Database.dbConnection;
 
             // create the categories object
-            _categories = new Categories(Database.dbConnection, newDB);
+            _categories = new Categories(Connection, newDB);
             // create the events object
-            _events = new Events();
+            _events = new Events(Connection);
         }
 
         #region GetList
@@ -185,8 +196,9 @@ namespace Calendar
                         FROM events e
                         LEFT JOIN categories c
                         ON e.CategoryId = c.Id
-                        WHERE e.StartDateTime >= {Start} AND e.StartDateTime <= {End}";
-                        
+                        WHERE e.StartDateTime >= {Start} AND e.StartDateTime <= {End}
+                        ORDER BY e.StartDateTime";
+
             //from c in _categories.List()
             //join e in _events.List() on c.Id equals e.Category
             //where e.StartDateTime >= Start && e.StartDateTime <= End
@@ -196,18 +208,14 @@ namespace Calendar
             // create a CalendarItem list with totals,
             // ------------------------------------------------------------------------
 
-            List<CalendarItem> items = new List<CalendarItem>();
-            Double totalBusyTime = 0;
-
-
             using var cmd = new SQLiteCommand(query, _Connection);
             using SQLiteDataReader reader = cmd.ExecuteReader();
-            int busyTime = 0;
-            List<CalendarItem>
 
+            List<CalendarItem> items = new List<CalendarItem>();
+            Double totalBusyTime = 0;
             while (reader.Read())
             {
-                
+
                 int categoryId = reader.GetInt32(0);
                 if (FilterFlag && CategoryID != categoryId)
                 {
@@ -219,35 +227,20 @@ namespace Calendar
                 string eventsDetails = reader.GetString(4);
                 int eventsDurationTime = reader.GetInt32(5);
                 int eventsCategoryId = reader.GetInt32(6);
-                busyTime += eventsDurationTime;
+                totalBusyTime += eventsDurationTime;
 
-                Category category = new Category(categoryId, categoryDescription);
-                CalendarItem item = new CalendarItem(categoryId, eventId, eventsStartDateTime, categoryDescription, eventsDurationTime, busyTime); 
-                newList.Add(category);
-            }
-
-
-            foreach (var e in query.OrderBy(q => q.StartDateTime))
-            {
-                // filter out unwanted categories if filter flag is on
-                if (FilterFlag && CategoryID != e.CatId)
-                {
-                    continue;
-                }
-
-                // keep track of running totals
-                totalBusyTime = totalBusyTime + e.DurationInMinutes; 
                 items.Add(new CalendarItem
                 {
-                    CategoryID = e.CatId,
-                    EventID = e.EventId,
-                    ShortDescription = e.Details,
-                    StartDateTime = e.StartDateTime,
-                    DurationInMinutes = e.DurationInMinutes,
-                    Category = e.Category,
+                    CategoryID = categoryId,
+                    EventID = eventId,
+                    ShortDescription = eventsDetails,
+                    StartDateTime = eventsStartDateTime,
+                    DurationInMinutes = eventsDurationTime,
+                    Category = categoryDescription,
                     BusyTime = totalBusyTime
                 });
             }
+
             return items;
         }
 
