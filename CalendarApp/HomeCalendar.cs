@@ -20,6 +20,9 @@ namespace Calendar
     {
         private Categories _categories; 
         private Events _events;
+        private SQLiteConnection _Connection;
+
+
 
         // ====================================================================
         // Properties
@@ -31,6 +34,10 @@ namespace Calendar
         /// <value>The categories coming from the Categories class.</value>
         /// <returns>Returns a categories backing field.</returns>
         public Categories categories { get { return _categories; } }
+        /// <summary>
+        /// 
+        /// </summary>
+        public SQLiteConnection Connection { get { return _Connection; } }
 
         /// <summary>
         /// Gets the possible events for Calendar Items.
@@ -52,8 +59,7 @@ namespace Calendar
         /// ]]>
         /// </code>
         /// </example>
-        private HomeCalendar()
-        {}
+   
 
         public HomeCalendar(String databaseFile, bool newDB = false)
         {
@@ -196,18 +202,27 @@ namespace Calendar
 
             using var cmd = new SQLiteCommand(query, _Connection);
             using SQLiteDataReader reader = cmd.ExecuteReader();
+            int busyTime = 0;
+            List<CalendarItem>
 
             while (reader.Read())
             {
+                
                 int categoryId = reader.GetInt32(0);
+                if (FilterFlag && CategoryID != categoryId)
+                {
+                    continue;
+                }
                 string categoryDescription = reader.GetString(1);
-                int eventCategoryId = reader.GetInt32(2);
+                int eventId = reader.GetInt32(2);
                 DateTime eventsStartDateTime = DateTime.Parse(reader.GetString(3));
                 string eventsDetails = reader.GetString(4);
                 int eventsDurationTime = reader.GetInt32(5);
                 int eventsCategoryId = reader.GetInt32(6);
+                busyTime += eventsDurationTime;
 
-                Category category = new Category(id, description, type);
+                Category category = new Category(categoryId, categoryDescription);
+                CalendarItem item = new CalendarItem(categoryId, eventId, eventsStartDateTime, categoryDescription, eventsDurationTime, busyTime); 
                 newList.Add(category);
             }
 
