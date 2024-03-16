@@ -516,75 +516,35 @@ namespace Calendar
         /// </example>
         public List<CalendarItemsByCategory> GetCalendarItemsByCategory(DateTime? Start, DateTime? End, bool FilterFlag, int CategoryID)
         {
-            // -----------------------------------------------------------------------
-            // get all items first
-            // -----------------------------------------------------------------------
-            List<CalendarItem> filteredItems = GetCalendarItems(Start, End, FilterFlag, CategoryID); //Get the cats
-
-            // -----------------------------------------------------------------------
-            // Group by Category
-            // -----------------------------------------------------------------------
-            var GroupedByCategory = filteredItems.GroupBy(c => c.Category); //Group by cats
-
-            // -----------------------------------------------------------------------
-            // create new list
-            // -----------------------------------------------------------------------
-            var summary = new List<CalendarItemsByCategory>();
-            foreach (var CategoryGroup in GroupedByCategory.OrderBy(g => g.Key))
-            {
-                // calculate totalBusyTime for this category, and create list of items
-                double total = 0;
-                var items = new List<CalendarItem>();
-                foreach (var item in CategoryGroup)
-                {
-                    total = total + item.DurationInMinutes;
-                    items.Add(item);
-                }
-
-                // Add new CalendarItemsByCategory to our list
-                summary.Add(new CalendarItemsByCategory
-                {
-                    Category = CategoryGroup.Key,
-                    Items = items,
-                    TotalBusyTime = total
-                });
-            }
-
-            return summary;
-
-            // ------------------------------------------------------------------------
-            // return joined list within time frame
-            // ------------------------------------------------------------------------
-            // Get the item within a certain time frame AND Grouped by categoryId
+            // Get all unique categories used in Categories table
             Start = Start ?? new DateTime(1900, 1, 1);
             End = End ?? new DateTime(2500, 1, 1);
 
-            var query = $@"SELECT Id, Description
-                        FROM categoryTypes
-                        GROUP BY Id";
+            //! Might need to change to *all unique categoriesId in categories table*, because some Categories in CategoryTypes table might not appear in Categories table (IF USING DEFAULT)
+            var query = @"SELECT Id, Description 
+                        FROM categoryTypes";
 
-            // ------------------------------------------------------------------------
-            // create a CalendarItem list with totals,
-            // ------------------------------------------------------------------------
-
+            // Create a list with all unique CategoriesId
             using var cmd = new SQLiteCommand(query, _Connection);
             using SQLiteDataReader reader = cmd.ExecuteReader();
 
-            List<int> categoryIdList = new List<int>(); 
             List<CalendarItemsByCategory> items = new List<CalendarItemsByCategory>();
-            Double totalBusyTime = 0;
             while (reader.Read())
             {
-                int currentId = reader.GetInt32(0);
-                categoryIdList.Add(currentId);
-            }
-            foreach(int categoryId in categoryIdList) 
-            {
-                var currentItem = GetCalendarItems(Start, End, FilterFlag, categoryId)
-                items.Add(currentItem);
-                //Have to also get the category name and the totalBusyTime
-            }
+                int categoryId = reader.GetInt32(0);
+                //? Is Description in CategoryTypes table the name of Category TO VERIFY
+                string categoryName = reader.GetString(1);
 
+                var categoryItems = GetCalendarItems(Start, End, FilterFlag, categoryId);
+                double totalBusyTime = categoryItems.Sum(item => item.DurationInMinutes);
+
+                items.Add(new CalendarItemsByCategory
+                {
+                    Category = categoryName,
+                    Items = categoryItems,
+                    TotalBusyTime = totalBusyTime
+                });
+            }
             return items;
         }
 
