@@ -262,7 +262,19 @@ namespace Calendar
         /// <param name="id">The id of the category to update.</param>
         /// <param name="description">An updated description.</param>
         /// <param name="categoryType">A category enum representing the type of category.</param>
-        /// 
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// try
+        /// {
+        ///     Categories categories = new Categories();
+        ///     SetCategoriesToDefault()
+        ///     categories.Update(1, "Vacation", Category.CategoryType.Event);
+        /// catch (Exception ex)
+        /// {
+        ///     Console.WriteLine(ex.Message);
+        /// }
+        /// ]]></code></example>
         public void UpdateProperties(int id, string description, Category.CategoryType categoryType)
         {
             try
