@@ -210,9 +210,9 @@ namespace Calendar
                                $"{(!isEndNull ? "e.StartDateTime <= @end" : "")}\n" +
                                "ORDER BY e.StartDateTime";
             if (Start is not null)
-                cmd.Parameters.AddWithValue("@start", notNullStart.ToString(@"M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture));
+                cmd.Parameters.AddWithValue("@start", notNullStart.ToString(@"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
             if (End is not null)
-                cmd.Parameters.AddWithValue("@end", notNullEnd.ToString(@"M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture));
+                cmd.Parameters.AddWithValue("@end", notNullEnd.ToString(@"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
 
 
 
