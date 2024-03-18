@@ -521,8 +521,10 @@ namespace Calendar
             End = End ?? new DateTime(2500, 1, 1);
 
             //! Might need to change to *all unique categoriesId in categories table*, because some Categories in CategoryTypes table might not appear in Categories table (IF USING DEFAULT)
-            var query = @"SELECT Id, Description 
-                        FROM categoryTypes";
+            var query = @"SELECT e.Id, e.StartDateTime, e.DurationInMinutes, e.CategoryId, c.Description
+                        FROM events e LEFT JOIN categories c
+                        WHERE e.CategoryId = c.Id
+                        GROUP BY c.Description";
 
             // Create a list with all unique CategoriesId
             using var cmd = new SQLiteCommand(query, _Connection);
@@ -531,19 +533,26 @@ namespace Calendar
             List<CalendarItemsByCategory> items = new List<CalendarItemsByCategory>();
             while (reader.Read())
             {
-                int categoryId = reader.GetInt32(0);
-                //? Is Description in CategoryTypes table the name of Category TO VERIFY
-                string categoryName = reader.GetString(1);
+                //int categoryId = reader.GetInt32(0);
+                ////? Is Description in CategoryTypes table the name of Category TO VERIFY
+                //string categoryName = reader.GetString(1);
 
-                var categoryItems = GetCalendarItems(Start, End, FilterFlag, categoryId);
-                double totalBusyTime = categoryItems.Sum(item => item.DurationInMinutes);
+                //var categoryItems = GetCalendarItems(Start, End, true, categoryId);
+                //if (categoryItems.Count == 0) { continue; }
+                //double totalBusyTime = categoryItems.Sum(item => item.DurationInMinutes);
 
-                items.Add(new CalendarItemsByCategory
-                {
-                    Category = categoryName,
-                    Items = categoryItems,
-                    TotalBusyTime = totalBusyTime
-                });
+                //items.Add(new CalendarItemsByCategory
+                //{
+                //    Category = categoryName,
+                //    Items = categoryItems,
+                //    TotalBusyTime = totalBusyTime
+                //});
+                int eventId = reader.GetInt32(0);
+                DateTime eventStartDate = DateTime.Parse(reader.GetString(1));
+                double eventDurationInMinutes = reader.GetDouble(2);
+                string eventDetails = reader.GetString(3);
+                int eventCategoryID = reader.GetInt32(4);
+                string categoryDescription = reader.GetString(5);
             }
             return items;
         }
