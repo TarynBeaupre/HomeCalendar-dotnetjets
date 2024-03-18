@@ -152,7 +152,8 @@ namespace CalendarCodeTests
 
             list.Add(new CalendarItemsByMonth
             {
-                Month = "2018/01",
+                // changed from 2018/01
+                Month = "2018-01",
                 Items = CalendarItems,
                 TotalBusyTime = CalendarItem1.DurationInMinutes +
                                 CalendarItem5.DurationInMinutes +
@@ -171,7 +172,8 @@ namespace CalendarCodeTests
 
             list.Add(new CalendarItemsByMonth
             {
-                Month = "2020/01",
+                // changed from 2020/01
+                Month = "2020-01",
                 Items = CalendarItems,
                 TotalBusyTime = CalendarItem2.DurationInMinutes + CalendarItem3.DurationInMinutes
             }); ; ;

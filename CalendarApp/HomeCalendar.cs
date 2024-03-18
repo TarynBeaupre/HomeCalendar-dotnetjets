@@ -367,46 +367,60 @@ namespace Calendar
             DateTime realStart = Start ?? new DateTime(1900, 1, 1);
             DateTime realEnd = End ?? new DateTime(2500, 1, 1);
 
+            bool isStartNull = Start is null;
+            bool isEndNull = End is null;
+
             var startDate = new DateTime(realStart.Year, realStart.Month, 1);
             var lastDay = DateTime.DaysInMonth(realStart.Year, realStart.Month);
             var endDate = new DateTime(realEnd.Year, realEnd.Month, lastDay);
             using var cmd = new SQLiteCommand(_Connection);
-            cmd.CommandText = @"SELECT e.CategoryId, substr(StartDateTime, 1, 7), e.DurationInMinutes
-                        FROM events e
-                        GROUP BY STRFTIME('%m-%Y', e.StartDateTime);";
+            cmd.CommandText = $"SELECT e.CategoryId, substr(StartDateTime, 1, 7) as Month, e.StartDateTime\n" +
+                               "FROM events e\n" +
+                               $"{(!isStartNull || !isEndNull ? "WHERE " : "")}" +
+                               $"{(!isStartNull ? $"e.StartDateTime >= @start {(!isEndNull ? "AND " : "")}" : "")}" +
+                               $"{(!isEndNull ? "e.StartDateTime <= @end" : "")}\n" +
+                               "GROUP BY Month";
             if (Start is not null)
-            {
-                cmd.CommandText = @"SELECT e.CategoryId, substr(StartDateTime, 1, 7), e.DurationInMinutes
-                        FROM events e
-                        WHERE e.StartDateTime >= @start AND e.StartDateTime <= @end
-                        GROUP BY STRFTIME('%m-%Y', e.StartDateTime);";
-                cmd.Parameters.AddWithValue("@start", realStart.ToString(@"M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture));
-                cmd.Parameters.AddWithValue("@end", realEnd.ToString(@"M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture));
-            }
+                cmd.Parameters.AddWithValue("@start", realStart.ToString(@"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
+            if (End is not null)
+                cmd.Parameters.AddWithValue("@end", realEnd.ToString(@"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
+           
             // -----------------------------------------------------------------------
             // create new list
             // -----------------------------------------------------------------------
             using SQLiteDataReader reader = cmd.ExecuteReader();
 
-            List<CalendarItem> items = GetCalendarItems(startDate, endDate, false, 0);
             List<CalendarItemsByMonth> itemsByMonth = new List<CalendarItemsByMonth>();
-            Double totalBusyTime = 0;
+
             while (reader.Read())
             {
+                // Creating necessary variables for a new CalendarItemByMonth object
                 int categoryId = reader.GetInt32(0);
-                if (FilterFlag && CategoryID != categoryId)
-                    continue;
                 string month = reader.GetString(1);
                 string stringMonth = month.ToString();
-                double eventsDurationTime = reader.GetDouble(2);
-                totalBusyTime += eventsDurationTime;
+                DateTime startDateMonth = reader.GetDateTime(2);
+
+                // Getting the start and end date time for the month
+                var startDateItems = new DateTime(startDateMonth.Year, startDateMonth.Month, 1);
+                var lastDayItems = DateTime.DaysInMonth(startDateMonth.Year, startDateMonth.Month);
+                var endDateItems = startDateItems.AddDays(lastDayItems);
+
+                // Getting all items for that month
+                List<CalendarItem> items = GetCalendarItems(startDateItems, endDateItems, FilterFlag, CategoryID);
+                // Adding up the busytime
+                double totalItemBusyTime = 0;
+                foreach ( CalendarItem item in items )
+                {
+                    totalItemBusyTime += item.DurationInMinutes;
+                }
+                // Adding the items to the List
                 itemsByMonth.Add(new CalendarItemsByMonth
                 {
                     Month = stringMonth,
                     Items = items,
-                    TotalBusyTime = totalBusyTime,
+                    TotalBusyTime = totalItemBusyTime,
                 });
-            }
+           }
 
             return itemsByMonth;
 
