@@ -94,7 +94,7 @@ namespace Calendar
                 using var cmd = new SQLiteCommand(con);
 
                 cmd.CommandText = "INSERT INTO events(StartDateTime, Details, DurationInMinutes, CategoryId) VALUES(@date, @details, @duration, @categoryid)";
-                cmd.Parameters.AddWithValue("@date", date.ToString(@"M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture));
+                cmd.Parameters.AddWithValue("@date", date.ToString(@"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
                 cmd.Parameters.AddWithValue("@details", details);
                 cmd.Parameters.AddWithValue("@duration", duration);
                 cmd.Parameters.AddWithValue("@categoryid", category);
@@ -267,7 +267,7 @@ namespace Calendar
             while (reader.Read())
             {
                 int id = reader.GetInt32(0);
-                DateTime StartDateTime = DateTime.ParseExact(reader.GetString(1), @"M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+                DateTime StartDateTime = DateTime.ParseExact(reader.GetString(1), @"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
                 string details = reader.GetString(2);
                 double duration = reader.GetDouble(3);
                 int category = reader.GetInt32(4);
