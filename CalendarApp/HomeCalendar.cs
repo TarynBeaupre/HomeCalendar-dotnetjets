@@ -371,12 +371,12 @@ namespace Calendar
             var lastDay = DateTime.DaysInMonth(realStart.Year, realStart.Month);
             var endDate = new DateTime(realEnd.Year, realEnd.Month, lastDay);
             using var cmd = new SQLiteCommand(_Connection);
-            cmd.CommandText = @"SELECT e.CategoryId, STRFTIME('%m-%Y', e.StartDateTime) as month, e.DurationInMinutes
+            cmd.CommandText = @"SELECT e.CategoryId, substr(StartDateTime, 1, 7), e.DurationInMinutes
                         FROM events e
                         GROUP BY STRFTIME('%m-%Y', e.StartDateTime);";
             if (Start is not null)
             {
-                cmd.CommandText = @"SELECT e.CategoryId, STRFTIME('%m-%Y', e.StartDateTime) as month, e.DurationInMinutes
+                cmd.CommandText = @"SELECT e.CategoryId, substr(StartDateTime, 1, 7), e.DurationInMinutes
                         FROM events e
                         WHERE e.StartDateTime >= @start AND e.StartDateTime <= @end
                         GROUP BY STRFTIME('%m-%Y', e.StartDateTime);";
