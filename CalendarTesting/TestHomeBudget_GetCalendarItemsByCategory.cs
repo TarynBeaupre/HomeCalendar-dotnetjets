@@ -64,14 +64,14 @@ namespace CalendarCodeTests
             int maxRecords20 = TestConstants.CalendarItemsByCategory20;
 
             // Act
-            List<CalendarItemsByMonth> CalendarItemsByCategory = homeCalendar.GetCalendarItemsByMonth(null, null, true, 11);
+            List<CalendarItemsByCategory> CalendarItemsByCategory = homeCalendar.GetCalendarItemsByCategory(null, null, true, 11);
 
             // Assert
             Assert.Equal(maxRecords14, CalendarItemsByCategory.Count);
 
 
             // Act
-            CalendarItemsByCategory = homeCalendar.GetCalendarItemsByMonth(null, null, true, 20);
+            CalendarItemsByCategory = homeCalendar.GetCalendarItemsByCategory(null, null, true, 20);
 
             // Assert
             Assert.Equal(maxRecords20, CalendarItemsByCategory.Count);
