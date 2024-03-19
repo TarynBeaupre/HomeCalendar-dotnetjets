@@ -531,18 +531,25 @@ namespace Calendar
         public List<CalendarItemsByCategory> GetCalendarItemsByCategory(DateTime? Start, DateTime? End, bool FilterFlag, int CategoryID)
         {
             // Get all unique categories used in Categories table
-            Start = Start ?? new DateTime(1900, 1, 1);
-            End = End ?? new DateTime(2500, 1, 1);
+            DateTime notNullStart = Start ?? new DateTime(1900, 1, 1);
+            DateTime notNullEnd = End ?? new DateTime(2500, 1, 1);
 
             //! Might need to change to *all unique categoriesId in categories table*, because some Categories in CategoryTypes table might not appear in Categories table (IF USING DEFAULT)
-            var query = @"SELECT e.Id, e.StartDateTime, e.DurationInMinutes, e.CategoryId, c.Description
-                        FROM events e LEFT JOIN categories c
-                        WHERE e.CategoryId = c.Id
-                        GROUP BY c.Description";
+            using var cmd = new SQLiteCommand(_Connection);
+            cmd.CommandText = "SELECT e.Id, e.StartDateTime, e.Details, e.DurationInMinutes, e.CategoryId, c.Description\n" +
+                            "FROM events e LEFT JOIN categories c\n" +
+                            "WHERE e.CategoryId = c.Id and e.StartDateTime > @start and e.StartDateTime < @end\n" +
+                            "GROUP BY c.Description\n";
+                            //"HAVING e.StartDateTime > @start and e.StartDateTime < @end";
+            cmd.Parameters.AddWithValue("@start", notNullStart.ToString("yyyy-MM-dd HH:mm:ss"));
+            cmd.Parameters.AddWithValue("@end", notNullEnd.ToString("yyyy-MM-dd HH:mm:ss"));
 
             // Create a list with all unique CategoriesId
-            using var cmd = new SQLiteCommand(query, _Connection);
             using SQLiteDataReader reader = cmd.ExecuteReader();
+            string previousCategory = "";
+            bool firstIteration = true;
+            int index = -1;
+            string output = "";
 
             List<CalendarItemsByCategory> items = new List<CalendarItemsByCategory>();
             while (reader.Read())
@@ -561,12 +568,60 @@ namespace Calendar
                 //    Items = categoryItems,
                 //    TotalBusyTime = totalBusyTime
                 //});
-                int eventId = reader.GetInt32(0);
-                DateTime eventStartDate = DateTime.Parse(reader.GetString(1));
-                double eventDurationInMinutes = reader.GetDouble(2);
-                string eventDetails = reader.GetString(3);
+
+                //if (!firstIteration)
+                //    previousCategory = reader.GetString(5);
+
                 int eventCategoryID = reader.GetInt32(4);
+                if (FilterFlag && eventCategoryID != CategoryID)
+                    continue;
+
+                int eventId = reader.GetInt32(0);
+                DateTime eventStartDateTime = DateTime.ParseExact(reader.GetString(1), @"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                string eventDetails = reader.GetString(2);
+                double eventDurationInMinutes = reader.GetDouble(3);
                 string categoryDescription = reader.GetString(5);
+
+                output += $"Id:{eventId} StartDateTime:{eventStartDateTime} Details:{eventDetails} DurationInMinutes:{eventDurationInMinutes}" +
+                        $" CategoryId:{eventCategoryID} Description:{categoryDescription}\n";
+
+                if (previousCategory != categoryDescription)
+                {
+                    CalendarItem calendarItem = new CalendarItem { EventID = eventId, 
+                        StartDateTime = eventStartDateTime, 
+                        ShortDescription = eventDetails, 
+                        DurationInMinutes = eventDurationInMinutes,
+                        CategoryID = eventCategoryID,
+                        Category = categoryDescription,
+                        BusyTime = eventDurationInMinutes
+                    };
+
+                    items.Add(new CalendarItemsByCategory
+                    {
+                        Category = calendarItem.Category,
+                        Items = new List<CalendarItem>() { calendarItem },
+                        TotalBusyTime = calendarItem.BusyTime,
+                    });
+
+                    index++;
+                }
+                else
+                {
+                    CalendarItem calendarItem = new CalendarItem
+                    {
+                        EventID = eventId,
+                        StartDateTime = eventStartDateTime,
+                        ShortDescription = eventDetails,
+                        DurationInMinutes = eventDurationInMinutes,
+                        CategoryID = eventCategoryID,
+                        Category = categoryDescription,
+                        BusyTime = eventDurationInMinutes
+                    };
+
+                    items[index].Items.Add(calendarItem);
+                }
+
+                previousCategory = categoryDescription;
             }
             return items;
         }
