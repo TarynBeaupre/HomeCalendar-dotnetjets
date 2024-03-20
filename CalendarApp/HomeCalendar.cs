@@ -36,7 +36,6 @@ namespace Calendar
         public Categories categories { get { return _categories; } }
         /// <summary>
         /// Gets and sets the database connection. 
-=======
         /// Gets and sets the database connection used to run sql queries.
         /// </summary>
         /// <value>A database connection. Cannot be null and needs to be valid.</value>
@@ -563,7 +562,6 @@ namespace Calendar
                 DateTime eventStartDateTime = DateTime.ParseExact(reader.GetString(1), @"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
                 string eventDetails = reader.GetString(2);
                 double eventDurationInMinutes = reader.GetDouble(3);
-                int eventCategoryID = reader.GetInt32(4);
                 string categoryDescription = reader.GetString(5);
 
                 if (previousCategory != categoryDescription)
