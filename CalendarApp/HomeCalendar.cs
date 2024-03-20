@@ -36,6 +36,8 @@ namespace Calendar
         public Categories categories { get { return _categories; } }
         /// <summary>
         /// Gets and sets the database connection. 
+=======
+        /// Gets and sets the database connection used to run sql queries.
         /// </summary>
         /// <value>A database connection. Cannot be null and needs to be valid.</value>
         public SQLiteConnection Connection
@@ -365,9 +367,19 @@ namespace Calendar
                                $"{(!isEndNull ? "e.StartDateTime <= @end" : "")}\n" +
                                "GROUP BY Month";
             if (Start is not null)
-                cmd.Parameters.AddWithValue("@start", realStart.ToString(@"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
+                cmd.Parameters.AddWithValue("@start", startDate.ToString(@"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
             if (End is not null)
-                cmd.Parameters.AddWithValue("@end", realEnd.ToString(@"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
+                cmd.Parameters.AddWithValue("@end", endDate.ToString(@"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
+            if (FilterFlag)
+            {
+                cmd.CommandText = $"SELECT e.CategoryId, substr(StartDateTime, 1, 7) as Month, e.StartDateTime\n" +
+                              "FROM events e WHERE e.StartDateTime >= @start AND e.StartDateTime <= @end AND e.CategoryId = @catId\n" +
+                              "GROUP BY Month";
+                cmd.Parameters.AddWithValue("@start", startDate.ToString(@"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
+                cmd.Parameters.AddWithValue("@end", endDate.ToString(@"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
+                cmd.Parameters.AddWithValue("@catId", CategoryID);
+            }
+            
            
             // -----------------------------------------------------------------------
             // create new list
@@ -380,6 +392,9 @@ namespace Calendar
             {
                 // Creating necessary variables for a new CalendarItemByMonth object
                 int categoryId = reader.GetInt32(0);
+
+                //if (FilterFlag && CategoryID != categoryId)
+                //    continue;
                 string month = reader.GetString(1);
                 string stringMonth = month.ToString();
                 DateTime startDateMonth = reader.GetDateTime(2);
@@ -391,7 +406,7 @@ namespace Calendar
 
                 // Getting all items for that month
                 List<CalendarItem> items = GetCalendarItems(startDateItems, endDateItems, FilterFlag, CategoryID);
-                // Adding up the busytime
+                // Adding up the busytime NOTE: change this eventually to not loop, just for now this works
                 double totalItemBusyTime = 0;
                 foreach ( CalendarItem item in items )
                 {
@@ -519,34 +534,37 @@ namespace Calendar
             using var cmd = new SQLiteCommand(_Connection);
             cmd.CommandText = "SELECT e.Id, e.StartDateTime, e.Details, e.DurationInMinutes, e.CategoryId, c.Description\n" +
                             "FROM events e LEFT JOIN categories c\n" +
-                            "WHERE e.CategoryId = c.Id and e.StartDateTime > @start and e.StartDateTime < @end\n" +
-                            "GROUP BY c.Description\n";
-                            //"HAVING e.StartDateTime > @start and e.StartDateTime < @end";
+                            "WHERE e.CategoryId = c.Id AND e.StartDateTime > @start AND e.StartDateTime < @end" +
+                            $"{(FilterFlag ? " AND e.CategoryId = @categoryId" : "")}\n" +
+                            /* -------------------------------------------------------------------------------------------------------------------
+                             *  IMPORTANT: IDK if it's supposed to be ordered by e.Details, or e.DurationInMinutes DESC, because both work - Eric
+                             * -------------------------------------------------------------------------------------------------------------------
+                             */
+                            "ORDER BY c.Description, e.Details";
+
             cmd.Parameters.AddWithValue("@start", notNullStart.ToString("yyyy-MM-dd HH:mm:ss"));
             cmd.Parameters.AddWithValue("@end", notNullEnd.ToString("yyyy-MM-dd HH:mm:ss"));
+            if (FilterFlag)
+                cmd.Parameters.AddWithValue("@categoryId", CategoryID);
 
             // Create a list with all unique CategoriesId
             using SQLiteDataReader reader = cmd.ExecuteReader();
             string previousCategory = "";
-            bool firstIteration = true;
             int index = -1;
-            string output = "";
 
             List<CalendarItemsByCategory> items = new List<CalendarItemsByCategory>();
             while (reader.Read())
             {
+
                 int eventCategoryID = reader.GetInt32(4);
                 if (FilterFlag && eventCategoryID != CategoryID)
                     continue;
-
                 int eventId = reader.GetInt32(0);
                 DateTime eventStartDateTime = DateTime.ParseExact(reader.GetString(1), @"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
                 string eventDetails = reader.GetString(2);
                 double eventDurationInMinutes = reader.GetDouble(3);
+                int eventCategoryID = reader.GetInt32(4);
                 string categoryDescription = reader.GetString(5);
-
-                output += $"Id:{eventId} StartDateTime:{eventStartDateTime} Details:{eventDetails} DurationInMinutes:{eventDurationInMinutes}" +
-                        $" CategoryId:{eventCategoryID} Description:{categoryDescription}\n";
 
                 if (previousCategory != categoryDescription)
                 {
@@ -581,7 +599,8 @@ namespace Calendar
                         BusyTime = eventDurationInMinutes
                     };
 
-                    items[index].Items.Add(calendarItem);
+                    items[index].Items!.Add(calendarItem);
+                    items[index].TotalBusyTime += calendarItem.BusyTime;
                 }
 
                 previousCategory = categoryDescription;

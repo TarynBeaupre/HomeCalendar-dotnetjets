@@ -108,6 +108,34 @@ namespace CalendarCodeTests
 
         }
 
+        [Fact]
+        public void EventsMethod_UpdateCategory()
+        {
+            // Arrange
+            String folder = TestConstants.GetSolutionDir();
+            String goodDB = $"{folder}\\{TestConstants.testDBInputFile}";
+            String messyDB = $"{folder}\\messyDB";
+            System.IO.File.Copy(goodDB, messyDB, true);
+            Database.existingDatabase(messyDB);
+            SQLiteConnection conn = Database.dbConnection;
+            Events events = new Events(conn);
+            string details = "Shopping with friends";
+            int id = 9;
+            DateTime date = new DateTime(2019, 1, 11, 9, 30, 0);
+
+            // Act
+            events.Update(id, date, 3, 30.0, details);
+            Event chosenEvent = Events.GetEventFromId(id);
+
+            // Assert 
+            Assert.Equal(details, chosenEvent.Details);
+            Assert.Equal(date, chosenEvent.StartDateTime);
+            Assert.Equal(3, chosenEvent.Category);
+            Assert.Equal(30.0, chosenEvent.DurationInMinutes);
+
+        }
+
+
         // ========================================================================
 
         [Fact]

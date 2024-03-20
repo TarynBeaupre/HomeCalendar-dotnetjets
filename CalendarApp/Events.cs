@@ -111,9 +111,9 @@ namespace Calendar
                 var con = _Connection;
                 using var cmd = new SQLiteCommand(con);
 
-                cmd.CommandText = $"UPDATE events SET Date = @date, Details = @details, Duration = @duration, CategoryId = @category WHERE Id = @id";
+                cmd.CommandText = $"UPDATE events SET StartDateTime = @date, Details = @details, DurationInMinutes = @duration, CategoryId = @categoryid WHERE Id = @id";
                 cmd.Parameters.AddWithValue("id", id);
-                cmd.Parameters.AddWithValue("@date", date);
+                cmd.Parameters.AddWithValue("@date", date.ToString(@"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
                 cmd.Parameters.AddWithValue("@details", details);
                 cmd.Parameters.AddWithValue("@duration", duration);
                 cmd.Parameters.AddWithValue("@categoryid", category);
@@ -174,19 +174,19 @@ namespace Calendar
         /// int specificId = 2
         /// specificEvent = event.GetEventFromId(specificId)
         /// ]]></code></example>
-        public Event GetEventFromId(int id)
+        public static Event GetEventFromId(int id)
         {
             int foundId = 0;
             DateTime date = DateTime.Now;
             int category = 0;
             double duration = 0.0;
             string details = "";
-            var con = Connection;
+            var con = Database.dbConnection;
 
             using var cmd = new SQLiteCommand(con);
 
             //making a reader to retrieve the categories
-            cmd.CommandText = $"SELECT Id, Date, Category, Duration, Details FROM events WHERE Id = @id";
+            cmd.CommandText = $"SELECT Id, StartDateTime, CategoryId, DurationInMinutes, Details FROM events WHERE Id = @id";
             cmd.Parameters.AddWithValue("@id", id);
             cmd.Prepare();
             cmd.ExecuteNonQuery();
