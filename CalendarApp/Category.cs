@@ -115,8 +115,10 @@ namespace Calendar
         /// <returns>The description property of the Category object.</returns>
         /// <example>
         /// <code>
+        /// <![CDATA[
         /// Category category = new Category(5, "Homework", CategoryType.Event);
         /// string categoryDescription = category.ToString();
+        /// ]]>
         /// </code>
         /// </example>
         public override string ToString()

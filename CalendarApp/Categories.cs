@@ -22,30 +22,15 @@ namespace Calendar
     /// </summary>
     public class Categories
     {
-        private static String DefaultFileName = "calendarCategories.txt";
-        private string? _FileName;
-        private string? _DirName;
         private SQLiteConnection _Connection;
 
         // ====================================================================
         // Properties
         // ====================================================================
         /// <summary>
-        /// Gets the file name.
-        /// </summary>
-        /// <value>A file name. May be null.</value>
-        public String? FileName { get { return _FileName; } }
-        /// <summary>
-        /// Get the directory name.
-        /// </summary>
-        /// <value>A directory name. May be null.</value>
-        public String? DirName { get { return _DirName; } }
-
-        /// <summary>
         /// Get the database connection.
         /// </summary>
         /// <value>A database connection. Cannot be null and needs to be valid.</value>
-        //TODO: verify the connection
         public SQLiteConnection Connection { get { return _Connection; } }
 
         // ====================================================================
@@ -68,10 +53,15 @@ namespace Calendar
         /// </summary>
         /// <param name="categoriesConnection">A valid database connection.</param>
         /// <param name="newDB">If true, sets up default values in the database.</param>
+        /// <example>
+        /// In the test below, assume we are passing a valid connection to the constructor
+        /// <code><![CDATA[
+        /// Categories(categoriesConnection);
+        /// ]]></code></example>
         public Categories(SQLiteConnection categoriesConnection, bool newDB = false)
         {
             //Opening connection
-            _Connection = categoriesConnection;
+           _Connection = categoriesConnection;
             // If the database is a NOT a new database, create Categories based on existing db file
             if (newDB)
             {
@@ -84,7 +74,7 @@ namespace Calendar
 
         private void SetCategoryTypesToDefaults()
         {
-            var con = Database.dbConnection;
+            var con = Connection;
             using var cmd = new SQLiteCommand(con);
             cmd.CommandText = "DELETE FROM categoryTypes";
             cmd.ExecuteNonQuery();
@@ -129,7 +119,7 @@ namespace Calendar
         {
             int id = 0, type = 1;
             string description = "";
-            var con = _Connection;
+            var con = Connection;
 
             using var cmd = new SQLiteCommand(con);
 
@@ -170,7 +160,7 @@ namespace Calendar
             // ---------------------------------------------------------------
             // reset any current categories,
             // ---------------------------------------------------------------
-            var con = _Connection;
+            var con = Connection;
             using var cmd = new SQLiteCommand(con);
             // Deletes every row in the specified table but not the table itself
             cmd.CommandText = "DELETE FROM categories"; 
@@ -189,20 +179,6 @@ namespace Calendar
             Add("Travel days", Category.CategoryType.AllDayEvent);
             Add("Canadian Holidays", Category.CategoryType.Holiday);
             Add("US Holidays", Category.CategoryType.Holiday);
-        }
-
-        // ====================================================================
-        // Add category
-        // ====================================================================
-        private void Add(Category category)
-        {           
-            var con = _Connection;
-            using var cmd = new SQLiteCommand(con);
-            cmd.CommandText = "INSERT INTO categories(Id, Description, TypeId) VALUES(@id, @desc, @typeid) RETURNING ID";
-            cmd.Parameters.AddWithValue("@id", category.Id);
-            cmd.Parameters.AddWithValue("@desc", category.Description);
-            cmd.Parameters.AddWithValue("@typeid", category.Type);
-            cmd.ExecuteNonQuery();
         }
 
         /// <summary>
@@ -224,7 +200,7 @@ namespace Calendar
             try
             {
                 //Opening connection
-                var con = _Connection;
+                var con = Connection;
                 using var cmd = new SQLiteCommand(con);
 
                 //Insert into categories the new category
@@ -268,7 +244,7 @@ namespace Calendar
             try
             {
                 //connect to category
-                var con = Database.dbConnection;
+                var con = Connection;
                 using var cmd = new SQLiteCommand(con);
                 //find the corresponding category with the id
                 cmd.CommandText = $"DELETE FROM events WHERE CategoryId = @id";
@@ -291,12 +267,24 @@ namespace Calendar
         /// <param name="id">The id of the category to update.</param>
         /// <param name="description">An updated description.</param>
         /// <param name="categoryType">A category enum representing the type of category.</param>
-        /// 
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// try
+        /// {
+        ///     Categories categories = new Categories();
+        ///     SetCategoriesToDefault()
+        ///     categories.Update(1, "Vacation", Category.CategoryType.Event);
+        /// catch (Exception ex)
+        /// {
+        ///     Console.WriteLine(ex.Message);
+        /// }
+        /// ]]></code></example>
         public void UpdateProperties(int id, string description, Category.CategoryType categoryType)
         {
             try
             {
-                var con = _Connection;
+                var con = Connection;
                 using var cmd = new SQLiteCommand(con);
 
                 int type = (int)categoryType + 1;
@@ -311,7 +299,6 @@ namespace Calendar
             {
                 Console.WriteLine(e.Message);
             }
-            //throw new NotImplementedException();
         }
 
         // ====================================================================
@@ -353,4 +340,4 @@ namespace Calendar
 
     }
 }
-
+    
