@@ -538,7 +538,8 @@ namespace Calendar
             using var cmd = new SQLiteCommand(_Connection);
             cmd.CommandText = "SELECT e.Id, e.StartDateTime, e.Details, e.DurationInMinutes, e.CategoryId, c.Description\n" +
                             "FROM events e LEFT JOIN categories c\n" +
-                            "WHERE e.CategoryId = c.Id and e.StartDateTime > @start and e.StartDateTime < @end\n" +
+                            "WHERE e.CategoryId = c.Id AND e.StartDateTime > @start AND e.StartDateTime < @end" +
+                            $"{(FilterFlag ? " AND e.CategoryId = @categoryId" : "")}\n" +
                             /* -------------------------------------------------------------------------------------------------------------------
                              *  IMPORTANT: IDK if it's supposed to be ordered by e.Details, or e.DurationInMinutes DESC, because both work - Eric
                              * -------------------------------------------------------------------------------------------------------------------
@@ -547,6 +548,8 @@ namespace Calendar
 
             cmd.Parameters.AddWithValue("@start", notNullStart.ToString("yyyy-MM-dd HH:mm:ss"));
             cmd.Parameters.AddWithValue("@end", notNullEnd.ToString("yyyy-MM-dd HH:mm:ss"));
+            if (FilterFlag)
+                cmd.Parameters.AddWithValue("@categoryId", CategoryID);
 
             // Create a list with all unique CategoriesId
             using SQLiteDataReader reader = cmd.ExecuteReader();
@@ -556,14 +559,11 @@ namespace Calendar
             List<CalendarItemsByCategory> items = new List<CalendarItemsByCategory>();
             while (reader.Read())
             {
-                int eventCategoryID = reader.GetInt32(4);
-                if (FilterFlag && eventCategoryID != CategoryID)
-                    continue;
-
                 int eventId = reader.GetInt32(0);
                 DateTime eventStartDateTime = DateTime.ParseExact(reader.GetString(1), @"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
                 string eventDetails = reader.GetString(2);
                 double eventDurationInMinutes = reader.GetDouble(3);
+                int eventCategoryID = reader.GetInt32(4);
                 string categoryDescription = reader.GetString(5);
 
                 if (previousCategory != categoryDescription)
