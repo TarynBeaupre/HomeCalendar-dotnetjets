@@ -56,6 +56,10 @@
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="items"></param>
         public static void FormatPrintCalendarItems(List<CalendarItem> items)
         {
             string bar = ("-----------------------------------------------------------------------------------------------------------------------");
@@ -69,6 +73,10 @@
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="items"></param>
         public static void FormatPrintCalendarItemsMonth(List<CalendarItemsByMonth> items)
         {
             for (int j = 0; j < items.Count; j++) //looping all months
@@ -84,6 +92,11 @@
                 }
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="items"></param>
         public static void FormatPrintCalendarItemsCategory(List<CalendarItemsByCategory> items)
         {
             for (int j = 0; j < items.Count; j++) //looping all categories
@@ -100,6 +113,10 @@
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="calendarDictionary"></param>
         public static void FormatPrintCalendarItemsDict(List<Dictionary<string, object>> calendarDictionary)
         {
             foreach (var monthRecord in calendarDictionary)

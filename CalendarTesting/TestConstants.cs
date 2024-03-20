@@ -262,7 +262,7 @@ namespace CalendarCodeTests
             List<CalendarItem> CalendarItems;
 
             Dictionary<string, object> dict = new Dictionary<string, object> {
-                { "Month","2018/01" },{"TotalBusyTime", CalendarItem1.DurationInMinutes +
+                { "Month","2018-01" },{"TotalBusyTime", CalendarItem1.DurationInMinutes +
                                                         CalendarItem5.DurationInMinutes +
                                                         CalendarItem8.DurationInMinutes}  };
 
@@ -311,11 +311,11 @@ namespace CalendarCodeTests
             CalendarItems.Add(CalendarItem8);
 
             list.Add(new Dictionary<string, object> {
-                {"Month","2018/01" },
+                {"Month","2018-01" },
                 { "TotalBusyTime", CalendarItem5.DurationInMinutes + CalendarItem8.DurationInMinutes },
-
+           
                 { "Work",CalendarItem5.DurationInMinutes + CalendarItem8.DurationInMinutes},
-
+            
                 }
             );
 
@@ -324,7 +324,7 @@ namespace CalendarCodeTests
             CalendarItems.Add(CalendarItem9);
 
             list.Add(new Dictionary<string, object> {
-                {"Month","2019/01" },
+                {"Month","2019-01" },
                 { "TotalBusyTime", CalendarItem9.DurationInMinutes },
                 {"items:Work",CalendarItems },
                 { "Work",CalendarItem9.DurationInMinutes},
@@ -347,7 +347,7 @@ namespace CalendarCodeTests
             List<Dictionary<string, object>> list = new List<Dictionary<string, object>>();
 
             list.Add(new Dictionary<string, object> {
-                {"Month","2020/01"},
+                {"Month","2020-01"},
                 { "TotalBusyTime", CalendarItem7.DurationInMinutes + CalendarItem6.DurationInMinutes +
                                    CalendarItem4.DurationInMinutes + CalendarItem3.DurationInMinutes +
                                    CalendarItem2.DurationInMinutes },

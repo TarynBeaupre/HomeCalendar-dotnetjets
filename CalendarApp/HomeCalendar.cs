@@ -37,7 +37,7 @@ namespace Calendar
         /// <returns>Returns a categories backing field.</returns>
         public Categories categories { get { return _categories; } }
         /// <summary>
-        /// 
+        /// Gets and sets the database connection used to run sql queries.
         /// </summary>
         public SQLiteConnection Connection
         {
@@ -381,9 +381,19 @@ namespace Calendar
                                $"{(!isEndNull ? "e.StartDateTime <= @end" : "")}\n" +
                                "GROUP BY Month";
             if (Start is not null)
-                cmd.Parameters.AddWithValue("@start", realStart.ToString(@"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
+                cmd.Parameters.AddWithValue("@start", startDate.ToString(@"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
             if (End is not null)
-                cmd.Parameters.AddWithValue("@end", realEnd.ToString(@"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
+                cmd.Parameters.AddWithValue("@end", endDate.ToString(@"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
+            if (FilterFlag)
+            {
+                cmd.CommandText = $"SELECT e.CategoryId, substr(StartDateTime, 1, 7) as Month, e.StartDateTime\n" +
+                              "FROM events e WHERE e.StartDateTime >= @start AND e.StartDateTime <= @end AND e.CategoryId = @catId\n" +
+                              "GROUP BY Month";
+                cmd.Parameters.AddWithValue("@start", startDate.ToString(@"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
+                cmd.Parameters.AddWithValue("@end", endDate.ToString(@"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
+                cmd.Parameters.AddWithValue("@catId", CategoryID);
+            }
+            
            
             // -----------------------------------------------------------------------
             // create new list
@@ -397,8 +407,8 @@ namespace Calendar
                 // Creating necessary variables for a new CalendarItemByMonth object
                 int categoryId = reader.GetInt32(0);
 
-                if (FilterFlag && CategoryID != categoryId)
-                    continue;
+                //if (FilterFlag && CategoryID != categoryId)
+                //    continue;
                 string month = reader.GetString(1);
                 string stringMonth = month.ToString();
                 DateTime startDateMonth = reader.GetDateTime(2);
