@@ -410,7 +410,8 @@ namespace Calendar
                 double totalItemBusyTime = 0;
                 foreach ( CalendarItem item in items )
                 {
-                    totalItemBusyTime += item.DurationInMinutes;
+                    if (item.CategoryID != Convert.ToInt32(Category.CategoryType.Availability))
+                        totalItemBusyTime += item.DurationInMinutes;
                 }
                 // Adding the items to the List
                 itemsByMonth.Add(new CalendarItemsByMonth
@@ -599,7 +600,8 @@ namespace Calendar
                     };
 
                     items[index].Items!.Add(calendarItem);
-                    items[index].TotalBusyTime += calendarItem.BusyTime;
+                    if (calendarItem.CategoryID != Convert.ToInt32(Category.CategoryType.Availability))
+                        items[index].TotalBusyTime += calendarItem.BusyTime;
                 }
 
                 previousCategory = categoryDescription;
