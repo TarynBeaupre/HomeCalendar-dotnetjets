@@ -539,7 +539,11 @@ namespace Calendar
             cmd.CommandText = "SELECT e.Id, e.StartDateTime, e.Details, e.DurationInMinutes, e.CategoryId, c.Description\n" +
                             "FROM events e LEFT JOIN categories c\n" +
                             "WHERE e.CategoryId = c.Id and e.StartDateTime > @start and e.StartDateTime < @end\n" +
-                            "ORDER BY c.Description\n";
+                            /* -------------------------------------------------------------------------------------------------------------------
+                             *  IMPORTANT: IDK if it's supposed to be ordered by e.Details, or e.DurationInMinutes DESC, because both work - Eric
+                             * -------------------------------------------------------------------------------------------------------------------
+                             */
+                            "ORDER BY c.Description, e.Details\n";
 
             cmd.Parameters.AddWithValue("@start", notNullStart.ToString("yyyy-MM-dd HH:mm:ss"));
             cmd.Parameters.AddWithValue("@end", notNullEnd.ToString("yyyy-MM-dd HH:mm:ss"));
