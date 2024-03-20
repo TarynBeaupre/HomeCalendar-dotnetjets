@@ -396,6 +396,9 @@ namespace Calendar
             {
                 // Creating necessary variables for a new CalendarItemByMonth object
                 int categoryId = reader.GetInt32(0);
+
+                if (FilterFlag && CategoryID != categoryId)
+                    continue;
                 string month = reader.GetString(1);
                 string stringMonth = month.ToString();
                 DateTime startDateMonth = reader.GetDateTime(2);
@@ -407,7 +410,7 @@ namespace Calendar
 
                 // Getting all items for that month
                 List<CalendarItem> items = GetCalendarItems(startDateItems, endDateItems, FilterFlag, CategoryID);
-                // Adding up the busytime
+                // Adding up the busytime NOTE: change this eventually to not loop, just for now this works
                 double totalItemBusyTime = 0;
                 foreach ( CalendarItem item in items )
                 {
