@@ -539,8 +539,8 @@ namespace Calendar
             cmd.CommandText = "SELECT e.Id, e.StartDateTime, e.Details, e.DurationInMinutes, e.CategoryId, c.Description\n" +
                             "FROM events e LEFT JOIN categories c\n" +
                             "WHERE e.CategoryId = c.Id and e.StartDateTime > @start and e.StartDateTime < @end\n" +
-                            "GROUP BY c.Description\n";
-                            //"HAVING e.StartDateTime > @start and e.StartDateTime < @end";
+                            "ORDER BY c.Description\n";
+
             cmd.Parameters.AddWithValue("@start", notNullStart.ToString("yyyy-MM-dd HH:mm:ss"));
             cmd.Parameters.AddWithValue("@end", notNullEnd.ToString("yyyy-MM-dd HH:mm:ss"));
 
@@ -554,24 +554,6 @@ namespace Calendar
             List<CalendarItemsByCategory> items = new List<CalendarItemsByCategory>();
             while (reader.Read())
             {
-                //int categoryId = reader.GetInt32(0);
-                ////? Is Description in CategoryTypes table the name of Category TO VERIFY
-                //string categoryName = reader.GetString(1);
-
-                //var categoryItems = GetCalendarItems(Start, End, true, categoryId);
-                //if (categoryItems.Count == 0) { continue; }
-                //double totalBusyTime = categoryItems.Sum(item => item.DurationInMinutes);
-
-                //items.Add(new CalendarItemsByCategory
-                //{
-                //    Category = categoryName,
-                //    Items = categoryItems,
-                //    TotalBusyTime = totalBusyTime
-                //});
-
-                //if (!firstIteration)
-                //    previousCategory = reader.GetString(5);
-
                 int eventCategoryID = reader.GetInt32(4);
                 if (FilterFlag && eventCategoryID != CategoryID)
                     continue;
@@ -618,7 +600,8 @@ namespace Calendar
                         BusyTime = eventDurationInMinutes
                     };
 
-                    items[index].Items.Add(calendarItem);
+                    items[index].Items!.Add(calendarItem);
+                    items[index].TotalBusyTime += calendarItem.BusyTime;
                 }
 
                 previousCategory = categoryDescription;
