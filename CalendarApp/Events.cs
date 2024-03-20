@@ -58,6 +58,7 @@ namespace Calendar
         /// <param name="category">The id of the category of the event.</param>
         /// <param name="duration">The duration of the event in minutes.</param>
         /// <param name="details">The details of the event.</param>
+        /// <exception cref="Exception">Thrown if the add query could not be run on the events table.</exception>
         /// <example>
         /// <code>
         /// <![CDATA[
@@ -97,6 +98,7 @@ namespace Calendar
         /// <param name="category">Category Id of the event.</param>
         /// <param name="duration">Duration in minute of event.</param>
         /// <param name="details">Details of the event.</param>
+        /// <exception cref="Exception">Thrown if the update query could not be run on the events table.</exception>
         /// <example>
         /// <code>
         /// For the example below, assume we have an already existing events in the database table
@@ -133,7 +135,7 @@ namespace Calendar
         /// Removes a specific Event, given an id, from the events table in the database.
         /// </summary>
         /// <param name="Id">The id of the event to remove.</param>
-        /// <exception cref="Exception">Thrown if there was no event at the given id or if the id was out of range.</exception>
+        /// <exception cref="Exception">Thrown if the delete query could not be run on the events table.</exception>
         /// <example>
         /// <code>
         /// For the example below, assume we have an already existing event object

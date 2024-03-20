@@ -38,6 +38,7 @@ namespace Calendar
         /// Gets and sets the database connection. 
         /// Gets and sets the database connection used to run sql queries.
         /// </summary>
+        /// <exception cref="ArgumentException">Thrown if the database connection could not be established.</exception>
         /// <value>A database connection. Cannot be null and needs to be valid.</value>
         public SQLiteConnection Connection
         {

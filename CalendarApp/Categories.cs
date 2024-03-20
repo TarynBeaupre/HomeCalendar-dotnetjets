@@ -186,6 +186,7 @@ namespace Calendar
         /// </summary>
         /// <param name="desc">A description of the Category.</param>
         /// <param name="type">The type of the Category.</param>
+        /// <exception cref="Exception">Thrown if the add query could not be run on the categories table.</exception>
         /// <example>
         /// The Category.CategoryType is the type of event that the new Category Type will have. In the database, this will be stored as its integer value.
         /// <code>
@@ -227,6 +228,7 @@ namespace Calendar
         /// Removes a specific Category from the categories table given a Category Id.
         /// </summary>
         /// <param name="Id">The id of the Category to remove.</param>
+        /// <exception cref="Exception">Thrown if the delete query could not be run on the categories table.</exception>
         /// <example>
         /// <code>
         /// <![CDATA[
@@ -267,6 +269,7 @@ namespace Calendar
         /// <param name="id">The id of the category to update.</param>
         /// <param name="description">An updated description.</param>
         /// <param name="categoryType">A category enum representing the type of category.</param>
+        /// <exception cref="Exception">Thrown if the update query could not be run on the categories table.</exception>
         /// <example>
         /// <code>
         /// <![CDATA[
