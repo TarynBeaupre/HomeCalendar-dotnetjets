@@ -1,5 +1,8 @@
 ﻿namespace Calendar
 {
+    /// <summary>
+    /// Represents the main program logic.
+    /// </summary>
     internal class Program
     {
         static void Main(string[] args)
@@ -57,6 +60,9 @@
         }
 
         /// <summary>
+        /// Formats and prints a list of calendar items to the console.
+        /// </summary>
+        /// <param name="items">The list of calendar items to be formatted and printed.</param>
         /// 
         /// </summary>
         /// <param name="items"></param>
@@ -74,6 +80,9 @@
         }
 
         /// <summary>
+        /// Formats and prints a list of calendar items by month to the console.
+        /// </summary>
+        /// <param name="items">The list of calendar items to be formatted and printed.</param>
         /// 
         /// </summary>
         /// <param name="items"></param>
@@ -94,6 +103,9 @@
         }
 
         /// <summary>
+        /// Formats and prints a list of calendar items by Category to the console.
+        /// </summary>
+        /// <param name="items">The list of calendar items to be formatted and printed.</param>
         /// 
         /// </summary>
         /// <param name="items"></param>
@@ -114,6 +126,9 @@
         }
 
         /// <summary>
+        /// Formats and prints a dictionary of calendar items by Category and Month to the console.
+        /// </summary>
+        /// <param name="calendarDictionary">The dictionary containing calendar items by Category and Month.</param>
         /// 
         /// </summary>
         /// <param name="calendarDictionary"></param>

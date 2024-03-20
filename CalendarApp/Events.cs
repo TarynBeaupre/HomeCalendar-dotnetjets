@@ -51,26 +51,8 @@ namespace Calendar
             _Connection = eventsConnection;
         }
 
-        /* REMOVE ME (?)
-        // ====================================================================
-        // Add Event
-        // ====================================================================
-        private void Add(Event exp)
-        {
-            var con = Connection;
-            using var cmd = new SQLiteCommand(con);
-            cmd.CommandText = "INSERT INTO events(Id, StartDateTime, Details, DurationInMinutes, CategoryId) VALUES(@id, @startdatetime, @details, @durationminutes, @categoryid)";
-            cmd.Parameters.AddWithValue("@id", exp.Id);
-            cmd.Parameters.AddWithValue("@startdatetime", exp.StartDateTime);
-            cmd.Parameters.AddWithValue("@details", exp.Details);
-            cmd.Parameters.AddWithValue("@durationminutes", exp.DurationInMinutes);
-            cmd.Parameters.AddWithValue("@categoryid", exp.Category);
-            cmd.ExecuteNonQuery();
-        }
-        */
-
         /// <summary>
-        /// Adds a Event to the Events List.
+        /// Adds an Event to the events table in the database.
         /// </summary>
         /// <param name="date">A start date and time of the evemt.</param>
         /// <param name="category">The id of the category of the event.</param>
@@ -79,12 +61,9 @@ namespace Calendar
         /// <example>
         /// <code>
         /// <![CDATA[
-        /// Events events = new Events();
-        /// int eventCategoryId = 5;
-        /// double eventDuration = 60;
-        /// events.Add(DateTime.Now, eventCategoryId, eventDuration, "Homework");
-        /// ]]></code>
-        /// </example>
+        /// Event event = new Event(existingEvent);
+        /// updateEvent = event.Add(2022-01-31, 2, 320, "Doing cool programming stuff")
+        /// ]]></code></example>
         public void Add(DateTime date, int category, double duration, string details)
         {
             try
@@ -111,13 +90,20 @@ namespace Calendar
         // Update Event
         // ====================================================================
         /// <summary>
-        /// TODO
+        /// Updates an Event in the events table in the database.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="date"></param>
-        /// <param name="category"></param>
-        /// <param name="duration"></param>
-        /// <param name="details"></param>
+        /// <param name="id">Unique event identifier.</param>
+        /// <param name="date">Start date and time for event.</param>
+        /// <param name="category">Category Id of the event.</param>
+        /// <param name="duration">Duration in minute of event.</param>
+        /// <param name="details">Details of the event.</param>
+        /// <example>
+        /// <code>
+        /// For the example below, assume we have an already existing events in the database table
+        /// <![CDATA[
+        /// Event event = new Event(existingEvent);
+        /// updateEvent = event.Update(1, 2022-01-31, 2, 320, "Doing cool programming stuff")
+        /// ]]></code></example>
         public void Update(int id, DateTime date, int category, double duration, string details)
         {
             try
@@ -144,21 +130,17 @@ namespace Calendar
         // Delete Event
         // ====================================================================
         /// <summary>
-        /// Removes an Event from the Events list at a given Id.
+        /// Removes a specific Event, given an id, from the events table in the database.
         /// </summary>
         /// <param name="Id">The id of the event to remove.</param>
         /// <exception cref="Exception">Thrown if there was no event at the given id or if the id was out of range.</exception>
         /// <example>
         /// <code>
+        /// For the example below, assume we have an already existing event object
         /// <![CDATA[
-        /// try 
-        /// {
-        ///     Events events = new Events();
-        ///     int eventIdToDelete = 5;
-        ///     events.Delete(eventIdToDelete);
-        /// }
-        /// catch (Exception ex)
-        ///     Console.WriteLine(ex.Message)
+        /// Event event = new Event(existingEvent)
+        /// int specificId = 2
+        /// specificEvent = event.Delete(specificId)
         /// ]]></code></example>
         public void Delete(int Id)
         {
@@ -180,26 +162,17 @@ namespace Calendar
         }
 
         /// <summary>
-        /// Returns an Event from the database corresponding to the Id given. 
+        /// Returns a specific Event, given an id, from the events table in the database. 
         /// </summary>
         /// <param name="Id">The Event Id.</param>
         /// <returns>The retrieved Event object.</returns>
         /// <example>
         /// <code>
+        /// For the example below, assume we have an already existing event object
         /// <![CDATA[
-        /// try
-        /// {
-        ///   Database.existingDatabase(newDB);
-        ///   SQLiteConnection conn = Database.dbConnection;
-        ///   Events events = new Events();
-        ///   events.Add(DateTime.Now, 1, 70.00, "English Homework");
-        ///   int eventId = 0;
-        ///   Event event = events.GetCategoryFromId(eventId);
-        /// }
-        /// catch(Exception ex)
-        /// {
-        ///     Console.WriteLine(ex.Message);
-        /// }
+        /// Event event = new Event(existingEvent)
+        /// int specificId = 2
+        /// specificEvent = event.GetEventFromId(specificId)
         /// ]]></code></example>
         public static Event GetEventFromId(int id)
         {
@@ -239,18 +212,15 @@ namespace Calendar
         //        this instance
         // ====================================================================
         /// <summary>
-        /// Creates a new copy of an existing list of Events. User cannot modify this instance.
+        /// Creates a list of events from the events table in the database.
         /// </summary>
         /// <returns>A new list of Events.</returns>
         /// <example>
+        /// For the example below, assume we have an already existing event object
         /// <code>
         /// <![CDATA[
-        ///  Events events = new Events();
-        ///  events.Add(DateTime.Now, (int) Category.CategoryType.Event, 30, "documentation assignment");
-        ///  
-        ///  List<Event> list = events.List();
-        ///  foreach (Event anEvent in list)
-        ///     Console.WriteLine(anEvent.Details);
+        /// Event event = new Event(existingEvent)
+        /// eventList = event.List()
         /// ]]>
         /// </code>
         /// </example>

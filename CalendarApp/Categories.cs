@@ -53,6 +53,11 @@ namespace Calendar
         /// </summary>
         /// <param name="categoriesConnection">A valid database connection.</param>
         /// <param name="newDB">If true, sets up default values in the database.</param>
+        /// <example>
+        /// In the test below, assume we are passing a valid connection to the constructor
+        /// <code><![CDATA[
+        /// Categories(categoriesConnection);
+        /// ]]></code></example>
         public Categories(SQLiteConnection categoriesConnection, bool newDB = false)
         {
             //Opening connection
@@ -262,7 +267,19 @@ namespace Calendar
         /// <param name="id">The id of the category to update.</param>
         /// <param name="description">An updated description.</param>
         /// <param name="categoryType">A category enum representing the type of category.</param>
-        /// 
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// try
+        /// {
+        ///     Categories categories = new Categories();
+        ///     SetCategoriesToDefault()
+        ///     categories.Update(1, "Vacation", Category.CategoryType.Event);
+        /// catch (Exception ex)
+        /// {
+        ///     Console.WriteLine(ex.Message);
+        /// }
+        /// ]]></code></example>
         public void UpdateProperties(int id, string description, Category.CategoryType categoryType)
         {
             try
