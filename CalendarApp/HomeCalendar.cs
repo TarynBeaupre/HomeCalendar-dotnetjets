@@ -543,7 +543,7 @@ namespace Calendar
                              *  IMPORTANT: IDK if it's supposed to be ordered by e.Details, or e.DurationInMinutes DESC, because both work - Eric
                              * -------------------------------------------------------------------------------------------------------------------
                              */
-                            "ORDER BY c.Description, e.Details\n";
+                            "ORDER BY c.Description, e.Details";
 
             cmd.Parameters.AddWithValue("@start", notNullStart.ToString("yyyy-MM-dd HH:mm:ss"));
             cmd.Parameters.AddWithValue("@end", notNullEnd.ToString("yyyy-MM-dd HH:mm:ss"));
@@ -551,9 +551,7 @@ namespace Calendar
             // Create a list with all unique CategoriesId
             using SQLiteDataReader reader = cmd.ExecuteReader();
             string previousCategory = "";
-            bool firstIteration = true;
             int index = -1;
-            string output = "";
 
             List<CalendarItemsByCategory> items = new List<CalendarItemsByCategory>();
             while (reader.Read())
@@ -567,9 +565,6 @@ namespace Calendar
                 string eventDetails = reader.GetString(2);
                 double eventDurationInMinutes = reader.GetDouble(3);
                 string categoryDescription = reader.GetString(5);
-
-                output += $"Id:{eventId} StartDateTime:{eventStartDateTime} Details:{eventDetails} DurationInMinutes:{eventDurationInMinutes}" +
-                        $" CategoryId:{eventCategoryID} Description:{categoryDescription}\n";
 
                 if (previousCategory != categoryDescription)
                 {
