@@ -53,6 +53,11 @@ namespace Calendar
         /// </summary>
         /// <param name="categoriesConnection">A valid database connection.</param>
         /// <param name="newDB">If true, sets up default values in the database.</param>
+        /// <example>
+        /// In the test below, assume we are passing a valid connection to the constructor
+        /// <code><![CDATA[
+        /// Categories(categoriesConnection);
+        /// ]]></code></example>
         public Categories(SQLiteConnection categoriesConnection, bool newDB = false)
         {
             //Opening connection
