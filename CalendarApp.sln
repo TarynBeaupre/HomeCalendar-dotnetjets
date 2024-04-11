@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalendarApp", "CalendarApp\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalendarTesting", "CalendarTesting\CalendarTesting.csproj", "{7D6A4613-550F-44B0-A7B1-857B382DDA04}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalendarWPF", "CalendarWPF\CalendarWPF.csproj", "{96375D12-B31F-4C92-9F53-2CC4DAC3234F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeCalendarWPF", "HomeCalendarWPF\HomeCalendarWPF.csproj", "{69D3D650-A383-4A91-AB27-B282C0F0D6E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{7D6A4613-550F-44B0-A7B1-857B382DDA04}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D6A4613-550F-44B0-A7B1-857B382DDA04}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D6A4613-550F-44B0-A7B1-857B382DDA04}.Release|Any CPU.Build.0 = Release|Any CPU
-		{96375D12-B31F-4C92-9F53-2CC4DAC3234F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{96375D12-B31F-4C92-9F53-2CC4DAC3234F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{96375D12-B31F-4C92-9F53-2CC4DAC3234F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{96375D12-B31F-4C92-9F53-2CC4DAC3234F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69D3D650-A383-4A91-AB27-B282C0F0D6E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69D3D650-A383-4A91-AB27-B282C0F0D6E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69D3D650-A383-4A91-AB27-B282C0F0D6E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69D3D650-A383-4A91-AB27-B282C0F0D6E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
