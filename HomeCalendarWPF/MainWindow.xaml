@@ -7,10 +7,27 @@
         mc:Ignorable="d"
         FontFamily="Verdana"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Viewbox HorizontalAlignment="Left" Margin="20, 40, 40, 10">
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Margin="10" VerticalAlignment="Top">
+            <TextBlock FontSize="24">Home Calendar</TextBlock>
+            <StackPanel Margin="10">
+                <TextBlock>Edit Calendar</TextBlock>
+                <Label>path:</Label>
+                <TextBlock Name="calendarFiletxb">path here</TextBlock>
+                <Button Margin="20" Width="100">change path</Button>
+            </StackPanel>
+            <StackPanel Margin="10">
+                <TextBlock>Edit Events</TextBlock>
+                <Button Height="20" Width="100" Click="OpenEvent">Add Event</Button>
+            </StackPanel>
+        </StackPanel>
+        <Viewbox HorizontalAlignment="Left" Margin="10" Grid.Column="1">
             <Calendar/>
         </Viewbox>
-        <Button Height="20" Width="50" HorizontalAlignment="Right" Click="OpenEvent">Add Event</Button>
+      
     </Grid>
 </Window>

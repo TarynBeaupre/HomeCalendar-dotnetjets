@@ -19,6 +19,7 @@ namespace HomeCalendarWPF
         public MainWindow()
         {
             InitializeComponent();
+            calendarFiletxb.Text = System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\..\\CalendarApp\\test.calendar")); ;
         }
         private void OpenEvent(object sender, RoutedEventArgs e)
         {
