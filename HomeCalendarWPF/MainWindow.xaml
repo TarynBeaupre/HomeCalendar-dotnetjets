@@ -5,10 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HomeCalendarWPF"
         mc:Ignorable="d"
+        FontFamily="Verdana"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Viewbox HorizontalAlignment="Left" Margin="20, 40, 40, 10">
             <Calendar/>
         </Viewbox>
+        <Button Height="20" Width="50" HorizontalAlignment="Right" Click="OpenEvent">Add Event</Button>
     </Grid>
 </Window>

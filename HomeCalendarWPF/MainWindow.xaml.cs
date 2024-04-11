@@ -20,5 +20,10 @@ namespace HomeCalendarWPF
         {
             InitializeComponent();
         }
+        private void OpenEvent(object sender, RoutedEventArgs e)
+        {
+            EventsWindow eventWindow = new EventsWindow();
+            eventWindow.Show();
+        }
     }
 }
