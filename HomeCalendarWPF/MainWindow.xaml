@@ -18,7 +18,7 @@
                 <TextBlock>Edit Calendar</TextBlock>
                 <Label>path:</Label>
                 <TextBlock Name="calendarFiletxb">path here</TextBlock>
-                <Button Margin="20" Width="100">change path</Button>
+                <Button Margin="20" Width="100" Click="Btn_OpenFileExplorer">change path</Button>
             </StackPanel>
             <StackPanel Margin="10">
                 <TextBlock>Edit Events</TextBlock>

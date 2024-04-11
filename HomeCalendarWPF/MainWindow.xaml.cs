@@ -26,5 +26,10 @@ namespace HomeCalendarWPF
             EventsWindow eventWindow = new EventsWindow();
             eventWindow.Show();
         }
+
+        private void Btn_OpenFileExplorer(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("explorer.exe", "C:\\Users");
+        }
     }
 }
