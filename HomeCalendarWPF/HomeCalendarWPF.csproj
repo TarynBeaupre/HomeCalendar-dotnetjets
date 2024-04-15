@@ -8,4 +8,10 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Reference Include="HomeCalendar">
+      <HintPath>dlls\HomeCalendar.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

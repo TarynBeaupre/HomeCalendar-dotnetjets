@@ -1,0 +1,223 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>HomeCalendar</name>
+    </assembly>
+    <members>
+        <member name="T:Calendar.CalendarFiles">
+            <summary>
+            CalendarFiles class is used to manage the files used in the Calendar project
+            </summary>
+        </member>
+        <member name="M:Calendar.Categories.#ctor(System.Data.SQLite.SQLiteConnection,System.Boolean)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="conn">ADO.Net compliant connection to a database</param>
+            <param name="IsNew">Adds default <c>Category</c> objects to the 
+            collection if set </param>
+        </member>
+        <member name="M:Calendar.Categories.GetCategoryFromId(System.Int32)">
+            <summary>
+            Get a specific <c>Category</c> object from the collection, where the
+            object has the correct <c>Id</c> property.
+            </summary>
+            <param name="Id">Unique identifier of a <c>Category</c> object.</param>
+            <returns></returns>
+            <exception cref="T:System.Exception">If there is no <c>Category</c> object 
+            in the collection with that specific Id</exception>
+            <exception cref="T:System.Data.SQLite.SQLiteException">If the database file is corrupted in any way</exception>
+        </member>
+        <member name="M:Calendar.Categories.List">
+            <summary>
+            Gets a list of all <c>Category</c> objects
+            </summary>
+            <returns>A all <c>Category</c> objects</returns>
+            <exception cref="T:System.Data.SQLite.SQLiteException">If the database file is corrupted in any way</exception>
+        </member>
+        <member name="M:Calendar.Categories.Add(System.String,Calendar.Category.CategoryType)">
+            <summary>
+            Adds a new <c>Category</c> object to the collection
+            </summary>
+            <param name="description">Category Description</param>
+            <param name="type">A type of category.  See
+            <see cref="T:Calendar.Category.CategoryType"/></param>
+            <exception cref="T:System.Data.SQLite.SQLiteException">If the database file is corrupted in any way</exception>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Calendar.Categories.UpdateProperties(System.Int32,System.String,Calendar.Category.CategoryType)" -->
+        <member name="M:Calendar.Categories.Delete(System.Int32)">
+            <summary>
+            Delete the category with ID <c>Id</c> from the collection.
+            If the category does not exist, no exception will be thrown.
+            </summary>
+            <param name="Id">Unique identifier of an Category</param>
+            <exception cref="T:System.Data.SQLite.SQLiteException">If the database file is corrupted in any way</exception>
+        </member>
+        <member name="P:Calendar.Category.Id">
+            <value>Unique identifier of this category</value>
+        </member>
+        <member name="P:Calendar.Category.Description">
+            <value>Description of this category</value>
+        </member>
+        <member name="P:Calendar.Category.Type">
+            <value>The type of category. See <see cref="T:Calendar.Category.CategoryType"/></value>
+        </member>
+        <member name="M:Calendar.Category.#ctor(System.String,Calendar.Category.CategoryType)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="description">Description of the category</param>
+            <param name="type">Type of category.  See <see cref="T:Calendar.Category.CategoryType"/> for valid types.
+            <para>Default: <see cref="!:CategoryType.Expense"/></para></param>
+        </member>
+        <member name="M:Calendar.Category.ToString">
+            <summary>
+            Forces the default 'stringification' of this object
+            </summary>
+            <returns>The description property of this object</returns>
+        </member>
+        <member name="M:Calendar.Events.#ctor(System.Data.SQLite.SQLiteConnection)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="conn">ADO.Net compliant connection to a database</param>
+        </member>
+        <member name="M:Calendar.Events.Add(System.DateTime,System.Int32,System.Double,System.String)">
+            <summary>
+            Add a new Event to the database/collection
+            </summary>
+            <param name="startDateTime">Date and time the event occured</param>
+            <param name="categoryId">ID of the category where this event belongs</param>
+            <param name="durationInMinutes">The duration in minutes of the event</param>
+            <param name="details">The details of the event </param>
+            <exception cref="T:System.Data.SQLite.SQLiteException">If the category ID is not valid,
+            then there will be a foreign key constraint error</exception>
+        </member>
+        <member name="M:Calendar.Events.UpdateProperties(System.Int32,System.DateTime,System.Int32,System.Double,System.String)">
+            <summary>
+            Modify an existing event
+            </summary>
+            <param name="eventId">The id if the event to update</param>
+            <param name="startDateTime">Date and time the event occured</param>
+            <param name="categoryId">ID of the category where this event belongs</param>
+            <param name="durationInMinutes">The duration of the event in minutes</param>
+            <param name="details">The details of the event </param>
+            <exception cref="T:System.Data.SQLite.SQLiteException">If the database file is corrupted in any way</exception>
+        </member>
+        <member name="M:Calendar.Events.Delete(System.Int32)">
+            <summary>
+            Delete the event with ID <c>Id</c> from the collection/database.
+            If the event does not exist, no exception will be thrown.
+            </summary>
+            <param name="Id">Unique identifier of an Event</param>
+            <exception cref="T:System.Data.SQLite.SQLiteException">If the database file is corrupted in any way</exception>
+        </member>
+        <member name="M:Calendar.Events.List">
+            <summary>
+            Gets a list of events
+            </summary>
+            <exception cref="T:System.Data.SQLite.SQLiteException">If the database file is corrupted in any way</exception>
+            <returns>A list of <c>Event</c> objects</returns>
+        </member>
+        <member name="M:Calendar.HomeCalendar.GetCalendarItemsByMonth(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Boolean,System.Int32)">
+             <summary>
+             Get a list of CalendarItemsByMonth, filtered by date, and possibly by category.
+             <para>Each <c>CalendarItemsByMonth</c> include total dureations for that month, and a 
+             list of individual events for that month.</para>
+             </summary>
+             <remarks>
+             <para>Results are ordered by Month</para>
+             <para>If Start and End date are null, then they will be set to their defaults</para>
+             see <see cref="T:Calendar.CalendarItemsByMonth"/></remarks>
+             <seealso cref="M:Calendar.HomeCalendar.GetCalendarItemsByCategory(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Boolean,System.Int32)"/>
+             <seealso cref="!:GetCalendarItems>"/>
+             <seealso cref="!:GetCalendarDictionaryByCategoryAndMonth>"/>
+             <exception cref="T:System.Data.SQLite.SQLiteException">If the SQLite file
+             is corrupted in any way</exception>
+             <param name="Start">Only events that were incurred after or on this date will be processed
+             <para>default: <c>Jan 1, 1900</c></para></param>
+             <param name="End">Only events that were incurred before or on this date will be processed
+             <para>default: <c>Jan 1, 2500</c></para></param>
+             <param name="FilterFlag">If set, only events with <c>CategoryId</c> will be processed</param>
+             <param name="CategoryID">If <c>FilterFlag</c> is set, only events with this category ID will be processed</param>
+             <returns>A collection of CalendarItemsByMonth objects</returns>
+             <example>
+             <code>
+                    var myCalendar = new HomeCalendar("existingDB.db");
+                    var report = myCalendar.GetCalendarItemsByMonth(
+                        null,                // start date, is null so use default (Jan 1, 1900) 
+                        null,                // end date, is null so use default (Jan 1, 2025)
+                        false,               // I do NOT want to filter results on category Id?
+                        9                    // unused category id
+                        );
+                              
+                        foreach (var monthlyItem in report)
+                        {
+                            Console.WriteLine();
+                            Console.WriteLine(
+                                $"Month: {monthlyItem.Month}, Total: {monthlyItem.Total}");
+            
+                            foreach (var individualItem in monthlyItem.Details)
+                            {
+                                Console.WriteLine(
+                                    $"{individualItem.StartDateTime}     " +
+                                    $"{individualItem.DurationInMinutes},\t" +
+                                    $"{individualItem.ShortDescription}");
+                            }
+                        }
+             
+             </code>
+             </example>
+        </member>
+        <member name="M:Calendar.HomeCalendar.GetCalendarItemsByCategory(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Boolean,System.Int32)">
+             <summary>
+             Get a list of CalendarItemsByCategory, filtered by date, and possibly by category.
+             <para>Each <c>CalendarItemsByCategory</c> include total event durations for that category, and a 
+             list of individual events for that category.</para>
+             </summary>
+             <remarks>
+             <para>Results are ordered by Category Description</para>
+             <para>If Start and End date are null, then they will be set to their defaults</para>
+             see <see cref="T:Calendar.CalendarItemsByCategory"/></remarks>
+             <seealso cref="M:Calendar.HomeCalendar.GetCalendarItemsByMonth(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Boolean,System.Int32)"/>
+             <seealso cref="!:GetCalendarItems>"/>
+             <seealso cref="!:GetCalendarDictionaryByCategoryAndMonth>"/>
+             <exception cref="T:System.Data.SQLite.SQLiteException">If the SQLite file
+             is corrupted in any way</exception>
+             <param name = "Start" > Only events that were incurred after or on this date will be processed
+             <para>default: <c>Jan 1, 1900</c></para></param>
+             <param name="End">Only events that were incurred before or on this date will be processed
+             <para>default: <c>Jan 1, 2500</c></para></param>
+             <param name="FilterFlag">If set, only events with <c>CategoryId</c> will be processed</param>
+             <param name="CategoryID">If <c>FilterFlag</c> is set, only events with this category ID will be processed</param>
+             <returns>A collection of CalendarItemsByCategory objects</returns>
+             <example>
+             <code>
+                    var myCalendar = new HomeCalendar("existingDB.db");
+                    var report = myCalendar.GetCalendarItemsByCategory(
+                        null,                // start date, is null so use default (Jan 1, 1900) 
+                        null,                // end date, is null so use default (Jan 1, 2025)
+                        false,               // I do NOT want to filter results on category Id?
+                        9                    // unused category id
+                        );
+                              
+                        foreach (var categoryItem in report)
+                        {
+                            Console.WriteLine();
+                            Console.WriteLine(
+                                $"{categoryItem.Category}, Total: {categoryItem.Total}");
+            
+                            foreach (var individualItem in categoryItem.Details)
+                            {
+                                Console.WriteLine(
+                                    $"{individualItem.Date}     " +
+                                    $"{individualItem.TotalBusyTime},\t" +
+                                    $"{individualItem.ShortDescription}");
+                            }
+                        }
+             
+             </code>
+             </example>
+        </member>
+    </members>
+</doc>
