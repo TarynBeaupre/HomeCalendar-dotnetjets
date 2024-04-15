@@ -8,4 +8,16 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="images\stardew-backdrop.jpg" />
+    <None Remove="images\stardew-star.png" />
+    <None Remove="images\stardew-tree.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="images\stardew-backdrop.jpg" />
+    <Resource Include="images\stardew-star.png" />
+    <Resource Include="images\stardew-tree.png" />
+  </ItemGroup>
+
 </Project>

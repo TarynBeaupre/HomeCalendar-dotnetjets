@@ -68,8 +68,8 @@
             </DatePicker>
         </Grid>
             <DockPanel LastChildFill="False" Width="200">
-                <Button DockPanel.Dock="Left" Background="green" Width="70">Add</Button>
-                <Button DockPanel.Dock="Right" Background="Red" Width="70">Cancel</Button>
+                <Button Click="Btn_Click_Add_Event" DockPanel.Dock="Left" Background="green" Width="70">Add</Button>
+                <Button Click="Btn_Click_Cancel_Event" DockPanel.Dock="Right" Background="Red" Width="70">Cancel</Button>
             </DockPanel>
         </StackPanel>
     </Grid>
