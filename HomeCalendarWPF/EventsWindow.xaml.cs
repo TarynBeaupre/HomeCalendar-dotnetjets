@@ -30,5 +30,15 @@ namespace HomeCalendarWPF
             enddp.SelectedDate = System.DateTime.Now;
             categoriescmb.SelectedIndex = defaultCategoryIndex;
         }
+        public void Btn_Click_Add_Event(object sender, RoutedEventArgs e)
+        {
+            //Add the event to the database and the view calendar via the presenter
+            this.Close();
+        }
+        public void Btn_Click_Cancel_Event(object sender, EventArgs e)
+        {
+            // if user cancels addition, resent the default values for the category and the dates
+            this.Close();
+        }
     }
 }
