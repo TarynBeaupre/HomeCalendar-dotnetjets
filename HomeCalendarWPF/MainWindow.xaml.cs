@@ -30,7 +30,22 @@ namespace HomeCalendarWPF
 
         private void Btn_OpenFileExplorer(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("explorer.exe", "C:\\Users");
+            // Credit: https://stackoverflow.com/a/10315283
+            Microsoft.Win32.OpenFileDialog fileSelector = new Microsoft.Win32.OpenFileDialog();
+
+            // Sets default file extension to be used when searching for files
+            fileSelector.DefaultExt = ".db";
+
+            // Gives the little box above the open and cancel button the text to allow filtering
+            fileSelector.Filter = "Database Files (*.db)|*.db|All Files (*)|*";
+
+            bool? result = fileSelector.ShowDialog();
+
+            if (result is not null && result == true)
+            {
+                string filename = fileSelector.FileName;
+                calendarFiletxb.Text = filename;
+            }
         }
         private void Btn_Click_Change_Theme(object sender, RoutedEventArgs e)
         {
