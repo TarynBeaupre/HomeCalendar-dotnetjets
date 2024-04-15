@@ -6,11 +6,14 @@
         xmlns:local="clr-namespace:HomeCalendarWPF"
         mc:Ignorable="d"
         FontFamily="Verdana"
-        Title="Events" Height="450" Width="800">
-    
+        Title="Events" Height="500" Width="900"
+        WindowStartupLocation="CenterScreen">
+    <Window.Background>
+        <ImageBrush ImageSource="images/stardew-backdrop.jpg"></ImageBrush>
+    </Window.Background>
     <Grid Margin="20">
-        <StackPanel Margin="10">
-        <TextBlock FontSize="24" Grid.Row="0" VerticalAlignment="Center" Margin="20, 0, 0, 0">Add Event</TextBlock>
+        <StackPanel Margin="20" Background="White" Opacity="0.85">
+        <TextBlock FontSize="24" Grid.Row="0" VerticalAlignment="Center" Margin="20, 10, 0, 0">Add Event</TextBlock>
         <!--Event details-->
         <Grid Margin="20" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Width="500">
             <Grid.ColumnDefinitions>
@@ -67,9 +70,14 @@
                 </DatePicker.BlackoutDates>
             </DatePicker>
         </Grid>
-            <DockPanel LastChildFill="False" Width="200">
-                <Button Click="Btn_Click_Add_Event" DockPanel.Dock="Left" Background="green" Width="70">Add</Button>
-                <Button Click="Btn_Click_Cancel_Event" DockPanel.Dock="Right" Background="Red" Width="70">Cancel</Button>
+            <DockPanel LastChildFill="False" Width="250" Height="35">
+                <Button Click="Btn_Click_Add_Event" DockPanel.Dock="Left" Background="green" Width="80">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="5"/>
+                        </Style>
+                    </Button.Resources> Add</Button>
+                <Button Click="Btn_Click_Cancel_Event" DockPanel.Dock="Right" Background="Red" Width="80">Cancel</Button>
             </DockPanel>
         </StackPanel>
     </Grid>

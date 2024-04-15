@@ -32,5 +32,9 @@ namespace HomeCalendarWPF
         {
             System.Diagnostics.Process.Start("explorer.exe", "C:\\Users");
         }
+        private void Btn_Click_Change_Theme(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:HomeCalendarWPF"
         mc:Ignorable="d"
         FontFamily="Verdana"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="500" Width="900"
+        WindowStartupLocation="CenterScreen">
     <Window.Background>
         <ImageBrush ImageSource="images/stardew-backdrop.jpg"></ImageBrush>
     </Window.Background>
@@ -15,7 +16,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel Margin="10" Height="380" VerticalAlignment="Top" Background="#DDFADA" Opacity="0.85">
+        <StackPanel Margin="10"  VerticalAlignment="Top" Background="#DDFADA" Opacity="0.85">
             <TextBlock FontSize="24">Home Calendar</TextBlock>
             <Image Width="50">
                 <Image.Source>
@@ -24,26 +25,33 @@
             </Image>
             <Border BorderBrush="White" BorderThickness="5" Opacity="1">
                 <StackPanel Margin="10">
-                <TextBlock>Edit Calendar</TextBlock>
-                <Label>path:</Label>
-                <TextBlock Name="calendarFiletxb">path here</TextBlock>
-                <Button Margin="20" Width="100" Click="Btn_OpenFileExplorer">change path</Button>
-            </StackPanel>
+                    <TextBlock>Edit Calendar</TextBlock>
+                    <Label>path:</Label>
+                    <TextBlock Name="calendarFiletxb">path here</TextBlock>
+                    <Button Margin="20" Width="100" Click="Btn_OpenFileExplorer">change path</Button>
+                </StackPanel>
             </Border>
 
             <StackPanel Margin="10">
                 <TextBlock>Edit Events</TextBlock>
                 <Button Height="20" Width="100" Click="OpenEvent">Add Event</Button>
             </StackPanel>
+            <StackPanel Margin="10">
+                <TextBlock>Change color theme</TextBlock>
+                <StackPanel Orientation="Horizontal">
+                    <Button Margin="20" Width="60" Click="Btn_Click_Change_Theme">theme</Button>
+                    <Button Margin="20" Width="60" Click="Btn_Click_Change_Theme">theme</Button>
+                </StackPanel>
+            </StackPanel>
         </StackPanel>
-        <Viewbox HorizontalAlignment="Left" Margin="10" Grid.Column="1">
-            <Calendar Background="#DDFADA" Opacity="0.85" />
-        </Viewbox>
         <Image Grid.Column="1" Margin="390,175,0,0">
            <Image.Source>
                <BitmapImage DecodePixelWidth="300" UriSource="images/stardew-tree.png" />
            </Image.Source>
         </Image>
+        <Viewbox HorizontalAlignment="Left" Margin="10" Grid.Column="1">
+            <Calendar Background="#DDFADA" Opacity="0.85" />
+        </Viewbox>
         
     </Grid>
 </Window>
