@@ -36,7 +36,7 @@ namespace HomeCalendarWPF
             fileSelector.DefaultExt = ".db";
 
             // Gives the little box above the open and cancel button the text to allow filtering
-            fileSelector.Filter = "Database Files (*.db)|*.db | All Files (*)|*";
+            fileSelector.Filter = "Database Files (*.db)|*.db|All Files (*)|*";
 
             bool? result = fileSelector.ShowDialog();
 
