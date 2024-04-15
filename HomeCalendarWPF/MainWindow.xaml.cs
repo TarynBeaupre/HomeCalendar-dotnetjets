@@ -18,6 +18,7 @@ namespace HomeCalendarWPF
     {
         public MainWindow()
         {
+            string baseDir = Environment.CurrentDirectory;
             InitializeComponent();
             calendarFiletxb.Text = System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\..\\CalendarApp\\test.calendar")); ;
         }
@@ -45,6 +46,10 @@ namespace HomeCalendarWPF
                 string filename = fileSelector.FileName;
                 calendarFiletxb.Text = filename;
             }
+        }
+        private void Btn_Click_Change_Theme(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
