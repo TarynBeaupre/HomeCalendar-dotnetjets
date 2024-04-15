@@ -29,7 +29,17 @@ namespace HomeCalendarWPF
 
         private void Btn_OpenFileExplorer(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("explorer.exe", "C:\\Users");
+            Microsoft.Win32.OpenFileDialog ofd = new Microsoft.Win32.OpenFileDialog();
+            ofd.DefaultExt = ".db";
+            ofd.Filter = "Database Files (*.db)|*.db";
+
+            bool? result = ofd.ShowDialog();
+
+            if (result is not null && result == true)
+            {
+                string filename = ofd.FileName;
+                calendarFiletxb.Text = filename;
+            }
         }
     }
 }
