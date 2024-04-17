@@ -32,6 +32,11 @@ namespace HomeCalendarWPF
             startdp.SelectedDate = System.DateTime.Now;
             enddp.SelectedDate = System.DateTime.Now;
             categoriescmb.SelectedIndex = defaultCategoryIndex;
+            List<string> categoriesList = new List<string>
+            {
+                "Homework", "Event", "Work", "Meeting"
+            };
+            categoriescmb.ItemsSource = categoriesList;
         }
 
         public void AddNewCategory()
