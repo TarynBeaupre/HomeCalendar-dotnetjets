@@ -26,7 +26,7 @@ namespace HomeCalendarWPF
         }
         private void OpenEvent(object sender, RoutedEventArgs e)
         {
-            EventsWindow eventWindow = new EventsWindow();
+            EventsWindow eventWindow = new EventsWindow(presenter);
             eventWindow.Show();
         }
 
@@ -51,12 +51,24 @@ namespace HomeCalendarWPF
                 presenter = new Presenter(this, filename);
             }
         }
+        private void Btn_OpenNewFile(object sender, RoutedEventArgs e)
+        {
+            string defaultFilename = "newDB.db";
+            presenter = new Presenter(this, defaultFilename, true);
+        }
+
+
         private void Btn_Click_Change_Theme(object sender, RoutedEventArgs e)
         {
             throw new NotImplementedException();
         }
 
         public void NewCalendar()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OpenExistingCalendar(string filename, bool existingDB)
         {
             throw new NotImplementedException();
         }
@@ -75,5 +87,6 @@ namespace HomeCalendarWPF
         {
             throw new NotImplementedException();
         }
+
     }
 }

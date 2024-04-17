@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HomeCalendarWPF
 {
-    internal interface ViewInterface
+    public interface ViewInterface
     {
         void NewCalendar(); // Creates a new calendar for user
         void OpenExistingCalendar(string filename, bool existingDB); // Opens an existing Calendar File

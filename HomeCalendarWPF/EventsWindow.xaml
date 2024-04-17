@@ -13,7 +13,7 @@
     </Window.Background>
     <Grid Margin="20">
         <StackPanel Margin="20" Background="White" Opacity="0.85">
-        <TextBlock FontSize="24" Grid.Row="0" VerticalAlignment="Center" Margin="20, 10, 0, 0">Add Event</TextBlock>
+        <TextBlock Name="addEvent"  FontSize="24" Grid.Row="0" VerticalAlignment="Center" Margin="20, 10, 0, 0">Add Event</TextBlock>
         <!--Event details-->
         <Grid Margin="20" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Width="500">
             <Grid.ColumnDefinitions>
@@ -26,9 +26,9 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Label Grid.Row="0">Name:</Label>
-            <TextBox Grid.Column="1" Margin="0,0,0,10" />
+            <TextBox x:Name="eventName"  Grid.Column="1" Margin="0,0,0,10" TextChanged="TextBox_TextChanged" />
             <Label Grid.Row="2">Description:</Label>
-            <TextBox Grid.Row="2" Grid.Column="1" AcceptsReturn="True" />
+            <TextBox x:Name="eventDescription" Grid.Row="2" Grid.Column="1" AcceptsReturn="True" />
         </Grid>
         <!--Current calendar file being edited-->
         <!--Category details-->
@@ -41,7 +41,7 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Label Grid.Column="0">Selected Category:</Label>
-                <ComboBox Name="categoriescmb" Grid.Column="1" Height="20" SelectedIndex="0" IsEditable="True">
+                <ComboBox Name="categoriescmb" Grid.Column="1" Height="20" SelectedIndex="0" IsEditable="True" SelectionChanged="categoriescmb_SelectionChanged">
                 <ComboBoxItem>Test cat 1</ComboBoxItem>
                 <ComboBoxItem>Test cat 2</ComboBoxItem>
                 <ComboBoxItem>Test cat 3</ComboBoxItem>
