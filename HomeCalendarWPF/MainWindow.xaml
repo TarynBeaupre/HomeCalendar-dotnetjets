@@ -48,8 +48,8 @@
                     <TextBlock>path:</TextBlock>
                     <TextBlock Name="calendarFiletxb" Background="LightGray" FontSize="10" TextWrapping="WrapWithOverflow">path here</TextBlock>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button Margin="15" Click="Btn_OpenFileExplorer" Style="{StaticResource button}">New File</Button>
-                        <Button Margin="15" Click="Btn_OpenFileExplorer" Style="{StaticResource button}" >Open File</Button>
+                        <Button Margin="15" Click="Btn_Click_NewDBFile" Style="{StaticResource button}">New File</Button>
+                        <Button Margin="15" Click="Btn_Click_OpenDBFile" Style="{StaticResource button}" >Open File</Button>
                     </StackPanel>
                 </StackPanel>
                 <Separator></Separator>

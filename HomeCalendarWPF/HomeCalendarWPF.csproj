@@ -15,6 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="images\stardew-backdrop.jpg" />
     <Resource Include="images\stardew-star.png" />
     <Resource Include="images\stardew-tree.png" />

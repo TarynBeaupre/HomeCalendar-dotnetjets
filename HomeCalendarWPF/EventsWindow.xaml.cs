@@ -33,7 +33,7 @@ namespace HomeCalendarWPF
         public void Btn_Click_Add_Event(object sender, RoutedEventArgs e)
         {
             //Add the event to the database and the view calendar via the presenter
-            this.Close();
+            
         }
         public void Btn_Click_Cancel_Event(object sender, EventArgs e)
         {
