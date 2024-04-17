@@ -6,18 +6,26 @@
         xmlns:local="clr-namespace:HomeCalendarWPF"
         mc:Ignorable="d"
         FontFamily="Verdana"
-        Title="MainWindow" Height="500" Width="900"
+        Title="MainWindow" Height="500" Width="1000"
         WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="RessourceDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <Window.Background>
         <ImageBrush ImageSource="images/stardew-backdrop.jpg"></ImageBrush>
     </Window.Background>
+
     <Grid Margin="20" HorizontalAlignment="Center">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <Border Margin="10" BorderBrush="White" BorderThickness="5" Opacity="1">
-            <StackPanel VerticalAlignment="Top" Opacity="0.85" Height="419">
+            <StackPanel Opacity="0.9" Grid.Column="0" Grid.RowSpan="2">
                 <StackPanel.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="#FFD0EFFF"/>
@@ -33,15 +41,15 @@
                     </Image.Source>
                 </Image>
                 <Separator></Separator>
-                
+
                 <!--Calendar edit-->
                 <StackPanel Margin="10">
                     <Label FontWeight="Bold">Edit Calendar</Label>
                     <TextBlock>path:</TextBlock>
-                    <TextBlock Name="calendarFiletxb" Background="LightGray" FontSize="10">path here</TextBlock>
-                    <StackPanel Orientation="Horizontal">
-                        <Button Margin="20" Width="75" Click="Btn_OpenFileExplorer">New File</Button>
-                        <Button Margin="20" Width="75" Click="Btn_OpenFileExplorer">Open File</Button>
+                    <TextBlock Name="calendarFiletxb" Background="LightGray" FontSize="10" TextWrapping="WrapWithOverflow">path here</TextBlock>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button Margin="15" Click="Btn_OpenFileExplorer" Style="{StaticResource button}">New File</Button>
+                        <Button Margin="15" Click="Btn_OpenFileExplorer" Style="{StaticResource button}" >Open File</Button>
                     </StackPanel>
                 </StackPanel>
                 <Separator></Separator>
@@ -49,30 +57,35 @@
                 <!--Event edit-->
                 <StackPanel Margin="10">
                     <Label FontWeight="Bold">Edit Events</Label>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                       <TextBlock>Add a new event</TextBlock>
-                        <Button Margin="10, 0, 0, 0" Height="20" Click="OpenEvent">Add Event</Button> 
-                    </StackPanel>
+                    <TextBlock>Add a new event</TextBlock>
+                    <Button Style="{StaticResource button}" Margin="10" Click="OpenEvent">Add Event</Button>
                 </StackPanel>
                 <Separator></Separator>
                 <!--Colour themes-->
                 <StackPanel Margin="10">
                     <Label FontWeight="Bold">Change color theme</Label>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button Margin="10" Width="60" Height="20" Click="Btn_Click_Change_Theme" Background="LightGreen" >Default</Button>
-                        <Button Margin="10" Width="60" Height="20" Click="Btn_Click_Change_Theme" Background="White">Light</Button>
-                        <Button Margin="10" Width="60" Click="Btn_Click_Change_Theme" Background="Gray">Dark</Button>
+                        <Button Margin="10" Width="60" Click="Btn_Click_Change_Theme" Background="LightGreen" Style="{StaticResource button}" >Default</Button>
+                        <Button Margin="10" Width="60" Click="Btn_Click_Change_Theme" Background="White" Style="{StaticResource button}">Light</Button>
+                        <Button Margin="10" Width="60" Click="Btn_Click_Change_Theme" Background="Gray" Style="{StaticResource button}">Dark</Button>
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
         </Border>
-        <Image Grid.Column="1" Margin="390,175,0,0">
+        <Image Grid.Column="1" Margin="390,175,0,0" MinWidth="100">
             <Image.Source>
                 <BitmapImage DecodePixelWidth="300" UriSource="images/stardew-tree.png" />
             </Image.Source>
         </Image>
         <Viewbox HorizontalAlignment="Left" Grid.Column="1">
-            <Calendar Background="#DDFADA" Opacity="0.85" />
+            <Calendar Opacity="0.9" >
+                <Calendar.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFD0EFFF"/>
+                        <GradientStop Color="#FF91E8AA" Offset="1"/>
+                    </LinearGradientBrush>
+                </Calendar.Background>
+            </Calendar>
         </Viewbox>
 
     </Grid>
