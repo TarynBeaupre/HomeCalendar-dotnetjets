@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:HomeCalendarWPF"
         mc:Ignorable="d"
         FontFamily="Verdana"
-        Title="MainWindow" Height="500" Width="1000"
+        Title="MainWindow" Height="600" Width="1000"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <ResourceDictionary>
