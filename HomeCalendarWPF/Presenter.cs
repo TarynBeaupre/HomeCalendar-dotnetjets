@@ -1,6 +1,7 @@
 ﻿using Calendar;
 using System;
 using System.Collections.Generic;
+using System.IO.Enumeration;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -15,9 +16,9 @@ namespace HomeCalendarWPF
         private readonly HomeCalendar model;
 
         // Presenter constructor
-        public Presenter(ViewInterface v)
+        public Presenter(ViewInterface v, string filename, bool existingDB = false)
         {
-            //model = new HomeCalendar(); 
+            model = new HomeCalendar(filename, existingDB);
             view = v;
         }
 
