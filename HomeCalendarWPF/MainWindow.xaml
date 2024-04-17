@@ -38,7 +38,10 @@
                     <Label FontWeight="Bold">Edit Calendar</Label>
                     <TextBlock>path:</TextBlock>
                     <TextBlock Name="calendarFiletxb" Background="LightGray" FontSize="10">path here</TextBlock>
-                    <Button Margin="20" Width="100" Click="Btn_OpenFileExplorer">change path</Button>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Margin="20" Width="75" Click="Btn_OpenFileExplorer">New File</Button>
+                        <Button Margin="20" Width="75" Click="Btn_OpenFileExplorer">Open File</Button>
+                    </StackPanel>
                 </StackPanel>
 
                 <!--Event edit-->
