@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Microsoft.Win32;
+using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,6 +25,11 @@ namespace HomeCalendarWPF
             string baseDir = Environment.CurrentDirectory;
             InitializeComponent();
             calendarFiletxb.Text = System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\..\\CalendarApp\\test.calendar"));
+
+            if (IsFirstUse())
+            {
+                ReadyForFirstUse();
+            }
         }
         private void OpenEvent(object sender, RoutedEventArgs e)
         {
@@ -67,22 +73,43 @@ namespace HomeCalendarWPF
                 string filename = fileSelector.FileName;
                 calendarFiletxb.Text = filename;
 
-                // No worky, have to start sqlite w/ filename to create the db
-                //File.Create(filename);
-
-                System.Diagnostics.Process process = new System.Diagnostics.Process();
-                process.StartInfo.FileName = "sqlite3";
-                process.StartInfo.Arguments = $"{filename} .quit";
-                process.StartInfo.UseShellExecute = false;
-                process.Start();
-                process.WaitForExit();
-
                 presenter = new Presenter(this, filename);
             }
         }
         private void Btn_Click_Change_Theme(object sender, RoutedEventArgs e)
         {
             throw new NotImplementedException();
+        }
+        private bool IsFirstUse()
+        {
+            // Credit for how to check if key exists in registry https://stackoverflow.com/a/4276150
+
+            // Open software folder under HKEY_CURRENT_USER
+            Microsoft.Win32.RegistryKey rKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("Software", true)!;
+
+            // Check if software folder in registry has our program's info (if not, must be first use)
+            return !rKey.GetSubKeyNames().Contains("DotNetJetsCalendar");
+        }
+        private void ReadyForFirstUse()
+        {
+            // Credit for how to create & write to registry: https://stackoverflow.com/a/7230427 as well as C# Docs
+
+            // Open software folder under HKEY_CURRENT_USER
+            Microsoft.Win32.RegistryKey rKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("Software", true)!;
+
+            // -------------------------------------------------
+            // ACTUALLY SUPER IMPORTANT DO NOT FORGET ABOUT THIS
+            // -------------------------------------------------
+            // TODO: Change to DotNetJetsCalendar (Intentional spelling mistake: Calendary)
+            // This is for debugging, ONLY REMOVE IF DONE TESTING
+
+            // creates our folder in the software folder
+            const string SUB_KEY_NAME = "DotNetJetsCalendary";
+            rKey.CreateSubKey(SUB_KEY_NAME);
+
+            // Have to do it this way because just rKey.CreateSubKey("FIRST_USE", 0) doesn't work (should work)
+            const string keyName = @$"HKEY_CURRENT_USER\Software\{SUB_KEY_NAME}";
+            Registry.SetValue(keyName, "FIRST_USE", 0);
         }
 
         public void NewCalendar()
