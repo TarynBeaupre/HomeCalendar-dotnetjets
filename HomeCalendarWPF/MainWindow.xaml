@@ -39,8 +39,8 @@
                     <TextBlock>path:</TextBlock>
                     <TextBlock Name="calendarFiletxb" Background="LightGray" FontSize="10">path here</TextBlock>
                     <StackPanel Orientation="Horizontal">
-                        <Button Margin="20" Width="75" Click="Btn_OpenFileExplorer">New File</Button>
-                        <Button Margin="20" Width="75" Click="Btn_OpenFileExplorer">Open File</Button>
+                        <Button Margin="20" Width="75" Click="Btn_Click_NewDBFile">New File</Button>
+                        <Button Margin="20" Width="75" Click="Btn_Click_OpenDBFile">Open File</Button>
                     </StackPanel>
                 </StackPanel>
 
