@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualBasic;
+﻿using Calendar;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,12 +20,14 @@ namespace HomeCalendarWPF
     /// <summary>
     /// Interaction logic for Events.xaml
     /// </summary>
-    public partial class EventsWindow : Window
+    public partial class EventsWindow : Window, ViewInterface
     {
         private int defaultCategoryIndex = 0;
+        private Presenter presenter;
 
-        public EventsWindow()
+        public EventsWindow(Presenter p)
         {
+            this.presenter = p;
             InitializeComponent();
             startdp.SelectedDate = System.DateTime.Now;
             enddp.SelectedDate = System.DateTime.Now;
@@ -36,10 +39,29 @@ namespace HomeCalendarWPF
             categoriescmb.ItemsSource = categoriesList;
             SetDefaultTime();
         }
+
+        public void AddNewCategory()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddNewEvent()
+        {
+            //! Change for better UI implementation
+            addEvent.Text += " Event Added!";
+        }
+
         public void Btn_Click_Add_Event(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Event successfully added!");
             //Add the event to the database and the view calendar via the presenter
+            string name = eventName.Text;
+            string description = eventDescription.Text;
+            string categoryName = (string)categoriescmb.SelectedValue;
+            DateTime? start = startdp.SelectedDate;
+            DateTime? end = enddp.SelectedDate;
+            presenter.AddEvent(name, description, categoryName, start, end);
+
             this.Close();
 
         }
@@ -47,6 +69,21 @@ namespace HomeCalendarWPF
         {
             // if user cancels addition, resent the default values for the category and the dates
             this.Close();
+        }
+
+        public void NewCalendar()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OpenExistingCalendar(string filename, bool existingDB)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ShowError(string msg)
+        {
+            throw new NotImplementedException();
         }
         public void SetDefaultTime()
         {
