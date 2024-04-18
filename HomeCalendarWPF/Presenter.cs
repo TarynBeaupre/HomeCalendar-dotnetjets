@@ -26,17 +26,18 @@ namespace HomeCalendarWPF
             view = v;
         }
 
-        public void AddEvent(string name, string description, string categoryName, DateTime? start, DateTime? end, string text)
+        public void AddEvent(string details, int categoryId, DateTime? start, DateTime? end, string fileName)
         {
-            // Need to Get the Category object from CategoryName
+            //TODO: Get the Category ID object from CategoryName selected
 
-            // Query to add the new event to db
-            using var cmd = new SQLiteCommand(Database.dbConnection);
+            //TODO: calculate the duration
+            int durationInMinutes = 30;
 
-            cmd.CommandText = "INSERT INTO events (StartDateTime, Details, ";
-
-            // Add a message in view, saying that 'event has been added'
+            // Add a message in view
             view.AddNewEvent();
+
+            //Add event in model
+            model.events.Add(DateTime.Now, categoryId, durationInMinutes, details);
         }
     }
 }

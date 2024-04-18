@@ -143,26 +143,31 @@ namespace HomeCalendarWPF
 
         public void NewCalendar()
         {
+            //For now, does nothing. Will eventually clear the current calendar and show the new one and its events
             throw new NotImplementedException();
         }
 
         public void OpenExistingCalendar(string filename, bool existingDB)
         {
+            //Opens a calendar and displays its events
             throw new NotImplementedException();
         }
 
         public void AddNewEvent()
         {
+            //Will eventually update the calendar with the events
             throw new NotImplementedException();
         }
 
         public void AddNewCategory()
         {
+            //Does nothing in the calendar view
             throw new NotImplementedException();
         }
 
         public void ShowError(string msg)
         {
+            //TODO: Displays errors in a message box
             throw new NotImplementedException();
         }
 
