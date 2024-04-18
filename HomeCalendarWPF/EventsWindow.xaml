@@ -6,77 +6,149 @@
         xmlns:local="clr-namespace:HomeCalendarWPF"
         mc:Ignorable="d"
         FontFamily="Verdana"
-        Title="Events" Height="500" Width="900"
+        Title="Events" Height="600" Width="1000"
         WindowStartupLocation="CenterScreen">
     <Window.Background>
         <ImageBrush ImageSource="images/stardew-backdrop.jpg"></ImageBrush>
     </Window.Background>
-    <Grid Margin="20">
-        <StackPanel Margin="20" Background="White" Opacity="0.85">
-        <TextBlock Name="addEvent"  FontSize="24" Grid.Row="0" VerticalAlignment="Center" Margin="20, 10, 0, 0">Add Event</TextBlock>
-        <!--Event details-->
-        <Grid Margin="20" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Width="500">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Label Grid.Row="0">Name:</Label>
-            <TextBox x:Name="eventName"  Grid.Column="1" Margin="0,0,0,10" TextChanged="TextBox_TextChanged" />
-            <Label Grid.Row="2">Description:</Label>
-            <TextBox x:Name="eventDescription" Grid.Row="2" Grid.Column="1" AcceptsReturn="True" />
-        </Grid>
-        <!--Current calendar file being edited-->
-        <!--Category details-->
-        <Grid Name="CategoryDetails" Width="500" Margin="20" Grid.Row="2" Grid.ColumnSpan="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Label Grid.Column="0">Selected Category:</Label>
-                <ComboBox Name="categoriescmb" Grid.Column="1" Height="20" SelectedIndex="0" IsEditable="True">
-            </ComboBox>
-        </Grid>
-        
-        <!--Date Time details-->
-        <Grid Name="DateTime" Margin="20" Width="500" Grid.Row="2" Grid.Column="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Label Grid.Column="0">Start:</Label>
-            <DatePicker Name="startdp" Grid.Column="1">
-                <!--TODO: add blackout dates, cannot add an event before present-->
-                <DatePicker.BlackoutDates>
-                </DatePicker.BlackoutDates>
-            </DatePicker>
-            <Label Grid.Row="1">End:</Label>
-            <DatePicker Name="enddp" Grid.Column="1" Grid.Row="1">
-                <!--TODO: add blackout, cannot end event before start-->
-                <DatePicker.BlackoutDates>
-                </DatePicker.BlackoutDates>
-            </DatePicker>
-        </Grid>
-            <DockPanel LastChildFill="False" Width="250" Height="35">
-                <Button Click="Btn_Click_Add_Event" DockPanel.Dock="Left" Background="green" Width="80">
-                    <Button.Resources>
-                        <Style TargetType="Border">
-                            <Setter Property="CornerRadius" Value="5"/>
-                        </Style>
-                    </Button.Resources> Add</Button>
-                <Button Click="Btn_Click_Cancel_Event" DockPanel.Dock="Right" Background="Red" Width="80">Cancel</Button>
-            </DockPanel>
+
+    <Grid Margin="20" HorizontalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.3*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="0.3*"/>
+        </Grid.RowDefinitions>
+
+        <!--Header-->
+        <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Background="#FFD0EFFF" Opacity="0.9">
+            <!--Stardew stardrop image-->
+            <Image Margin="5, 0, 20, 0" Width="40">
+                <Image.Source>
+                    <BitmapImage UriSource="images/stardew-star.png" />
+                </Image.Source>
+            </Image>
+            <!--Title-->
+            <TextBlock VerticalAlignment="Center" FontSize="24" FontWeight="Bold" FontStyle="Italic">Add Event ~</TextBlock>
         </StackPanel>
+
+        <!--Form details-->
+        <StackPanel Opacity="0.9" Grid.Row="1" Margin="0, 10, 0, 10">
+            <StackPanel.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFD0EFFF"/>
+                    <GradientStop Color="#FF91E8AA" Offset="1"/>
+                </LinearGradientBrush>
+            </StackPanel.Background>
+
+            <!--Event details-->
+            <Label Background="White">Events Details</Label>
+            <Grid Margin="20" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Width="500">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0">Name:</Label>
+                <TextBox Grid.Column="1" Name="eventName" />
+                <Label Grid.Row="1">Description:</Label>
+                <TextBox Grid.Row="1" Grid.Column="1" AcceptsReturn="True" Name="eventDescription" />
+                <Label Grid.Row="3">Path:</Label>
+                <TextBlock Name="txbCalendarFileinEvents" Grid.Row="3" Grid.Column="1" Background="LightGray" Margin="2" FontSize="10" TextWrapping="WrapWithOverflow">path here</TextBlock>
+            </Grid>
+            <!--Current calendar file being edited-->
+            <!--Category details-->
+            <Label Background="White">Category Details</Label>
+            <Grid Name="CategoryDetails" Width="500" Margin="20" Grid.Row="2" Grid.ColumnSpan="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0">Selected Category:</Label>
+                <ComboBox x:Name="categoriescmb" Grid.Column="1" Height="20" SelectedIndex="0" IsEditable="True">
+                </ComboBox>
+            </Grid>
+
+            <!--Date Time details-->
+            <Label Background="White">Date and Time Details</Label>
+            <Grid x:Name="DateTime" Margin="20" Width="500" Grid.Row="2" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0">Start:</Label>
+                <DatePicker x:Name="startdp" Grid.Column="1">
+                    <!--TODO: add blackout dates, cannot add an event before present-->
+                    <DatePicker.BlackoutDates>
+                    </DatePicker.BlackoutDates>
+                </DatePicker>
+                <Label Grid.Row="1">End:</Label>
+                <DatePicker x:Name="enddp" Grid.Column="1" Grid.Row="1">
+                    <!--TODO: add blackout, cannot end event before start-->
+                    <DatePicker.BlackoutDates>
+                    </DatePicker.BlackoutDates>
+                </DatePicker>
+
+                <!--Start Time-->
+                <Label Grid.Row="2">Start Time:</Label>
+                <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+                    <ComboBox x:Name="cmbStartTimeHour" Grid.Row="2" Grid.Column="1">
+                    </ComboBox>
+                    <TextBlock>:</TextBlock>
+                    <ComboBox x:Name="cmbStartTimeMins" Grid.Row="2" Grid.Column="1">
+                    </ComboBox>
+                </StackPanel>
+
+                <!--End time-->
+                <Label Grid.Row="3">End Time:</Label>
+                <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
+                    <ComboBox x:Name="cmbEndTimeHours" Grid.Row="3" Grid.Column="1">
+                    </ComboBox>
+                    <TextBlock>:</TextBlock>
+                    <ComboBox x:Name="cmbEndTimeMins" Grid.Row="3" Grid.Column="1">
+                    </ComboBox>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+        <!--Footer-->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button Click="Btn_Click_Add_Event" Grid.Column="1" Style="{StaticResource button}" Foreground="White" Background="#FF61B63B" BorderThickness="4, 3, 4, 0">
+                <Button.BorderBrush>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FF71FF33" Offset="0.107"/>
+                        <GradientStop Color="#FF1F7125" Offset="1"/>
+                        <GradientStop Color="White" Offset="0"/>
+                    </LinearGradientBrush>
+                </Button.BorderBrush> Add new event
+            </Button>
+            <Button Click="Btn_Click_Cancel_Event" Grid.Column="3" Style="{StaticResource button}" Foreground="White" Background="Red" BorderThickness="4, 3, 4, 0">
+                <Button.BorderBrush>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFFF9B35" Offset="0.107"/>
+                        <GradientStop Color="#FFFF3F02" Offset="1"/>
+                        <GradientStop Color="White" Offset="0"/>
+                    </LinearGradientBrush>
+                </Button.BorderBrush> Cancel
+            </Button>
+        </Grid>
     </Grid>
 </Window>

@@ -27,7 +27,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="0.3*"/>
             <RowDefinition Height="3*"/>
-            <RowDefinition Height="0.20*"/>
+            <RowDefinition Height="0.25*"/>
         </Grid.RowDefinitions>
         <!--Header-->
         <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Background="#FFD0EFFF" Opacity="0.9">
@@ -42,7 +42,7 @@
         </StackPanel>
 
         <!--Side Menu Background-->
-        <StackPanel Grid.Row="1" Grid.ColumnSpan="1" Margin="10" >
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="1" Margin="10" Opacity="0.9">
             <StackPanel.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFD0EFFF"/>
@@ -50,38 +50,39 @@
                 </LinearGradientBrush>
             </StackPanel.Background>
         </StackPanel>
-        
-        <!--Calendar editing side bar-->
-            <!--Change file-->
-            <StackPanel Margin="15, 30, 15, 20" Grid.Row="1" VerticalAlignment="Top">
-                <Label FontWeight="Bold">Edit Calendar</Label>
-                <TextBlock>current path:</TextBlock>
-                <TextBlock Name="calendarFiletxb" Background="LightGray" Margin="2" FontSize="10" TextWrapping="WrapWithOverflow">path here</TextBlock>
-                <TextBlock>Change the file:</TextBlock>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Click="Btn_Click_NewDBFile" Style="{StaticResource button}">New File</Button>
-                    <Button Click="Btn_Click_OpenDBFile" Style="{StaticResource button}">Open File</Button>
-                </StackPanel>
-            </StackPanel>
 
-            <!--Event edit-->
-            <StackPanel Margin="15, 30, 15, 20" Grid.Row="1" VerticalAlignment="Center">
-                <Label FontWeight="Bold">Edit Events</Label>
-                <TextBlock>Add a new event</TextBlock>
-                <Button Style="{StaticResource button}" Margin="10" Click="OpenEvent">Add Event</Button>
+        <!--Calendar editing side bar-->
+        <!--Change file-->
+        <StackPanel Margin="15, 30, 15, 20" Grid.Row="1" VerticalAlignment="Top">
+            <Label FontWeight="Bold">Edit Calendar</Label>
+            <TextBlock>current path:</TextBlock>
+            <TextBlock Name="calendarFiletxb" Background="LightGray" Margin="2" FontSize="10" TextWrapping="WrapWithOverflow">path here</TextBlock>
+            <TextBlock>Change the file:</TextBlock>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Click="Btn_Click_NewDBFile" Style="{StaticResource button}">New File</Button>
+                <Button Click="Btn_Click_OpenDBFile" Style="{StaticResource button}">Open File</Button>
             </StackPanel>
-        
-            <!--Colour themes-->
-            <StackPanel Margin="10" Grid.Row="1" Grid.Column="0" VerticalAlignment="Bottom">
-                <Label FontWeight="Bold">Change color theme</Label>
-                <TextBlock>Select a new colour theme</TextBlock>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Margin="10" Width="60" Click="Btn_Click_Change_Theme" Background="LightGreen" Style="{StaticResource button}" >Default</Button>
-                    <Button Margin="10" Width="60" Click="Btn_Click_Change_Theme" Background="White" Style="{StaticResource button}">Light</Button>
-                    <Button Margin="10" Width="60" Click="Btn_Click_Change_Theme" Background="Gray" Style="{StaticResource button}">Dark</Button>
-                </StackPanel>
+        </StackPanel>
+
+        <!--Event edit-->
+        <StackPanel Margin="15, 30, 15, 20" Grid.Row="1" VerticalAlignment="Center">
+            <Label FontWeight="Bold">Edit Events</Label>
+            <TextBlock>Add a new event</TextBlock>
+            <Button Style="{StaticResource button}" Margin="10" Click="OpenEvent">
+                Add Event</Button>
+        </StackPanel>
+
+        <!--Colour themes-->
+        <StackPanel Margin="10" Grid.Row="1" Grid.Column="0" VerticalAlignment="Bottom">
+            <Label FontWeight="Bold">Change color theme</Label>
+            <TextBlock>Select a new colour theme</TextBlock>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Margin="10" Width="60" Click="Btn_Click_Change_Theme" Background="LightGreen" Style="{StaticResource button}" >Default</Button>
+                <Button Margin="10" Width="60" Click="Btn_Click_Change_Theme" Background="White" Style="{StaticResource button}">Light</Button>
+                <Button Margin="10" Width="60" Click="Btn_Click_Change_Theme" Background="Gray" Style="{StaticResource button}">Dark</Button>
             </StackPanel>
-   
+        </StackPanel>
+
         <Viewbox HorizontalAlignment="Left" Grid.Column="1" Grid.Row="1">
             <Calendar Opacity="0.9">
                 <Calendar.Background>
@@ -94,7 +95,15 @@
         </Viewbox>
 
         <!--Footer-->
-        <Button Grid.Row="2" Grid.ColumnSpan="1" Margin="35, 3, 35, 3" Style="{StaticResource button}" Background="#FFFFC256" BorderBrush="#FFF2FF04" BorderThickness="3, 2, 2, 0">Close and Save Calendar</Button>
+        <Button Click="Btn_Click_ShowWarning" Grid.Row="2" Grid.ColumnSpan="1" Margin="35, 3, 35, 3" Style="{StaticResource button}" Foreground="#FFC83F13" Background="#FFFF9800" BorderThickness="4, 3, 4, 0">
+            <Button.BorderBrush>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFFFEB3B" Offset="0.107"/>
+                    <GradientStop Color="#FFFF5722" Offset="1"/>
+                    <GradientStop Color="White" Offset="0"/>
+                </LinearGradientBrush>
+            </Button.BorderBrush> Close and Save Calendar
+        </Button>
         <TextBlock Grid.Column="1" Grid.Row="2" VerticalAlignment="Top" HorizontalAlignment="Right" FontStyle="Italic"> by Taryn B., Julien H., Eric C.</TextBlock>
     </Grid>
 </Window>
