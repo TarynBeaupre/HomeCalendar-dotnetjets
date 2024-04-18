@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 using System.Data;
-using Microsoft.Data.Sqlite;
 using System.Data.SQLite;
 
 namespace HomeCalendarWPF

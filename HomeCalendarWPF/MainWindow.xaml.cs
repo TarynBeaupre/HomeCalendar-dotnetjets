@@ -150,10 +150,5 @@ namespace HomeCalendarWPF
             throw new NotImplementedException();
         }
 
-        public void OpenExistingCalendar(string filename, bool existingDB)
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }

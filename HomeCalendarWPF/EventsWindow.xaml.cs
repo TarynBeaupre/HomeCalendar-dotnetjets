@@ -2,6 +2,7 @@
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
+using System.IO.Enumeration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,6 +38,7 @@ namespace HomeCalendarWPF
                 "Homework", "Event", "Work", "Meeting"
             };
             categoriescmb.ItemsSource = categoriesList;
+            txbCalendarFileinEvents.Text = ((MainWindow)Application.Current.MainWindow).calendarFiletxb.Text;
             SetDefaultTime();
         }
 
@@ -48,21 +50,21 @@ namespace HomeCalendarWPF
         public void AddNewEvent()
         {
             //! Change for better UI implementation
-            addEvent.Text += " Event Added!";
+            MessageBox.Show("Event successfully added!");
+            this.Close();
         }
 
         public void Btn_Click_Add_Event(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Event successfully added!");
             //Add the event to the database and the view calendar via the presenter
             string name = eventName.Text;
             string description = eventDescription.Text;
             string categoryName = (string)categoriescmb.SelectedValue;
             DateTime? start = startdp.SelectedDate;
             DateTime? end = enddp.SelectedDate;
-            presenter.AddEvent(name, description, categoryName, start, end);
-
-            this.Close();
+            string fileName = "";
+            AddNewEvent();
+            presenter.AddEvent(name, description, categoryName, start, end, fileName);
 
         }
         public void Btn_Click_Cancel_Event(object sender, EventArgs e)
@@ -89,11 +91,9 @@ namespace HomeCalendarWPF
         {
             int startHour, endMinsIndex, endHour;
             DateTime date = System.DateTime.Now;
-            startHour = date.Hour;
-            endHour = startHour + 1;
 
             List<string> hourList = new List<string> { };
-            for (int i = 0; i <= 24; i++)
+            for (int i = 1; i <= 24; i++)
             {
                 hourList.Add(i.ToString());
             }
@@ -105,20 +105,24 @@ namespace HomeCalendarWPF
             cmbStartTimeHour.ItemsSource = hourList;
             cmbEndTimeHours.ItemsSource = hourList;
 
-            cmbStartTimeHour.SelectedIndex = startHour;
-            cmbEndTimeHours.SelectedIndex = endHour;
 
             cmbStartTimeMins.ItemsSource = minList; 
             if (date.Minute < 30)
             {
+                startHour = date.Hour;
+                endHour = startHour + 1;
                 endMinsIndex = 2;
                 cmbStartTimeMins.SelectedIndex = 2;
             }
             else
             {
+                startHour = date.Hour + 1;
+                endHour = startHour + 1;
                 endMinsIndex = 0;
                 cmbStartTimeMins.SelectedIndex = 0;
             }
+            cmbStartTimeHour.SelectedIndex = startHour;
+            cmbEndTimeHours.SelectedIndex = endHour;
             cmbEndTimeMins.ItemsSource = minList;
             cmbEndTimeMins.SelectedIndex = endMinsIndex;
         }
