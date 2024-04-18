@@ -97,6 +97,8 @@ namespace HomeCalendarWPF
             tbDir.Text = recentFilePath;
             initParams.filePath = recentFilePath;
             initParams.newDB = false;
+
+            btnConfirm.IsEnabled = true;
         }
         private void Btn_Click_Confirm(object sender, RoutedEventArgs e)
         {
