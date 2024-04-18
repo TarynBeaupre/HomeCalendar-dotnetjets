@@ -16,7 +16,7 @@
         </ResourceDictionary>
     </Window.Resources>
     <Window.Background>
-        <ImageBrush ImageSource="images/stardew-backdrop.jpg"></ImageBrush>
+        <ImageBrush x:Name="background_theme" ImageSource="images/stardew-backdrop.jpg"></ImageBrush>
     </Window.Background>
 
     <Grid Margin="20" HorizontalAlignment="Center" >
@@ -32,9 +32,15 @@
         <!--Header-->
         <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Background="#FFD0EFFF" Opacity="0.9">
             <!--Stardew stardrop image-->
-            <Image Margin="5, 0, 20, 0" Width="40">
+            <Image Margin="5, 0, 20, 0" Width="70" Visibility="Visible" x:Name="light_theme_star">
                 <Image.Source>
-                    <BitmapImage UriSource="images/stardew-star.png" />
+                    <BitmapImage x:Name="star_image" UriSource="images/stardew-star.png"/>
+                </Image.Source>
+            </Image>
+
+            <Image Margin="5, 0, 20, 0" Width="70" Visibility="Collapsed" x:Name="dark_theme_star">
+                <Image.Source>
+                    <BitmapImage UriSource="images/stardew-star-dark.png"/>
                 </Image.Source>
             </Image>
             <!--Title-->
@@ -46,7 +52,7 @@
             <StackPanel.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFD0EFFF"/>
-                    <GradientStop Color="#FF91E8AA" Offset="1"/>
+                    <GradientStop x:Name="sidemenu_gradient" Color="#FF91E8AA" Offset="1"/>
                 </LinearGradientBrush>
             </StackPanel.Background>
         </StackPanel>
@@ -77,9 +83,8 @@
             <Label FontWeight="Bold">Change color theme</Label>
             <TextBlock>Select a new colour theme</TextBlock>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Margin="10" Width="60" Click="Btn_Click_Change_Theme" Background="LightGreen" Style="{StaticResource button}" >Default</Button>
-                <Button Margin="10" Width="60" Click="Btn_Click_Change_Theme" Background="White" Style="{StaticResource button}">Light</Button>
-                <Button Margin="10" Width="60" Click="Btn_Click_Change_Theme" Background="Gray" Style="{StaticResource button}">Dark</Button>
+                <Button x:Name="button_light_theme" Margin="10" Width="60" Click="Btn_Click_Change_Theme" Background="LightGreen" Style="{StaticResource button}">Light</Button>
+                <Button x:Name="button_dark_theme" Margin="10" Width="60" Click="Btn_Click_Change_Theme" Background="DarkGray" Style="{StaticResource button}">Dark</Button>
             </StackPanel>
         </StackPanel>
 
@@ -88,7 +93,7 @@
                 <Calendar.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="#FFD0EFFF"/>
-                        <GradientStop Color="#FF91E8AA" Offset="1"/>
+                        <GradientStop x:Name="calendar_gradient" Color="#FF91E8AA" Offset="1"/>
                     </LinearGradientBrush>
                 </Calendar.Background>
             </Calendar>

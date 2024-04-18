@@ -108,7 +108,31 @@ namespace HomeCalendarWPF
 
         private void Btn_Click_Change_Theme(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            Button clickedButton = sender as Button;
+            if (clickedButton != null)
+            {
+                if (clickedButton.Name == "button_dark_theme")
+                {
+                    // Change the string in ImageSource to dark theme image
+                    background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop-dark.jpg", UriKind.Relative));
+                    sidemenu_gradient.Color = Colors.Gray;
+                    calendar_gradient.Color = Colors.Gray;
+                    // Changing only the URISource of the image doesn't work for some reason...
+                    //star_image.UriSource = new Uri("images/stardew-star-dark.png", UriKind.RelativeOrAbsolute);
+                    light_theme_star.Visibility = Visibility.Collapsed;
+                    dark_theme_star.Visibility = Visibility.Visible;
+
+                }
+                else if (clickedButton.Name == "button_light_theme")
+                {
+                    // Change the string in Window.Background > ImageSource to light theme image
+                    background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop.jpg", UriKind.Relative));
+                    sidemenu_gradient.Color = Colors.LightGreen;
+                    calendar_gradient.Color = Colors.LightGreen;
+                    light_theme_star.Visibility = Visibility.Visible;
+                    dark_theme_star.Visibility = Visibility.Collapsed;
+                }
+            }
         }
 
         private void Btn_Click_ShowWarning(object sender, RoutedEventArgs e)

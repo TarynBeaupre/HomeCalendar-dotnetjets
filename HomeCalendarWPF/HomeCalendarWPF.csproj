@@ -9,7 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="images\stardew-backdrop-dark.jpg" />
     <None Remove="images\stardew-backdrop.jpg" />
+    <None Remove="images\stardew-star-dark.png" />
     <None Remove="images\stardew-star.png" />
     <None Remove="images\stardew-tree.png" />
   </ItemGroup>
@@ -19,7 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="images\stardew-backdrop-dark.jpg" />
     <Resource Include="images\stardew-backdrop.jpg" />
+    <Resource Include="images\stardew-star-dark.png" />
     <Resource Include="images\stardew-star.png" />
     <Resource Include="images\stardew-tree.png" />
   </ItemGroup>
