@@ -18,18 +18,41 @@ namespace HomeCalendarWPF
     /// </summary>
     public partial class MainWindow : Window, ViewInterface
     {
+        public struct InitializationParams
+        {
+            public string filePath;
+            public bool newDB;
+
+            public InitializationParams(string filePath, bool newDB) 
+            { 
+                this.filePath = filePath; this.newDB = newDB;
+            }
+        }
         private Presenter presenter;
+
+        // -------------------------------------------------
+        // ACTUALLY SUPER IMPORTANT DO NOT FORGET ABOUT THIS
+        // -------------------------------------------------
+        // TODO: Change to DotNetJetsCalendar (Intentional spelling mistake: Calendary)
+        // This is for debugging, ONLY REMOVE IF DONE TESTING
+        public static readonly string REGISTRY_SUB_KEY_NAME = "DotNetJetsCalendary";
 
         public MainWindow()
         {
-            string baseDir = Environment.CurrentDirectory;
             InitializeComponent();
-            calendarFiletxb.Text = System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\..\\CalendarApp\\test.calendar"));
+
+            InitializationParams initParams = new InitializationParams(Environment.CurrentDirectory, false);
 
             if (IsFirstUse())
             {
                 ReadyForFirstUse();
             }
+
+            FirstOpenWindow fop = new FirstOpenWindow();
+            fop.ShowDialog();
+
+            presenter = new Presenter(this, fop.initParams.filePath, fop.initParams.newDB);
+            calendarFiletxb.Text = fop.initParams.filePath;
         }
         private void OpenEvent(object sender, RoutedEventArgs e)
         {
@@ -101,7 +124,7 @@ namespace HomeCalendarWPF
             Microsoft.Win32.RegistryKey rKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("Software", true)!;
 
             // Check if software folder in registry has our program's info (if not, must be first use)
-            return !rKey.GetSubKeyNames().Contains("DotNetJetsCalendar");
+            return !rKey.GetSubKeyNames().Contains(MainWindow.REGISTRY_SUB_KEY_NAME);
         }
         private void ReadyForFirstUse()
         {
@@ -110,18 +133,11 @@ namespace HomeCalendarWPF
             // Open software folder under HKEY_CURRENT_USER
             Microsoft.Win32.RegistryKey rKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("Software", true)!;
 
-            // -------------------------------------------------
-            // ACTUALLY SUPER IMPORTANT DO NOT FORGET ABOUT THIS
-            // -------------------------------------------------
-            // TODO: Change to DotNetJetsCalendar (Intentional spelling mistake: Calendary)
-            // This is for debugging, ONLY REMOVE IF DONE TESTING
-
             // creates our folder in the software folder
-            const string SUB_KEY_NAME = "DotNetJetsCalendary";
-            rKey.CreateSubKey(SUB_KEY_NAME);
+            rKey.CreateSubKey(MainWindow.REGISTRY_SUB_KEY_NAME);
 
-            // Have to do it this way because just rKey.CreateSubKey("FIRST_USE", 0) doesn't work (should work)
-            const string keyName = @$"HKEY_CURRENT_USER\Software\{SUB_KEY_NAME}";
+            // Have to do it this way because just rKey.SetValue("FIRST_USE", 0) doesn't work (should work)
+            string keyName = @$"HKEY_CURRENT_USER\Software\{MainWindow.REGISTRY_SUB_KEY_NAME}";
             Registry.SetValue(keyName, "FIRST_USE", 0);
         }
 
