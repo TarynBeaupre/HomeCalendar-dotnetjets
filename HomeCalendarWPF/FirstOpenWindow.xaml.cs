@@ -24,7 +24,7 @@ namespace HomeCalendarWPF
     public partial class FirstOpenWindow : Window
     {
         public MainWindow.InitializationParams initParams;
-        bool overrideClosing = true;
+        bool overrideClosing = false;
         public FirstOpenWindow()
         {
             InitializeComponent();
