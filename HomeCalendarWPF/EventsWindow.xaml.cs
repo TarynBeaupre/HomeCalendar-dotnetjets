@@ -57,14 +57,18 @@ namespace HomeCalendarWPF
         public void Btn_Click_Add_Event(object sender, RoutedEventArgs e)
         {
             //Add the event to the database and the view calendar via the presenter
-            string name = eventName.Text;
-            string description = eventDescription.Text;
-            string categoryName = (string)categoriescmb.SelectedValue;
+            string details = eventDescription.Text;
+            int categoryId = categoriescmb.SelectedIndex;
+
+            if (!startdp.SelectedDate.HasValue)
+                startdp.SelectedDate = System.DateTime.Now;
+            if (!enddp.SelectedDate.HasValue)
+                enddp.SelectedDate = System.DateTime.Now;
             DateTime? start = startdp.SelectedDate;
             DateTime? end = enddp.SelectedDate;
             string fileName = "";
             AddNewEvent();
-            presenter.AddEvent(name, description, categoryName, start, end, fileName);
+            presenter.AddEvent(details, categoryId, start, end, fileName);
 
         }
         public void Btn_Click_Cancel_Event(object sender, EventArgs e)
@@ -103,7 +107,7 @@ namespace HomeCalendarWPF
             };
 
             cmbStartTimeHour.ItemsSource = hourList;
-            cmbEndTimeHours.ItemsSource = hourList;
+            cmbEndTimeHour.ItemsSource = hourList;
 
 
             cmbStartTimeMins.ItemsSource = minList; 
@@ -121,8 +125,8 @@ namespace HomeCalendarWPF
                 endMinsIndex = 0;
                 cmbStartTimeMins.SelectedIndex = 0;
             }
-            cmbStartTimeHour.SelectedIndex = startHour;
-            cmbEndTimeHours.SelectedIndex = endHour;
+            cmbStartTimeHour.SelectedIndex = startHour - 1;
+            cmbEndTimeHour.SelectedIndex = endHour - 1;
             cmbEndTimeMins.ItemsSource = minList;
             cmbEndTimeMins.SelectedIndex = endMinsIndex;
         }
