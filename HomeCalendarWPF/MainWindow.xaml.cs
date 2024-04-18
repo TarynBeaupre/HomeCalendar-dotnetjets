@@ -80,6 +80,12 @@ namespace HomeCalendarWPF
         {
             throw new NotImplementedException();
         }
+
+        private void Btn_Click_ShowWarning(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("If you close the next window without saving, your changes will be lost.", "Configuration", MessageBoxButton.OK, MessageBoxImage.Warning);
+            Application.Current.Shutdown();
+        }
         private bool IsFirstUse()
         {
             // Credit for how to check if key exists in registry https://stackoverflow.com/a/4276150
