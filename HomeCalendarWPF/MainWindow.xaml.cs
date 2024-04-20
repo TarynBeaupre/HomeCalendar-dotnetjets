@@ -41,6 +41,7 @@ namespace HomeCalendarWPF
         {
             InitializeComponent();
 
+            //TODO: This makes the view have too much logic, need to change it to MVP
             InitializationParams initParams = new InitializationParams(Environment.CurrentDirectory, false);
 
             if (IsFirstUse())
@@ -54,6 +55,7 @@ namespace HomeCalendarWPF
             presenter = new Presenter(this, fop.initParams.filePath, fop.initParams.newDB);
             calendarFiletxb.Text = fop.initParams.filePath;
         }
+
         private void OpenEvent(object sender, RoutedEventArgs e)
         {
             bool darkmode = false;
@@ -90,6 +92,7 @@ namespace HomeCalendarWPF
                 presenter = new Presenter(this, filename, true);
             }
         }
+
         private void Btn_Click_NewDBFile(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.SaveFileDialog fileSelector = new Microsoft.Win32.SaveFileDialog();
@@ -107,6 +110,7 @@ namespace HomeCalendarWPF
                 presenter = new Presenter(this, filename);
             }
         }
+
         private void Btn_OpenNewFile(object sender, RoutedEventArgs e)
         {
             string defaultFilename = "newDB.db";
@@ -148,6 +152,7 @@ namespace HomeCalendarWPF
             MessageBox.Show("If you close the next window without saving, your changes will be lost.", "Configuration", MessageBoxButton.OK, MessageBoxImage.Warning);
             Application.Current.Shutdown();
         }
+
         private bool IsFirstUse()
         {
             // Credit for how to check if key exists in registry https://stackoverflow.com/a/4276150
@@ -158,6 +163,7 @@ namespace HomeCalendarWPF
             // Check if software folder in registry has our program's info (if not, must be first use)
             return !rKey.GetSubKeyNames().Contains(MainWindow.REGISTRY_SUB_KEY_NAME);
         }
+
         private void ReadyForFirstUse()
         {
             // Credit for how to create & write to registry: https://stackoverflow.com/a/7230427 as well as C# Docs
