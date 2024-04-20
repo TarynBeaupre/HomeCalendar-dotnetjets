@@ -56,7 +56,15 @@ namespace HomeCalendarWPF
         }
         private void OpenEvent(object sender, RoutedEventArgs e)
         {
-            EventsWindow eventWindow = new EventsWindow(presenter);
+            bool darkmode = false;
+
+            // To pass the current theme in the child window - Depends on the visibility of the star
+            if (dark_theme_star.Visibility == Visibility.Visible)
+                darkmode = true;
+            else
+                darkmode = false;
+
+            EventsWindow eventWindow = new EventsWindow(presenter, darkmode);
             eventWindow.Show();
         }
 
@@ -117,7 +125,7 @@ namespace HomeCalendarWPF
                     background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop-dark.jpg", UriKind.Relative));
                     sidemenu_gradient.Color = Colors.Gray;
                     calendar_gradient.Color = Colors.Gray;
-                    // Changing only the URISource of the image doesn't work for some reason...
+                    // Changing only the URISource of the image doesn't work...
                     //star_image.UriSource = new Uri("images/stardew-star-dark.png", UriKind.RelativeOrAbsolute);
                     light_theme_star.Visibility = Visibility.Collapsed;
                     dark_theme_star.Visibility = Visibility.Visible;

@@ -26,7 +26,7 @@ namespace HomeCalendarWPF
         private int defaultCategoryIndex = 0;
         private Presenter presenter;
 
-        public EventsWindow(Presenter p)
+        public EventsWindow(Presenter p, bool darkmode)
         {
             this.presenter = p;
             InitializeComponent();
@@ -40,6 +40,22 @@ namespace HomeCalendarWPF
             categoriescmb.ItemsSource = categoriesList;
             txbCalendarFileinEvents.Text = ((MainWindow)Application.Current.MainWindow).calendarFiletxb.Text;
             SetDefaultTime();
+
+            // Set the theme from the mainWindow
+            if (darkmode)
+            {
+                child_window_background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop-dark.jpg", UriKind.Relative));
+                menu_gradient.Color = Colors.Gray;
+                light_theme_star.Visibility = Visibility.Collapsed;
+                dark_theme_star.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                child_window_background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop.jpg", UriKind.Relative));
+                menu_gradient.Color = Colors.LightGreen;
+                light_theme_star.Visibility = Visibility.Visible;
+                dark_theme_star.Visibility = Visibility.Collapsed;
+            }
         }
 
         public void AddNewCategory()

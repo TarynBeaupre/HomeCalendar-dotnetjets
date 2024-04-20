@@ -9,7 +9,7 @@
         Title="Events" Height="600" Width="1000"
         WindowStartupLocation="CenterScreen">
     <Window.Background>
-        <ImageBrush ImageSource="images/stardew-backdrop.jpg"></ImageBrush>
+        <ImageBrush x:Name="child_window_background_theme" ImageSource="images/stardew-backdrop.jpg"></ImageBrush>
     </Window.Background>
 
     <Grid Margin="20" HorizontalAlignment="Center">
@@ -22,9 +22,15 @@
         <!--Header-->
         <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Background="#FFD0EFFF" Opacity="0.9">
             <!--Stardew stardrop image-->
-            <Image Margin="5, 0, 20, 0" Width="40">
+            <Image Margin="5, 0, 20, 0" Visibility="Visible" Width="40" x:Name="light_theme_star">
                 <Image.Source>
                     <BitmapImage UriSource="images/stardew-star.png" />
+                </Image.Source>
+            </Image>
+            
+            <Image Margin="5, 0, 20, 0" Width="40" Visibility="Collapsed" x:Name="dark_theme_star">
+                <Image.Source>
+                    <BitmapImage UriSource="images/stardew-star-dark.png"/>
                 </Image.Source>
             </Image>
             <!--Title-->
@@ -36,7 +42,7 @@
             <StackPanel.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFD0EFFF"/>
-                    <GradientStop Color="#FF91E8AA" Offset="1"/>
+                    <GradientStop x:Name="menu_gradient" Color="#FF91E8AA" Offset="1"/>
                 </LinearGradientBrush>
             </StackPanel.Background>
 

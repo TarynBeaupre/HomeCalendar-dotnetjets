@@ -32,13 +32,13 @@
         <!--Header-->
         <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Background="#FFD0EFFF" Opacity="0.9">
             <!--Stardew stardrop image-->
-            <Image Margin="5, 0, 20, 0" Width="70" Visibility="Visible" x:Name="light_theme_star">
+            <Image Margin="5, 0, 20, 0" Width="40" Visibility="Visible" x:Name="light_theme_star">
                 <Image.Source>
                     <BitmapImage x:Name="star_image" UriSource="images/stardew-star.png"/>
                 </Image.Source>
             </Image>
 
-            <Image Margin="5, 0, 20, 0" Width="70" Visibility="Collapsed" x:Name="dark_theme_star">
+            <Image Margin="5, 0, 20, 0" Width="40" Visibility="Collapsed" x:Name="dark_theme_star">
                 <Image.Source>
                     <BitmapImage UriSource="images/stardew-star-dark.png"/>
                 </Image.Source>
