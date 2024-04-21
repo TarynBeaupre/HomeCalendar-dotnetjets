@@ -93,7 +93,10 @@ namespace HomeCalendarWPF
         private void GetTheme()
         {
             string keyName = @$"HKEY_CURRENT_USER\Software\{MainWindow.REGISTRY_SUB_KEY_NAME}";
-            MainWindow.darkMode = ((int)Registry.GetValue(keyName, "DARK_THEME", 0)! == 1) ? true : false;
+            var a = Registry.GetValue(keyName, "DARK_THEME", 0);
+            int b = (int)a;
+            MainWindow.darkMode = b == 1 ? true : false;
+            //MainWindow.darkMode = ((int)Registry.GetValue(keyName, "DARK_THEME", 0)! == 1) ? true : false;
         }
     }
 }

@@ -53,7 +53,7 @@ namespace HomeCalendarWPF
 
         private void OpenEvent(object sender, RoutedEventArgs e)
         {
-            EventsWindow eventWindow = new EventsWindow(presenter, darkMode);
+            EventsWindow eventWindow = new EventsWindow(darkMode);
             eventWindow.Show();
         }
         private void Btn_Click_ChangeDBFile(object sender, RoutedEventArgs e)

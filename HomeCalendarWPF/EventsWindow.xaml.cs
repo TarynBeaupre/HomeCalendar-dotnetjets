@@ -26,38 +26,32 @@ namespace HomeCalendarWPF
         private int defaultCategoryIndex = 0;
         private EventsPresenter presenter;
 
-        public EventsWindow(EventsPresenter p, bool darkmode)
+        public EventsWindow(bool darkmode)
         {
-            this.presenter = p;
-            InitializeComponent();
-            startdp.SelectedDate = System.DateTime.Now;
-            enddp.SelectedDate = System.DateTime.Now;
-            categoriescmb.SelectedIndex = defaultCategoryIndex;
-            List<string> categoriesList = new List<string>
-            {
-                "Homework", "Event", "Work", "Meeting"
-            };
-            categoriescmb.ItemsSource = categoriesList;
             txbCalendarFileinEvents.Text = ((MainWindow)Application.Current.MainWindow).calendarFiletxb.Text;
-            SetDefaultTime();
+            string filePath = txbCalendarFileinEvents.Text;
+            this.presenter = new EventsPresenter(this, filePath);
+
+            InitializeComponent();
+            // Sets default date and times on the window
+            ShowDefaultDateTime();
+            // Sets default categories on the window
+            presenter.GetDefaultCategories();
+
 
             // Set the theme from the mainWindow
             SetTheme(darkmode);
         }
 
+        // If user types in a category that doesn't exist, runs the addCategory code
         public void AddNewCategory()
         {
-            throw new NotImplementedException();
+            ComboBoxItem typeItem = (ComboBoxItem)categoriescmb.SelectedItem;
+            string categoryName = typeItem.Content.ToString();
+            presenter.AddNewCategory(categoryName);
         }
 
-        private void AddNewEvent()
-        {
-            //! Change for better UI implementation
-            MessageBox.Show("Event successfully added!");
-            this.Close();
-        }
-
-        private void Btn_Click_Add_Event(object sender, RoutedEventArgs e)
+        public void Btn_Click_Add_Event(object sender, RoutedEventArgs e)
         {
             //Add the event to the database and the view calendar via the presenter
             string details = eventDescription.Text;
@@ -67,11 +61,9 @@ namespace HomeCalendarWPF
                 startdp.SelectedDate = System.DateTime.Now;
             if (!enddp.SelectedDate.HasValue)
                 enddp.SelectedDate = System.DateTime.Now;
-            DateTime? start = startdp.SelectedDate;
-            DateTime? end = enddp.SelectedDate;
-            string fileName = "";
-            AddNewEvent();
-            //presenter.AddEvent(details, categoryId, start, end, fileName);
+
+            int startHour, endHour, startMin, endMin;
+            presenter.AddNewEvent(details, categoryId, System.DateTime.Now, System.DateTime.Now);
 
         }
         public void Btn_Click_Cancel_Event(object sender, EventArgs e)
@@ -80,8 +72,44 @@ namespace HomeCalendarWPF
             this.Close();
         }
 
-        public void SetDefaultTime()
+        private void SetTheme(bool darkmode)
         {
+            if (darkmode)
+            {
+                child_window_background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop-dark.jpg", UriKind.Relative));
+                menu_gradient.Color = Colors.Gray;
+                light_theme_star.Visibility = Visibility.Collapsed;
+                dark_theme_star.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                child_window_background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop.jpg", UriKind.Relative));
+                menu_gradient.Color = Colors.LightGreen;
+                light_theme_star.Visibility = Visibility.Visible;
+                dark_theme_star.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        public void ShowDefaultCategories(List<Category> categoriesList)
+        {
+            categoriescmb.SelectedIndex = defaultCategoryIndex;
+            categoriescmb.ItemsSource = categoriesList;
+        }
+
+        public void ShowError(string message)
+        {
+            MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        public void ShowMessage(string message)
+        {
+            MessageBox.Show(message);
+        }
+
+        public void ShowDefaultDateTime()
+        {
+            startdp.SelectedDate = System.DateTime.Now;
+            enddp.SelectedDate = System.DateTime.Now;
             int startHour, endMinsIndex, endHour;
             DateTime date = System.DateTime.Now;
 
@@ -118,48 +146,6 @@ namespace HomeCalendarWPF
             cmbEndTimeHour.SelectedIndex = endHour - 1;
             cmbEndTimeMins.ItemsSource = minList;
             cmbEndTimeMins.SelectedIndex = endMinsIndex;
-        }
-        private void SetTheme(bool darkmode)
-        {
-            if (darkmode)
-            {
-                child_window_background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop-dark.jpg", UriKind.Relative));
-                menu_gradient.Color = Colors.Gray;
-                light_theme_star.Visibility = Visibility.Collapsed;
-                dark_theme_star.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                child_window_background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop.jpg", UriKind.Relative));
-                menu_gradient.Color = Colors.LightGreen;
-                light_theme_star.Visibility = Visibility.Visible;
-                dark_theme_star.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        public void AddNewCategory()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void AddNewEvent()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetDefaults()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ShowError(string message)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ShowMessage(string message)
-        {
-            throw new NotImplementedException();
         }
     }
 }

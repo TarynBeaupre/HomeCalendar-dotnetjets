@@ -16,10 +16,9 @@ namespace HomeCalendarWPF
         private readonly EventsViewInterface view;
         private readonly HomeCalendar model;
 
-        public EventsPresenter(EventsViewInterface view)
+        public EventsPresenter(EventsViewInterface view, string path)
         {
-            //Get file and db
-            this.model = new HomeCalendar();
+            this.model = new HomeCalendar(path, false);
             this.view = view;
         }
 
@@ -36,7 +35,7 @@ namespace HomeCalendarWPF
                 }
                 catch(SQLiteException ex)
                 {
-                    ShowError(ex.Message);
+                    view.ShowError(ex.Message);
                 }
             }
         }
@@ -52,14 +51,15 @@ namespace HomeCalendarWPF
             }
             catch( SQLiteException ex)
             {
-                ShowError(ex.Message);
+                view.ShowError(ex.Message);
             }
         }
 
-        //Wondering if we even need this tbh?
-        public void ShowError(string message)
+        public void GetDefaultCategories()
         {
-            view.ShowError($"Error: {message}");
+            model.categories.SetCategoriesToDefaults();
+            List<Category>categoriesList = model.categories.List();
+            view.ShowDefaultCategories(categoriesList);
         }
     }
 }
