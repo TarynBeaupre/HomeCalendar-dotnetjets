@@ -42,20 +42,7 @@ namespace HomeCalendarWPF
             SetDefaultTime();
 
             // Set the theme from the mainWindow
-            if (darkmode)
-            {
-                child_window_background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop-dark.jpg", UriKind.Relative));
-                menu_gradient.Color = Colors.Gray;
-                light_theme_star.Visibility = Visibility.Collapsed;
-                dark_theme_star.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                child_window_background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop.jpg", UriKind.Relative));
-                menu_gradient.Color = Colors.LightGreen;
-                light_theme_star.Visibility = Visibility.Visible;
-                dark_theme_star.Visibility = Visibility.Collapsed;
-            }
+            SetTheme(darkmode);
         }
 
         public void AddNewCategory()
@@ -146,6 +133,22 @@ namespace HomeCalendarWPF
             cmbEndTimeMins.ItemsSource = minList;
             cmbEndTimeMins.SelectedIndex = endMinsIndex;
         }
-
+        private void SetTheme(bool darkmode)
+        {
+            if (darkmode)
+            {
+                child_window_background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop-dark.jpg", UriKind.Relative));
+                menu_gradient.Color = Colors.Gray;
+                light_theme_star.Visibility = Visibility.Collapsed;
+                dark_theme_star.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                child_window_background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop.jpg", UriKind.Relative));
+                menu_gradient.Color = Colors.LightGreen;
+                light_theme_star.Visibility = Visibility.Visible;
+                dark_theme_star.Visibility = Visibility.Collapsed;
+            }
+        }
     }
 }

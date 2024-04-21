@@ -26,6 +26,7 @@ namespace HomeCalendarWPF
         // Presenter constructor
         public Presenter(ViewInterface view)
         {
+            GetTheme();
             InitializationParams initParams = this.GetInitParams();
 
             this.model = new HomeCalendar(initParams.filePath, initParams.newDB);
@@ -60,7 +61,7 @@ namespace HomeCalendarWPF
             return !rKey.GetSubKeyNames().Contains(MainWindow.REGISTRY_SUB_KEY_NAME);
         }
 
-        private void ReadyForFirstUse()
+        private void ReadyForUse()
         {
             // Credit for how to create & write to registry: https://stackoverflow.com/a/7230427 as well as C# Docs
 
@@ -73,23 +74,30 @@ namespace HomeCalendarWPF
             // Have to do it this way because just rKey.SetValue("FIRST_USE", 0) doesn't work (should work)
             string keyName = @$"HKEY_CURRENT_USER\Software\{MainWindow.REGISTRY_SUB_KEY_NAME}";
             Registry.SetValue(keyName, "FIRST_USE", 0);
+            Registry.SetValue(keyName, "DARK_THEME", 0);
         }
         private InitializationParams GetInitParams()
         {
             if (IsFirstUse())
             {
-                ReadyForFirstUse();
+                ReadyForUse();
             }
 
             // IDK why i called this fop it should be fow (don't change fop sounds better)
             // Also renamed it so it makes even less sense now :shrug: -ec
-            FileSelectionWindow fop = new FileSelectionWindow();
+            FileSelectionWindow fop = new FileSelectionWindow(MainWindow.darkMode);
             fop.ShowDialog();
 
             return new InitializationParams(fop.initParams.filePath, fop.initParams.newDB);
         }
+        private void GetTheme()
+        {
+            string keyName = @$"HKEY_CURRENT_USER\Software\{MainWindow.REGISTRY_SUB_KEY_NAME}";
+            MainWindow.darkMode = ((int)Registry.GetValue(keyName, "DARK_THEME", 0)! == 1) ? true : false;
+        }
     }
 }
+
 
 
 
