@@ -18,6 +18,7 @@ namespace HomeCalendarWPF
     /// </summary>
     public partial class MainWindow : Window, ViewInterface
     {
+        //! No clue how to use this -jh
         public struct InitializationParams
         {
             public string filePath;
@@ -28,7 +29,6 @@ namespace HomeCalendarWPF
                 this.filePath = filePath; this.newDB = newDB;
             }
         }
-        private Presenter presenter;
 
         // -------------------------------------------------
         // ACTUALLY SUPER IMPORTANT DO NOT FORGET ABOUT THIS
@@ -37,23 +37,15 @@ namespace HomeCalendarWPF
         // This is for debugging, ONLY REMOVE IF DONE TESTING
         public static readonly string REGISTRY_SUB_KEY_NAME = "DotNetJetsCalendary";
 
+        private Presenter presenter;
+
         public MainWindow()
         {
             InitializeComponent();
-
-            //TODO: This makes the view have too much logic, need to change it to MVP
             InitializationParams initParams = new InitializationParams(Environment.CurrentDirectory, false);
+            presenter = new Presenter(this, initParams.filePath, initParams.newDB);
 
-            if (IsFirstUse())
-            {
-                ReadyForFirstUse();
-            }
-
-            FirstOpenWindow fop = new FirstOpenWindow();
-            fop.ShowDialog();
-
-            presenter = new Presenter(this, fop.initParams.filePath, fop.initParams.newDB);
-            calendarFiletxb.Text = fop.initParams.filePath;
+            presenter.Initialize();
         }
 
         private void OpenEvent(object sender, RoutedEventArgs e)
@@ -111,13 +103,6 @@ namespace HomeCalendarWPF
             }
         }
 
-        private void Btn_OpenNewFile(object sender, RoutedEventArgs e)
-        {
-            string defaultFilename = "newDB.db";
-            presenter = new Presenter(this, defaultFilename, true);
-        }
-
-
         private void Btn_Click_Change_Theme(object sender, RoutedEventArgs e)
         {
             Button clickedButton = sender as Button;
@@ -149,65 +134,18 @@ namespace HomeCalendarWPF
 
         private void Btn_Click_ShowWarning(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("If you close the next window without saving, your changes will be lost.", "Configuration", MessageBoxButton.OK, MessageBoxImage.Warning);
+            presenter.ShowWarning();
             Application.Current.Shutdown();
         }
 
-        private bool IsFirstUse()
+        public void SetCalendarFilePath(string filePath)
         {
-            // Credit for how to check if key exists in registry https://stackoverflow.com/a/4276150
-
-            // Open software folder under HKEY_CURRENT_USER
-            Microsoft.Win32.RegistryKey rKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("Software", true)!;
-
-            // Check if software folder in registry has our program's info (if not, must be first use)
-            return !rKey.GetSubKeyNames().Contains(MainWindow.REGISTRY_SUB_KEY_NAME);
+            calendarFiletxb.Text = filePath;
         }
 
-        private void ReadyForFirstUse()
+        public void ShowMessage(string message)
         {
-            // Credit for how to create & write to registry: https://stackoverflow.com/a/7230427 as well as C# Docs
-
-            // Open software folder under HKEY_CURRENT_USER
-            Microsoft.Win32.RegistryKey rKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("Software", true)!;
-
-            // creates our folder in the software folder
-            rKey.CreateSubKey(MainWindow.REGISTRY_SUB_KEY_NAME);
-
-            // Have to do it this way because just rKey.SetValue("FIRST_USE", 0) doesn't work (should work)
-            string keyName = @$"HKEY_CURRENT_USER\Software\{MainWindow.REGISTRY_SUB_KEY_NAME}";
-            Registry.SetValue(keyName, "FIRST_USE", 0);
+            MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-
-        public void NewCalendar()
-        {
-            //For now, does nothing. Will eventually clear the current calendar and show the new one and its events
-            throw new NotImplementedException();
-        }
-
-        public void OpenExistingCalendar(string filename, bool existingDB)
-        {
-            //Opens a calendar and displays its events
-            throw new NotImplementedException();
-        }
-
-        public void AddNewEvent()
-        {
-            //Will eventually update the calendar with the events
-            throw new NotImplementedException();
-        }
-
-        public void AddNewCategory()
-        {
-            //Does nothing in the calendar view
-            throw new NotImplementedException();
-        }
-
-        public void ShowError(string msg)
-        {
-            //TODO: Displays errors in a message box
-            throw new NotImplementedException();
-        }
-
     }
 }

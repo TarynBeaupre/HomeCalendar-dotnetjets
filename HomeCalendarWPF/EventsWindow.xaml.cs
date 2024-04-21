@@ -21,7 +21,7 @@ namespace HomeCalendarWPF
     /// <summary>
     /// Interaction logic for Events.xaml
     /// </summary>
-    public partial class EventsWindow : Window, ViewInterface
+    public partial class EventsWindow : Window/*, ViewInterface*/
     {
         private int defaultCategoryIndex = 0;
         private Presenter presenter;
@@ -84,7 +84,7 @@ namespace HomeCalendarWPF
             DateTime? end = enddp.SelectedDate;
             string fileName = "";
             AddNewEvent();
-            presenter.AddEvent(details, categoryId, start, end, fileName);
+            //presenter.AddEvent(details, categoryId, start, end, fileName);
 
         }
         public void Btn_Click_Cancel_Event(object sender, EventArgs e)
