@@ -57,7 +57,6 @@ namespace HomeCalendarWPF
 
         public void GetDefaultCategories()
         {
-            model.categories.SetCategoriesToDefaults();
             List<Category>categoriesList = model.categories.List();
             view.ShowDefaultCategories(categoriesList);
         }
