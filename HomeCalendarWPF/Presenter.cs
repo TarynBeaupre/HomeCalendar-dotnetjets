@@ -26,8 +26,8 @@ namespace HomeCalendarWPF
         // Presenter constructor
         public Presenter(ViewInterface view)
         {
-            GetTheme();
             InitializationParams initParams = this.GetInitParams();
+            //GetTheme();
 
             this.model = new HomeCalendar(initParams.filePath, initParams.newDB);
             this.view = view;
@@ -81,6 +81,10 @@ namespace HomeCalendarWPF
             if (IsFirstUse())
             {
                 ReadyForUse();
+            }
+            else
+            {
+                GetTheme();
             }
 
             // IDK why i called this fop it should be fow (don't change fop sounds better)
