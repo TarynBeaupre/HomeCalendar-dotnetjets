@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HomeCalendarWPF
 {
-    internal interface FirstOpenWindowInterface
+    internal interface FileSelectionWindowInterface
     {
         void SetDirectoryText(string text); 
         void EnableConfirmButton();

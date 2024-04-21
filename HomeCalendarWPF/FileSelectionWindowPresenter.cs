@@ -4,12 +4,12 @@ using System.IO;
 
 namespace HomeCalendarWPF
 {
-    internal class FirstOpenWindowPresenter
+    internal class FileSelectionWindowPresenter
     {
-        private readonly FirstOpenWindowInterface fopView;
+        private readonly FileSelectionWindowInterface fopView;
 
         // Constructor
-        public FirstOpenWindowPresenter(FirstOpenWindowInterface view)
+        public FileSelectionWindowPresenter(FileSelectionWindowInterface view)
         {
             this.fopView = view;
         }

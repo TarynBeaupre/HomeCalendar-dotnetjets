@@ -82,7 +82,8 @@ namespace HomeCalendarWPF
             }
 
             // IDK why i called this fop it should be fow (don't change fop sounds better)
-            FirstOpenWindow fop = new FirstOpenWindow();
+            // Also renamed it so it makes even less sense now :shrug: -ec
+            FileSelectionWindow fop = new FileSelectionWindow();
             fop.ShowDialog();
 
             return new InitializationParams(fop.initParams.filePath, fop.initParams.newDB);

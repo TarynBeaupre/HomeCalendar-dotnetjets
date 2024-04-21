@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:HomeCalendarWPF"
         mc:Ignorable="d"
         FontFamily="Verdana"
-        Title="MainWindow" Height="600" Width="1000"
+        Title="Calendar" Height="600" Width="1000"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <ResourceDictionary>
@@ -63,11 +63,7 @@
             <Label FontWeight="Bold">Edit Calendar</Label>
             <TextBlock>current path:</TextBlock>
             <TextBlock Name="calendarFiletxb" Background="LightGray" Margin="2" FontSize="10" TextWrapping="WrapWithOverflow">path here</TextBlock>
-            <TextBlock>Change the file:</TextBlock>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Click="Btn_Click_NewDBFile" Style="{StaticResource button}">New File</Button>
-                <Button Click="Btn_Click_OpenDBFile" Style="{StaticResource button}">Open File</Button>
-            </StackPanel>
+            <Button Click="Btn_Click_ChangeDBFile" Style="{StaticResource button}" Margin="10">Change Database File</Button>
         </StackPanel>
 
         <!--Event edit-->

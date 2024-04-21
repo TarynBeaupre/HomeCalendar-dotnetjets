@@ -21,16 +21,16 @@ namespace HomeCalendarWPF
     /// <summary>
     /// Interaction logic for FirstOpenWindow.xaml
     /// </summary>
-    public partial class FirstOpenWindow : Window, FirstOpenWindowInterface
+    public partial class FileSelectionWindow : Window, FileSelectionWindowInterface
     {
-        private readonly FirstOpenWindowPresenter presenter;
+        private readonly FileSelectionWindowPresenter presenter;
         public MainWindow.InitializationParams initParams;
         bool overrideClosing = false;
 
-        public FirstOpenWindow()
+        public FileSelectionWindow()
         {
             InitializeComponent();
-            presenter = new FirstOpenWindowPresenter(this);
+            presenter = new FileSelectionWindowPresenter(this);
             this.initParams = new MainWindow.InitializationParams();
         }
 

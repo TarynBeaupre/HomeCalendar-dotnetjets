@@ -100,6 +100,10 @@ namespace HomeCalendarWPF
                 presenter = new Presenter(this, filename, true);
             }
         }
+        private void Btn_Click_ChangeDBFile(object sender, RoutedEventArgs e)
+        {
+            presenter = new Presenter(this);
+        }
 
         private void Btn_Click_Change_Theme(object sender, RoutedEventArgs e)
         {
