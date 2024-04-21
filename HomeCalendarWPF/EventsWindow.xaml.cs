@@ -62,6 +62,9 @@ namespace HomeCalendarWPF
             if (!enddp.SelectedDate.HasValue)
                 enddp.SelectedDate = System.DateTime.Now;
 
+            //Add checks here for a double value entered
+            double duration = Convert.ToDouble(txbDuration.Text);
+
             int startHour, endHour, startMin, endMin;
             presenter.AddNewEvent(details, categoryId, System.DateTime.Now, System.DateTime.Now);
 
@@ -110,7 +113,7 @@ namespace HomeCalendarWPF
         {
             startdp.SelectedDate = System.DateTime.Now;
             enddp.SelectedDate = System.DateTime.Now;
-            int startHour, endMinsIndex, endHour;
+            int startHour;
             DateTime date = System.DateTime.Now;
 
             List<string> hourList = new List<string> { };
@@ -124,28 +127,23 @@ namespace HomeCalendarWPF
             };
 
             cmbStartTimeHour.ItemsSource = hourList;
-            cmbEndTimeHour.ItemsSource = hourList;
 
 
             cmbStartTimeMins.ItemsSource = minList; 
             if (date.Minute < 30)
             {
                 startHour = date.Hour;
-                endHour = startHour + 1;
-                endMinsIndex = 2;
                 cmbStartTimeMins.SelectedIndex = 2;
             }
             else
             {
                 startHour = date.Hour + 1;
-                endHour = startHour + 1;
-                endMinsIndex = 0;
                 cmbStartTimeMins.SelectedIndex = 0;
             }
             cmbStartTimeHour.SelectedIndex = startHour - 1;
-            cmbEndTimeHour.SelectedIndex = endHour - 1;
-            cmbEndTimeMins.ItemsSource = minList;
-            cmbEndTimeMins.SelectedIndex = endMinsIndex;
+
+            //Default duration to 30mins
+            txbDuration.Text = "30";
         }
     }
 }

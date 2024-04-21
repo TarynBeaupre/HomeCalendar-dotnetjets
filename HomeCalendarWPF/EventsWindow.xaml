@@ -115,14 +115,8 @@
                 </StackPanel>
 
                 <!--End time-->
-                <Label Grid.Row="3">End Time:</Label>
-                <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
-                    <ComboBox x:Name="cmbEndTimeHour" Grid.Row="3" Grid.Column="1">
-                    </ComboBox>
-                    <TextBlock>:</TextBlock>
-                    <ComboBox x:Name="cmbEndTimeMins" Grid.Row="3" Grid.Column="1">
-                    </ComboBox>
-                </StackPanel>
+                <Label Grid.Row="3">Duration (in minutes):</Label>
+                <TextBox Grid.Row="3" Grid.Column="1" Name="txbDuration"></TextBox>
             </Grid>
         </StackPanel>
         <!--Footer-->
