@@ -19,6 +19,7 @@ namespace HomeCalendarWPF
     public partial class MainWindow : Window, ViewInterface
     {
         //! No clue how to use this -jh
+        //! We should probably remove this (i wrote this) -ec
         public struct InitializationParams
         {
             public string filePath;
@@ -42,10 +43,7 @@ namespace HomeCalendarWPF
         public MainWindow()
         {
             InitializeComponent();
-            InitializationParams initParams = new InitializationParams(Environment.CurrentDirectory, false);
-            presenter = new Presenter(this, initParams.filePath, initParams.newDB);
-
-            presenter.Initialize();
+            presenter = new Presenter(this);
         }
 
         private void OpenEvent(object sender, RoutedEventArgs e)
@@ -81,7 +79,7 @@ namespace HomeCalendarWPF
                 calendarFiletxb.Text = filename;
 
                 // Create new presenter with chosen file 
-                presenter = new Presenter(this, filename, true);
+                presenter = new Presenter(this, filename);
             }
         }
 
@@ -99,7 +97,7 @@ namespace HomeCalendarWPF
                 string filename = fileSelector.FileName;
                 calendarFiletxb.Text = filename;
 
-                presenter = new Presenter(this, filename);
+                presenter = new Presenter(this, filename, true);
             }
         }
 

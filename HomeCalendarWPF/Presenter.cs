@@ -12,6 +12,7 @@ using System.Data;
 using System.Data.SQLite;
 using static HomeCalendarWPF.MainWindow;
 using Microsoft.Win32;
+using System.Windows.Media.Animation;
 
 namespace HomeCalendarWPF
 {
@@ -23,24 +24,24 @@ namespace HomeCalendarWPF
 
 
         // Presenter constructor
-        public Presenter(ViewInterface view, string filename, bool newDB = false)
+        public Presenter(ViewInterface view)
         {
-            this.model = new HomeCalendar(filename, newDB);
+            InitializationParams initParams = this.GetInitParams();
+
+            this.model = new HomeCalendar(initParams.filePath, initParams.newDB);
+            this.view = view;
+
+            this.Initialize(initParams.filePath);
+        }
+        public Presenter(ViewInterface view, string filePath, bool newDB = false)
+        {
+            this.model = new HomeCalendar(filePath, newDB);
             this.view = view;
         }
 
-        public void Initialize()
+        public void Initialize(string path)
         {
-            if (IsFirstUse())
-            {
-                ReadyForFirstUse();
-            }
-
-            FirstOpenWindow fop = new FirstOpenWindow();
-            fop.ShowDialog();
-
-            
-            view.SetCalendarFilePath(fop.initParams.filePath);
+            view.SetCalendarFilePath(path);
         }
 
         public void ShowWarning()
@@ -72,6 +73,19 @@ namespace HomeCalendarWPF
             // Have to do it this way because just rKey.SetValue("FIRST_USE", 0) doesn't work (should work)
             string keyName = @$"HKEY_CURRENT_USER\Software\{MainWindow.REGISTRY_SUB_KEY_NAME}";
             Registry.SetValue(keyName, "FIRST_USE", 0);
+        }
+        private InitializationParams GetInitParams()
+        {
+            if (IsFirstUse())
+            {
+                ReadyForFirstUse();
+            }
+
+            // IDK why i called this fop it should be fow (don't change fop sounds better)
+            FirstOpenWindow fop = new FirstOpenWindow();
+            fop.ShowDialog();
+
+            return new InitializationParams(fop.initParams.filePath, fop.initParams.newDB);
         }
     }
 }

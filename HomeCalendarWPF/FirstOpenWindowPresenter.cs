@@ -57,7 +57,7 @@ namespace HomeCalendarWPF
 
         public void OpenRecentFile()
         {
-            // Actual bullshit if this works
+            // Actual bullshit if this works       -- Why is there a disgusting curse word on the first line
             string keyName = @$"HKEY_CURRENT_USER\Software\{MainWindow.REGISTRY_SUB_KEY_NAME}";
             string? recentFilePath = Registry.GetValue(keyName, "RECENT_FILE", "DOES_NOT_EXIST") as string;
 
@@ -66,7 +66,8 @@ namespace HomeCalendarWPF
                 fopView.ShowError("Could not open recent file. No such file exists.");
                 return;
             }
-            else if (!File.Exists(recentFilePath))
+
+            if (!File.Exists(recentFilePath))
             {
                 fopView.ShowError($"Could not find recent file. File may have moved from {recentFilePath}");
                 return;
