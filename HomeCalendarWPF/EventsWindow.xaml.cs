@@ -21,12 +21,12 @@ namespace HomeCalendarWPF
     /// <summary>
     /// Interaction logic for Events.xaml
     /// </summary>
-    public partial class EventsWindow : Window/*, ViewInterface*/
+    public partial class EventsWindow : Window, EventsViewInterface
     {
         private int defaultCategoryIndex = 0;
-        private Presenter presenter;
+        private EventsPresenter presenter;
 
-        public EventsWindow(Presenter p, bool darkmode)
+        public EventsWindow(EventsPresenter p, bool darkmode)
         {
             this.presenter = p;
             InitializeComponent();
@@ -50,14 +50,14 @@ namespace HomeCalendarWPF
             throw new NotImplementedException();
         }
 
-        public void AddNewEvent()
+        private void AddNewEvent()
         {
             //! Change for better UI implementation
             MessageBox.Show("Event successfully added!");
             this.Close();
         }
 
-        public void Btn_Click_Add_Event(object sender, RoutedEventArgs e)
+        private void Btn_Click_Add_Event(object sender, RoutedEventArgs e)
         {
             //Add the event to the database and the view calendar via the presenter
             string details = eventDescription.Text;
@@ -80,20 +80,6 @@ namespace HomeCalendarWPF
             this.Close();
         }
 
-        public void NewCalendar()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OpenExistingCalendar(string filename, bool existingDB)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ShowError(string msg)
-        {
-            throw new NotImplementedException();
-        }
         public void SetDefaultTime()
         {
             int startHour, endMinsIndex, endHour;
@@ -149,6 +135,31 @@ namespace HomeCalendarWPF
                 light_theme_star.Visibility = Visibility.Visible;
                 dark_theme_star.Visibility = Visibility.Collapsed;
             }
+        }
+
+        public void AddNewCategory()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddNewEvent()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetDefaults()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ShowError(string message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ShowMessage(string message)
+        {
+            throw new NotImplementedException();
         }
     }
 }
