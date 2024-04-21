@@ -28,11 +28,12 @@ namespace HomeCalendarWPF
 
         public EventsWindow(bool darkmode)
         {
+            InitializeComponent();
+
             txbCalendarFileinEvents.Text = ((MainWindow)Application.Current.MainWindow).calendarFiletxb.Text;
             string filePath = txbCalendarFileinEvents.Text;
             this.presenter = new EventsPresenter(this, filePath);
 
-            InitializeComponent();
             // Sets default date and times on the window
             ShowDefaultDateTime();
             // Sets default categories on the window
