@@ -19,7 +19,7 @@ namespace CalendarWPFTesting
         }
         public void ShowMessage(string message)
         {
-            calledView_ShowError = true;
+            calledView_ShowMessage = true;
         }
         public void ShowDefaultCategories(List<Category> categoriesList)
         {
