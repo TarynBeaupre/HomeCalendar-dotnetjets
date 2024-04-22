@@ -67,20 +67,6 @@ namespace HomeCalendarWPF
             this.view = view;
         }
         /// <summary>
-        /// Initializes the presenter with the chosen file path.
-        /// </summary>
-        /// <param name="path">The path to the chosen file.</param>
-        /// <example>
-        /// <code>
-        /// <![CDATA[
-        /// filepath = "./hello";
-        /// Initialize(filepath);
-        /// ]]></code></example>
-        public void Initialize(string path)
-        {
-            view.SetCalendarFilePath(path);
-        }
-        /// <summary>
         /// Shows a warning message to the user.
         /// </summary>
         /// <example>
@@ -145,6 +131,11 @@ namespace HomeCalendarWPF
             int b = (int)a;
             MainWindow.darkMode = b == 1 ? true : false;
             //MainWindow.darkMode = ((int)Registry.GetValue(keyName, "DARK_THEME", 0)! == 1) ? true : false;
+        }
+
+        private void SetTheme(string theme)
+        {
+
         }
     }
 }
