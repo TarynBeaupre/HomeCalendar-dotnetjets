@@ -7,7 +7,7 @@ using Calendar;
 
 namespace HomeCalendarWPF
 {
-    internal interface CategoriesViewInterface
+    public interface CategoriesViewInterface
     {
         void ShowMessage(string msg);
         void ShowError(string msg);
