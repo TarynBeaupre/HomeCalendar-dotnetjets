@@ -55,7 +55,7 @@ namespace HomeCalendarWPF
             try
             {
                 model.categories.Add(categoryName, type);
-                view.ShowMessage($"A new category {categoryName} has been added!");
+                view.ShowMessage($"A new category {categoryName} of type Event has been added!");
             }
             catch (SQLiteException ex)
             {
