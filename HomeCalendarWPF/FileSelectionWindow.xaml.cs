@@ -34,7 +34,7 @@ namespace HomeCalendarWPF
         public FileSelectionWindow(bool darkMode)
         {
             InitializeComponent();
-            SetTheme(MainWindow.darkMode);
+            SetThemeFilePopup(MainWindow.darkMode);
             presenter = new FileSelectionWindowPresenter(this);
             this.initParams = new MainWindow.InitializationParams();
         }
@@ -162,7 +162,7 @@ namespace HomeCalendarWPF
         {
             return tbDir.Text;
         }
-        private void SetTheme(bool darkmode)
+        private void SetThemeFilePopup(bool darkmode)
         {
             if (darkmode)
             {
