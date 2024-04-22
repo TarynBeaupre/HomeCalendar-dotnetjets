@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows;
 
-namespace CalendarWPF
+namespace HomeCalendarWPF
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -10,5 +10,4 @@ namespace CalendarWPF
     public partial class App : Application
     {
     }
-
 }

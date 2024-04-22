@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="images\stardew-backdrop-dark.jpg" />
+    <None Remove="images\stardew-backdrop.jpg" />
+    <None Remove="images\stardew-star-dark.png" />
+    <None Remove="images\stardew-star.png" />
+    <None Remove="images\stardew-tree.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="images\stardew-backdrop-dark.jpg" />
+    <Resource Include="images\stardew-backdrop.jpg" />
+    <Resource Include="images\stardew-star-dark.png" />
+    <Resource Include="images\stardew-star.png" />
+    <Resource Include="images\stardew-tree.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="HomeCalendar">
+      <HintPath>dlls\HomeCalendar.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
