@@ -17,6 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HomeCalendarWPF\HomeCalendarWPF.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="HomeCalendar">
       <HintPath>..\HomeCalendarWPF\dlls\HomeCalendar.dll</HintPath>
     </Reference>

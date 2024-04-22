@@ -25,7 +25,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CalendarApp\CalendarApp.csproj" />
-    <ProjectReference Include="..\HomeCalendarWPF\HomeCalendarWPF.csproj" />
   </ItemGroup>
 
 
