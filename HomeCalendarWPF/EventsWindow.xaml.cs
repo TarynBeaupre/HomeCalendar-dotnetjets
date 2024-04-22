@@ -15,6 +15,10 @@ namespace HomeCalendarWPF
         private static DateTime previousDate = System.DateTime.Now;
         private static int previousCategoryIndex = 0;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EventsWindow"/> class.
+        /// </summary>
+        /// <param name="darkmode">Specifies which theme should be picked for Window, if true then display dark mode.</param>
         public EventsWindow(bool darkmode)
         {
             InitializeComponent();
@@ -26,13 +30,19 @@ namespace HomeCalendarWPF
             ShowDefaultDateTime();
             // Sets default categories on the window
             presenter.GetDefaultCategories();
-
-
             // Set the theme from the mainWindow
             SetTheme(darkmode);
         }
 
         // If user types in a category that doesn't exist, runs the addCategory code
+        /// <summary>
+        /// Adds a new category based on the user selection.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// AddNewCategory();
+        /// ]]></code></example>
         public void AddNewCategory()
         {
             ComboBoxItem typeItem = (ComboBoxItem)categoriescmb.SelectedItem;
@@ -40,7 +50,7 @@ namespace HomeCalendarWPF
             presenter.AddNewCategory(categoryName);
         }
 
-        public void Btn_Click_Add_Event(object sender, RoutedEventArgs e)
+        private void Btn_Click_Add_Event(object sender, RoutedEventArgs e)
         {
             //Validating form data
             if (!ValidateEventForm())
@@ -60,7 +70,7 @@ namespace HomeCalendarWPF
             presenter.AddNewEvent(details, categoryId, startdp.SelectedDate, duration);
 
         }
-        public void Btn_Click_Cancel_Event(object sender, EventArgs e)
+        private void Btn_Click_Cancel_Event(object sender, EventArgs e)
         {
             // if user cancels addition, resent the default values for the category and the dates
             this.Close();
@@ -110,21 +120,55 @@ namespace HomeCalendarWPF
         }
 
         //===== VIEW INTERFACE METHODS =====
+        /// <summary>
+        /// Shows an error message in message box.
+        /// </summary>
+        /// <param name="message">Error message to display.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// ShowError("You're bad");
+        /// ]]></code></example>
         public void ShowError(string message)
         {
             MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-
+        /// <summary>
+        /// Shows a message in message box.
+        /// </summary>
+        /// <param name="message">Message to be displayed.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// ShowMessage("You're cool");
+        /// ]]></code></example>
         public void ShowMessage(string message)
         {
             MessageBox.Show(message);
         }
+        /// <summary>
+        /// Displays the default categories in the categories dropdown list.
+        /// </summary>
+        /// <param name="categoriesList">The list of default categories to display.</param>
+        /// <example>
+        /// <code>
+        /// For this example, assume we have implemented a categoriesList
+        /// <![CDATA[
+        /// ShowDefaultCategories(categoriesList);
+        /// ]]></code></example>
         public void ShowDefaultCategories(List<Category> categoriesList)
         {
             categoriescmb.SelectedIndex = previousCategoryIndex;
             categoriescmb.ItemsSource = categoriesList;
         }
-
+        /// <summary>
+        /// Sets the default date and time values on the window.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// ShowDefaultDateTime();
+        /// ]]></code></example>
         public void ShowDefaultDateTime()
         {
             //=== Set Start/End date defaults ===
@@ -165,7 +209,14 @@ namespace HomeCalendarWPF
             //=== Set default duration (30 mins) ===
             txbDuration.Text = "30";
         }
-
+        /// <summary>
+        /// Resets the event form by clearing input fields and setting default values.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// ResetEventForm();
+        /// ]]></code></example>
         public void ResetEventForm()
         {
             //Set details textbox to empty

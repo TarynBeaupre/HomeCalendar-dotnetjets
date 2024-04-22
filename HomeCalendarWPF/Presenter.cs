@@ -16,6 +16,9 @@ using System.Windows.Media.Animation;
 
 namespace HomeCalendarWPF
 {
+    /// <summary>
+    /// Represents the Presenter for MainWindow in MVP design.
+    /// </summary>
     public class Presenter
     {
         // Links from view, model to Presenter
@@ -24,6 +27,17 @@ namespace HomeCalendarWPF
 
 
         // Presenter constructor
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Presenter"/> class with the specified view interface.
+        /// </summary>
+        /// <param name="view">The view interface associated with the presenter.</param>
+        /// <example>
+        /// <code>
+        /// For this example, assume we have well implemented IView
+        /// <![CDATA[
+        /// view = IView;
+        /// presenter = new Presenter(view);
+        /// ]]></code></example>
         public Presenter(ViewInterface view)
         {
             InitializationParams initParams = this.GetInitParams();
@@ -34,17 +48,47 @@ namespace HomeCalendarWPF
 
             this.Initialize(initParams.filePath);
         }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Presenter"/> class with the specified view interface, file path, and new database flag.
+        /// </summary>
+        /// <param name="view">View interface associated with the presenter.</param>
+        /// <param name="filePath">The file path for the calendar.</param>
+        /// <param name="newDB">A flag indicating whether a new database should be created.</param>
+        /// <example>
+        /// <code>
+        /// For this example, assume we have well implemented IView
+        /// <![CDATA[
+        /// view = IView;
+        /// presenter = new Presenter(view, "./hello", true);
+        /// ]]></code></example>
         public Presenter(ViewInterface view, string filePath, bool newDB = false)
         {
             this.model = new HomeCalendar(filePath, newDB);
             this.view = view;
         }
-
+        /// <summary>
+        /// Initializes the presenter with the chosen file path.
+        /// </summary>
+        /// <param name="path">The path to the chosen file.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// filepath = "./hello";
+        /// Initialize(filepath);
+        /// ]]></code></example>
         public void Initialize(string path)
         {
             view.SetCalendarFilePath(path);
         }
-
+        /// <summary>
+        /// Shows a warning message to the user.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// if (!filepath)
+        ///     ShowWarning();
+        /// ]]></code></example>
         public void ShowWarning()
         {
             view.ShowMessage("If you close the next window without saving, your changes will be lost.");
@@ -104,21 +148,3 @@ namespace HomeCalendarWPF
         }
     }
 }
-
-
-
-
-// Template code for Events presenter:
-//public void AddEvent(string details, int categoryId, DateTime? start, DateTime? end, string fileName)
-//{
-//    //TODO: Get the Category ID object from CategoryName selected
-
-//    //TODO: calculate the duration
-//    int durationInMinutes = 30;
-
-//    // Add a message in view
-//    view.AddNewEvent();
-
-//    //Add event in model
-//    model.events.Add(DateTime.Now, categoryId, durationInMinutes, details);
-//}

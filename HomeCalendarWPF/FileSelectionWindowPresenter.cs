@@ -4,16 +4,41 @@ using System.IO;
 
 namespace HomeCalendarWPF
 {
-    internal class FileSelectionWindowPresenter
+    /// <summary>
+    /// Manages file selection from WPF Window
+    /// </summary>
+    public class FileSelectionWindowPresenter
     {
         private readonly FileSelectionWindowInterface fopView;
 
-        // Constructor
+        /// <summary>
+        /// Creates a new instance of the <see cref="FileSelectionWindowPresenter"/> class with specified properties.
+        /// </summary>
+        /// <param name="view">View interface.</param>
+        /// <example>
+        /// <code>
+        /// For this example, assume we have well implemented IView
+        /// <![CDATA[
+        /// view = IView;
+        /// presenter = new FileSelectionWindowPresenter(view);
+        /// ]]></code></example>
         public FileSelectionWindowPresenter(FileSelectionWindowInterface view)
         {
             this.fopView = view;
         }
 
+        /// <summary>
+        /// Picks new file directory.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// private void Btn_Click_PickNewFileDir(object sender, RoutedEventArgs e)
+        /// {
+        ///    presenter.PickNewFileDir();
+        /// }
+        /// ]]>
+        /// </code></example>
         public void PickNewFileDir()
         {
             Microsoft.Win32.SaveFileDialog fileSelector = new Microsoft.Win32.SaveFileDialog();
@@ -29,10 +54,21 @@ namespace HomeCalendarWPF
 
                 // Calls methods in view that make action with view variable names
                 ChangeViewMethods(filename, true);
-
             }
         }
 
+        /// <summary>
+        /// Picks existing file directory.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// private void Btn_Click_PickExistingFileDir(object sender, RoutedEventArgs e)
+        /// {
+        ///    presenter.PickExistingFileDir();
+        /// }
+        /// ]]>
+        /// </code></example>
         public void PickExistingFileDir()
         {
             // Credit: https://stackoverflow.com/a/10315283
@@ -55,9 +91,20 @@ namespace HomeCalendarWPF
             }
         }
 
+        /// <summary>
+        /// Picks most recently opened file directory.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// private void Btn_Click_OpenRecentFile(object sender, RoutedEventArgs e)
+        /// {
+        ///    presenter.OpenRecentFile();
+        /// }
+        /// ]]>
+        /// </code></example>
         public void OpenRecentFile()
         {
-            // Actual bullshit if this works       -- Why is there a disgusting curse word on the first line
             string keyName = @$"HKEY_CURRENT_USER\Software\{MainWindow.REGISTRY_SUB_KEY_NAME}";
             string? recentFilePath = Registry.GetValue(keyName, "RECENT_FILE", "DOES_NOT_EXIST") as string;
 
@@ -76,6 +123,18 @@ namespace HomeCalendarWPF
             ChangeViewMethods(recentFilePath, false);
         }
 
+        /// <summary>
+        /// Confirms the file selection and closes the current WPF window.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// private void Btn_Click_Confirm(object sender, RoutedEventArgs e)
+        /// {
+        ///    presenter.Confirm();
+        /// }
+        /// ]]>
+        /// </code></example>
         public void Confirm()
         {
             string keyName = @$"HKEY_CURRENT_USER\Software\{MainWindow.REGISTRY_SUB_KEY_NAME}";
@@ -84,7 +143,7 @@ namespace HomeCalendarWPF
             fopView.CloseWindow();
         }
 
-        // Methods that get necessitating the view
+        // Methods that get objects necessitating the view
         private void ChangeViewMethods(string filename, bool newDB = false)
         {
             fopView.SetDirectoryText(filename);
