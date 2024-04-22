@@ -12,7 +12,7 @@ namespace CalendarWPFTesting
     public class TestView : EventsViewInterface
     {
         public bool calledPresenter_AddNewEvent, calledPresenter_AddNewCategory, calledPresenter_GetDefaultCategories;
-        public bool calledView_ShowError, calledView_ShowMessage, calledView_ShowDefaultCat, calledView_ShowDefaultDate, calledView_Reset;
+        public bool calledView_ShowError = false, calledView_ShowMessage = false, calledView_ShowDefaultCat = false, calledView_ShowDefaultDate = false, calledView_Reset = false;
 
         public void ShowError(string message)
         {
@@ -33,6 +33,19 @@ namespace CalendarWPFTesting
         public void ResetEventForm()
         {
             calledView_Reset = true;
+        }
+
+        [Fact]
+        public void Initialization_CallsShowDefaultDate()
+        {
+            // Arrange
+            TestView view = new TestView();
+
+            // Act
+            EventsPresenter presenter = new EventsPresenter(view, "testPath");
+
+            // Assert
+            Assert.True(view.calledView_ShowDefaultDate);
         }
 
         [Fact]

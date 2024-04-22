@@ -13,6 +13,7 @@ namespace HomeCalendarWPF
         {
             this.model = new HomeCalendar(path, false);
             this.view = view;
+            view.ShowDefaultDateTime();
         }
 
         public void AddNewEvent(string details, int categoryId, DateTime? start, double duration)
