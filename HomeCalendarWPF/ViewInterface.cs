@@ -34,5 +34,9 @@ namespace HomeCalendarWPF
         /// ]]>
         /// </code></example>
         void ShowMessage(string message);
+        //TODO
+        void SetThemeLight();
+        //TODO
+        void SetThemeDark();
     }
 }

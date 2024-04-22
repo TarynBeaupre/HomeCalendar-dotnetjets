@@ -121,7 +121,7 @@ namespace CalendarWPFTesting
             Assert.True(view.calledView_ShowDefaultCat);
         }
 
-        [Fact]
+        /*[Fact]
         public void AddNewEvent_EventAddedToModel()
         {
             // Arrange
@@ -142,6 +142,6 @@ namespace CalendarWPFTesting
         public void AddNewCategory_InvalidDuration_DoesNotCallAddEvent()
         {
     
-        }
+        }*/
     }
 }

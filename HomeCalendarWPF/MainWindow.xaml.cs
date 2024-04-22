@@ -82,15 +82,7 @@ namespace HomeCalendarWPF
             if (clickedButton != null)
             {
                 string theme = clickedButton.Name;
-                presenter.ShowTheme(theme);
-                if (clickedButton.Name == "button_dark_theme")
-                {
-                    SetThemeDark();
-                }
-                else if (clickedButton.Name == "button_light_theme")
-                {
-                    SetThemeLight();
-                }
+                presenter.SetTheme(theme);
                 SaveThemeSettingsToRegistry();
             }
         }
@@ -129,13 +121,8 @@ namespace HomeCalendarWPF
         {
             MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-
-        private void SaveThemeSettingsToRegistry()
-        {
-            string keyName = @$"HKEY_CURRENT_USER\Software\{MainWindow.REGISTRY_SUB_KEY_NAME}";
-            Registry.SetValue(keyName, "DARK_THEME", (MainWindow.darkMode == true) ? 1 : 0);
-        }
-        private void SetThemeLight()
+        //TODO: DOCUMENT ME
+        public void SetThemeLight()
         {
             // Change the string in Window.Background > ImageSource to light theme image
             background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop.jpg", UriKind.Relative));
@@ -144,7 +131,8 @@ namespace HomeCalendarWPF
             light_theme_star.Visibility = Visibility.Visible;
             dark_theme_star.Visibility = Visibility.Collapsed;
         }
-        private void SetThemeDark()
+        //TODO: DOCUMENT ME
+        public void SetThemeDark()
         {
             // Change the string in ImageSource to dark theme image
             background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop-dark.jpg", UriKind.Relative));
@@ -152,6 +140,11 @@ namespace HomeCalendarWPF
             calendar_gradient.Color = Colors.Gray;
             light_theme_star.Visibility = Visibility.Collapsed;
             dark_theme_star.Visibility = Visibility.Visible;
+        }
+        private void SaveThemeSettingsToRegistry()
+        {
+            string keyName = @$"HKEY_CURRENT_USER\Software\{MainWindow.REGISTRY_SUB_KEY_NAME}";
+            Registry.SetValue(keyName, "DARK_THEME", (MainWindow.darkMode == true) ? 1 : 0);
         }
     }
 }

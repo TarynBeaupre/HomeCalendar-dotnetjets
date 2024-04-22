@@ -77,7 +77,7 @@ namespace HomeCalendarWPF
         /// ]]></code></example>
         public void ShowWarning()
         {
-            view.ShowMessage("If you close the next window without saving, your changes will be lost.");
+            view.ShowMessage("If you close the next window, unsaved changes will be lost.");
         }
 
         private bool IsFirstUse()
@@ -133,9 +133,16 @@ namespace HomeCalendarWPF
             //MainWindow.darkMode = ((int)Registry.GetValue(keyName, "DARK_THEME", 0)! == 1) ? true : false;
         }
 
-        private void SetTheme(string theme)
+        public void SetTheme(string theme)
         {
-
+            if (theme == "button_dark_theme")
+            {
+                view.SetThemeDark();
+            }
+            else if (theme == "button_light_theme")
+            {
+                view.SetThemeLight();
+            }
         }
     }
 }
