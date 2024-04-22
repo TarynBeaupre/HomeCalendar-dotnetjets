@@ -238,6 +238,10 @@ namespace HomeCalendarWPF
         {
             CategoriesWindow categoryWindow = new CategoriesWindow(darkMode);
             categoryWindow.ShowDialog();
+
+            // this is so ugly and definitely doesn't follow mvp, but it's the only thing i found would work, sorry! -ec
+            string filePath = txbCalendarFileinEvents.Text;
+            this.presenter = new EventsPresenter(this, filePath);
             presenter.GetDefaultCategories();
         }
     }
