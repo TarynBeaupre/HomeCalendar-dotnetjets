@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Calendar;
 using System.Data.SQLite;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Calendar;
-using static HomeCalendarWPF.MainWindow;
 
 
 namespace HomeCalendarWPF
@@ -22,21 +15,20 @@ namespace HomeCalendarWPF
             this.view = view;
         }
 
-        public void AddNewEvent(string details, int categoryId, DateTime? start, DateTime? end)
+        public void AddNewEvent(string details, int categoryId, DateTime? start, double duration)
         {
             // Delegate to the model to add the new event
-            double duration = Convert.ToDouble(end - start);
-            if (start != null)
+            if (start == null)
+                start = DateTime.Now;
+
+            try
             {
-                try
-                {
-                    model.events.Add((DateTime)start, categoryId, duration, details);
-                    view.ShowMessage("Event successfully added!");
-                }
-                catch(SQLiteException ex)
-                {
-                    view.ShowError(ex.Message);
-                }
+                model.events.Add((DateTime)start, categoryId, duration, details);
+                view.ShowMessage("Event successfully added!");
+            }
+            catch (SQLiteException ex)
+            {
+                view.ShowError(ex.Message);
             }
         }
 
@@ -49,7 +41,7 @@ namespace HomeCalendarWPF
                 model.categories.Add(categoryName, type);
                 view.ShowMessage($"A new category {categoryName} has been added");
             }
-            catch( SQLiteException ex)
+            catch (SQLiteException ex)
             {
                 view.ShowError(ex.Message);
             }
@@ -57,7 +49,7 @@ namespace HomeCalendarWPF
 
         public void GetDefaultCategories()
         {
-            List<Category>categoriesList = model.categories.List();
+            List<Category> categoriesList = model.categories.List();
             view.ShowDefaultCategories(categoriesList);
         }
     }

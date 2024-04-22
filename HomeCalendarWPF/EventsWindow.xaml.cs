@@ -1,20 +1,8 @@
 ﻿using Calendar;
-using Microsoft.VisualBasic;
-using System;
-using System.Collections.Generic;
-using System.IO.Enumeration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Ribbon.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace HomeCalendarWPF
 {
@@ -23,13 +11,13 @@ namespace HomeCalendarWPF
     /// </summary>
     public partial class EventsWindow : Window, EventsViewInterface
     {
-        private int defaultCategoryIndex = 0;
         private EventsPresenter presenter;
+        private DateTime previousDate = System.DateTime.Now;
+        private int previousCategoryIndex = 0;
 
         public EventsWindow(bool darkmode)
         {
             InitializeComponent();
-
             txbCalendarFileinEvents.Text = ((MainWindow)Application.Current.MainWindow).calendarFiletxb.Text;
             string filePath = txbCalendarFileinEvents.Text;
             this.presenter = new EventsPresenter(this, filePath);
@@ -42,6 +30,15 @@ namespace HomeCalendarWPF
 
             // Set the theme from the mainWindow
             SetTheme(darkmode);
+        }
+
+        private void LoadPreviousValues()
+        {
+            // Load previous date
+
+
+            // Load previous category index
+
         }
 
         // If user types in a category that doesn't exist, runs the addCategory code
@@ -59,16 +56,18 @@ namespace HomeCalendarWPF
             int categoryId = categoriescmb.SelectedIndex;
 
             if (!startdp.SelectedDate.HasValue)
+            {
                 startdp.SelectedDate = System.DateTime.Now;
-            if (!enddp.SelectedDate.HasValue)
-                enddp.SelectedDate = System.DateTime.Now;
+            }
 
+            previousDate = (DateTime)startdp.SelectedDate;
             //Add checks here for a double value entered
             double duration = Convert.ToDouble(txbDuration.Text);
 
-            int startHour, endHour, startMin, endMin;
-            presenter.AddNewEvent(details, categoryId, System.DateTime.Now, System.DateTime.Now);
+            //Replacing previous options
+            previousCategoryIndex = categoryId;
 
+            presenter.AddNewEvent(details, categoryId, startdp.SelectedDate, duration);
         }
         public void Btn_Click_Cancel_Event(object sender, EventArgs e)
         {
@@ -96,7 +95,7 @@ namespace HomeCalendarWPF
 
         public void ShowDefaultCategories(List<Category> categoriesList)
         {
-            categoriescmb.SelectedIndex = defaultCategoryIndex;
+            categoriescmb.SelectedIndex = previousCategoryIndex;
             categoriescmb.ItemsSource = categoriesList;
         }
 
@@ -112,8 +111,7 @@ namespace HomeCalendarWPF
 
         public void ShowDefaultDateTime()
         {
-            startdp.SelectedDate = System.DateTime.Now;
-            enddp.SelectedDate = System.DateTime.Now;
+            startdp.SelectedDate = previousDate;
             int startHour;
             DateTime date = System.DateTime.Now;
 
@@ -122,7 +120,7 @@ namespace HomeCalendarWPF
             {
                 hourList.Add(i.ToString());
             }
-            List<string> minList = new List<string> 
+            List<string> minList = new List<string>
             {
                 "00", "15", "30", "45"
             };
@@ -130,7 +128,7 @@ namespace HomeCalendarWPF
             cmbStartTimeHour.ItemsSource = hourList;
 
 
-            cmbStartTimeMins.ItemsSource = minList; 
+            cmbStartTimeMins.ItemsSource = minList;
             if (date.Minute < 30)
             {
                 startHour = date.Hour;
