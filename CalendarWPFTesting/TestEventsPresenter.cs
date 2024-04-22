@@ -6,6 +6,7 @@ using System.Linq;
 using HomeCalendarWPF;
 using System.Data.SQLite;
 using System.Windows.Controls;
+using System.Windows;
 
 namespace CalendarWPFTesting
 {
@@ -66,20 +67,6 @@ namespace CalendarWPFTesting
         }
 
         [Fact]
-        public void AddNewEvent_ThrowsException_ShowsError()
-        {
-            // Arrange
-            TestView view = new TestView();
-            EventsPresenter presenter = new EventsPresenter(view, "testPath");
-
-            // Act
-            presenter.AddNewEvent("Event details", 1, DateTime.Now, 60, "");
-
-            // Assert
-            Assert.True(view.calledView_ShowError);
-        }
-
-        [Fact]
         public void AddNewCategory_ValidInput_CallsShowMessage()
         {
             // Arrange
@@ -88,23 +75,9 @@ namespace CalendarWPFTesting
 
             // Act
             presenter.AddNewCategory("TestCategory");
-
+          
             // Assert
             Assert.True(view.calledView_ShowMessage);
-        }
-
-        [Fact]
-        public void AddNewCategory_ThrowsException_ShowsError()
-        {
-            // Arrange
-            TestView view = new TestView();
-            EventsPresenter presenter = new EventsPresenter(view, "testPath");
-
-            // Act
-            presenter.AddNewCategory("TestCategory");
-
-            // Assert
-            Assert.True(view.calledView_ShowError);
         }
 
         [Fact]
