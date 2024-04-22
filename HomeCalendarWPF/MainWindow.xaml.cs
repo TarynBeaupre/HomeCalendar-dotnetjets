@@ -65,6 +65,11 @@ namespace HomeCalendarWPF
             EventsWindow eventWindow = new EventsWindow(darkMode);
             eventWindow.Show();
         }
+        private void OpenCategory(object sender, RoutedEventArgs e)
+        {
+            CategoriesWindow categoryWindow = new CategoriesWindow(darkMode);
+            categoryWindow.Show();
+        }
         private void Btn_Click_ChangeDBFile(object sender, RoutedEventArgs e)
         {
             presenter = new Presenter(this);

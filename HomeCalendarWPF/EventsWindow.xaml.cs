@@ -14,6 +14,7 @@ namespace HomeCalendarWPF
         private EventsPresenter presenter;
         private static DateTime previousDate = System.DateTime.Now;
         public static int previousCategoryIndex = 0;
+        private bool darkMode;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventsWindow"/> class.
@@ -25,13 +26,14 @@ namespace HomeCalendarWPF
             txbCalendarFileinEvents.Text = ((MainWindow)Application.Current.MainWindow).calendarFiletxb.Text;
             string filePath = txbCalendarFileinEvents.Text;
             this.presenter = new EventsPresenter(this, filePath);
+            this.darkMode = darkmode;
 
             // Sets default date and times on the window
             ShowDefaultDateTime();
             // Sets default categories on the window
             presenter.GetDefaultCategories();
             // Set the theme from the mainWindow
-            SetTheme(darkmode);
+            SetTheme(this.darkMode);
         }
 
         // If user types in a category that doesn't exist, runs the addCategory code
@@ -230,6 +232,13 @@ namespace HomeCalendarWPF
 
             //Reset time and date 
             ShowDefaultDateTime();
+        }
+
+        private void Btn_Click_AddNewCategory(object sender, RoutedEventArgs e)
+        {
+            CategoriesWindow categoryWindow = new CategoriesWindow(darkMode);
+            categoryWindow.ShowDialog();
+            presenter.GetDefaultCategories();
         }
     }
 }

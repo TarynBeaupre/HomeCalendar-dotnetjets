@@ -7,7 +7,8 @@
         mc:Ignorable="d"
         FontFamily="Verdana"
         Title="Calendar" Height="600" Width="1000"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -72,6 +73,8 @@
             <TextBlock>Add a new event</TextBlock>
             <Button Style="{StaticResource button}" Margin="10" Click="OpenEvent">
                 Add Event</Button>
+            <Button Style="{StaticResource button}" Margin="10" Click="OpenCategory">
+                Add Category</Button>
         </StackPanel>
 
         <!--Colour themes-->

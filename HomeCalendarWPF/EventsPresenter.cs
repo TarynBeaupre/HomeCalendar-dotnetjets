@@ -24,7 +24,7 @@ namespace HomeCalendarWPF
         /// For this example, assume we have well implemented IView
         /// <![CDATA[
         /// view = IView;
-        /// path = "./hello";
+        /// path = "./calendar.db";
         /// presenter = new EventsPresenter(view, path);
         /// ]]></code></example>
         public EventsPresenter(EventsViewInterface view, string path)
