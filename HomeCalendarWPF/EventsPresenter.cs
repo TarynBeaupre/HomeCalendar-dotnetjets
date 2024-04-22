@@ -23,7 +23,8 @@ namespace HomeCalendarWPF
 
             try
             {
-                model.events.Add((DateTime)start, categoryId, duration, details);
+                // Have to increment category id because it's 1 too low (school should be 1, it's actually 0)
+                model.events.Add((DateTime)start, ++categoryId, duration, details);
                 view.ShowMessage("Event successfully added!");
             }
             catch (SQLiteException ex)
