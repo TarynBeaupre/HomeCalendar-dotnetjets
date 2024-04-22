@@ -26,6 +26,7 @@ namespace HomeCalendarWPF
                 // Have to increment category id because it's 1 too low (school should be 1, it's actually 0)
                 model.events.Add((DateTime)start, ++categoryId, duration, details);
                 view.ShowMessage("Event successfully added!");
+                view.ResetEventForm();
             }
             catch (SQLiteException ex)
             {
@@ -40,7 +41,7 @@ namespace HomeCalendarWPF
             try
             {
                 model.categories.Add(categoryName, type);
-                view.ShowMessage($"A new category {categoryName} has been added");
+                view.ShowMessage($"A new category {categoryName} has been added!");
             }
             catch (SQLiteException ex)
             {

@@ -58,7 +58,7 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0">Description:</Label>
-                <TextBox Grid.Row="0" Grid.Column="1" AcceptsReturn="True" Name="eventDescription" />
+                <TextBox Grid.Row="0" Grid.Column="1" AcceptsReturn="True" Name="txbEventDescription" />
                 <Label Grid.Row="1">Path:</Label>
                 <TextBlock Name="txbCalendarFileinEvents" Grid.Row="3" Grid.Column="1" Background="LightGray" Margin="2" FontSize="10" TextWrapping="WrapWithOverflow">path here</TextBlock>
             </Grid>

@@ -32,15 +32,6 @@ namespace HomeCalendarWPF
             SetTheme(darkmode);
         }
 
-        private void LoadPreviousValues()
-        {
-            // Load previous date
-
-
-            // Load previous category index
-
-        }
-
         // If user types in a category that doesn't exist, runs the addCategory code
         public void AddNewCategory()
         {
@@ -52,16 +43,12 @@ namespace HomeCalendarWPF
         public void Btn_Click_Add_Event(object sender, RoutedEventArgs e)
         {
             //Validating form data
-            ValidateEventForm();
+            if (!ValidateEventForm())
+                return;
 
             //Add the event to the database via the presenter
-            string details = eventDescription.Text;
+            string details = txbEventDescription.Text;
             int categoryId = categoriescmb.SelectedIndex;
-
-            if (!startdp.SelectedDate.HasValue)
-            {
-                startdp.SelectedDate = System.DateTime.Now;
-            }
 
             previousDate = (DateTime)startdp.SelectedDate;
 
@@ -71,6 +58,7 @@ namespace HomeCalendarWPF
             previousCategoryIndex = categoryId;
 
             presenter.AddNewEvent(details, categoryId, startdp.SelectedDate, duration);
+
         }
         public void Btn_Click_Cancel_Event(object sender, EventArgs e)
         {
@@ -78,9 +66,29 @@ namespace HomeCalendarWPF
             this.Close();
         }
 
-        public void ValidateEventForm()
+        private bool ValidateEventForm()
         {
+            //Check that start date has a value
+            if (!startdp.SelectedDate.HasValue)
+            {
+                ShowError("Please select a start date.");
+                return false;
+            }
 
+            // Check that end date has a value
+            if (!enddp.SelectedDate.HasValue)
+            {
+                ShowError("Please select an end date.");
+                return false;
+            }
+
+            // Check if duration is provided and is a positive double
+            if (!double.TryParse(txbDuration.Text, out double duration) || duration <= 0)
+            {
+                ShowError("Please provide a valid duration in minutes. The duration should be a positive number.");
+                return false;
+            }
+            return true;
         }
 
         private void SetTheme(bool darkmode)
@@ -156,6 +164,18 @@ namespace HomeCalendarWPF
 
             //=== Set default duration (30 mins) ===
             txbDuration.Text = "30";
+        }
+
+        public void ResetEventForm()
+        {
+            //Set details textbox to empty
+            txbEventDescription.Text = "";
+
+            //Set duration back to 30
+            txbDuration.Text = "30";
+
+            //Reset time and date 
+            ShowDefaultDateTime();
         }
     }
 }

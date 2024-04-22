@@ -13,5 +13,6 @@ namespace HomeCalendarWPF
         void ShowMessage(string message);
         void ShowDefaultCategories(List<Category> categoriesList);
         void ShowDefaultDateTime();
+        void ResetEventForm();
     };
 }
