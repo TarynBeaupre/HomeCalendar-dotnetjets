@@ -37,6 +37,19 @@ namespace HomeCalendarWPF
 
             categoryTypes = PopulateCategoryTypes();
         }
+        /// <summary>
+        /// Adds a new category with the specified description and type.
+        /// </summary>
+        /// <param name="description">The description of the category.</param>
+        /// <param name="type">The type of the category.</param>
+        /// <example>
+        /// <code>
+        /// For this example, assume we have well implemented IView
+        /// <![CDATA[
+        /// description = "Job";
+        /// type = Category.CategoryType.Event;
+        /// AddNewCategory(description, type);
+        /// ]]></code></example>
         public void AddNewCategory(string description, Category.CategoryType type)
         {
             if (description == string.Empty)
@@ -59,6 +72,14 @@ namespace HomeCalendarWPF
                 view.ShowError(e.Message);
             }
         }
+        /// <summary>
+        /// Retrieves the available category types and sets them in the combo box.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// GetCategoryTypes();
+        /// ]]></code></example>
         public void GetCategoryTypes()
         {
             view.SetComboBoxOptions(categoryTypes);

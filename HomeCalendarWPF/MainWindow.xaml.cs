@@ -121,7 +121,15 @@ namespace HomeCalendarWPF
         {
             MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-        //TODO: DOCUMENT ME
+        /// <summary>
+        /// Sets the theme of the application to light mode.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// SetThemeLight();
+        /// ]]>
+        /// </code></example>
         public void SetThemeLight()
         {
             // Change the string in Window.Background > ImageSource to light theme image
@@ -131,7 +139,15 @@ namespace HomeCalendarWPF
             light_theme_star.Visibility = Visibility.Visible;
             dark_theme_star.Visibility = Visibility.Collapsed;
         }
-        //TODO: DOCUMENT ME
+        /// <summary>
+        /// Sets the theme of the application to dark mode.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// SetThemeDark();
+        /// ]]>
+        /// </code></example>
         public void SetThemeDark()
         {
             // Change the string in ImageSource to dark theme image

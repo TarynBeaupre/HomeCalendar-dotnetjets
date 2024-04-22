@@ -34,9 +34,25 @@ namespace HomeCalendarWPF
         /// ]]>
         /// </code></example>
         void ShowMessage(string message);
-        //TODO
+        /// <summary>
+        /// Sets the theme of the application to light mode.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// SetThemeLight();
+        /// ]]>
+        /// </code></example>
         void SetThemeLight();
-        //TODO
+        /// <summary>
+        /// Sets the theme of the application to dark mode.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// SetThemeDark();
+        /// ]]>
+        /// </code></example>
         void SetThemeDark();
     }
 }

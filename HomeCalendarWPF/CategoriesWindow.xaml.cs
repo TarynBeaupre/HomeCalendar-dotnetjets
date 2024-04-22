@@ -27,7 +27,7 @@ namespace HomeCalendarWPF
         /// <summary>
         /// Initializes a new instance of the <see cref="CategoriesWindow"/> class.
         /// </summary>
-        /// <param name="darkmode">Specifies which theme should be picked for Window, if true then display dark mode.</param>
+        /// <param name="darkMode">Specifies which theme should be picked for Window, if true then display dark mode.</param>
         public CategoriesWindow(bool darkMode)
         {
             InitializeComponent();
@@ -38,18 +38,57 @@ namespace HomeCalendarWPF
 
             SetTheme(darkMode);
         }
+        /// <summary>
+        /// Displays a message box with the specified message.
+        /// </summary>
+        /// <param name="msg">THe message to display.</param>
+        ///         /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// ShowMessage("You're bad.");
+        /// ]]>
+        /// </code></example>
         public void ShowMessage(string msg)
         {
             MessageBox.Show(msg, "Category added", MessageBoxButton.OK, MessageBoxImage.Information);
         }
+        /// <summary>
+        /// Displays a error box with the specified error.
+        /// </summary>
+        /// <param name="msg">THe error to display.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// ShowError("Error: You're bad.");
+        /// ]]>
+        /// </code></example>
         public void ShowError(string msg)
         {
             MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+        /// <summary>
+        /// Resets the categories form by clearing the text box for category description.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// ResetCategoriesForm();
+        /// ]]>
+        /// </code></example>
         public void ResetCategoriesForm()
         {
             txbCategoryDescription.Text = "";
         }
+        /// <summary>
+        /// Sets the options for the category types combo box.
+        /// </summary>
+        /// <example>
+        /// For this example, assume we have a correctly implemented Category.CategoryType[] called categoryTypes
+        /// <code>
+        /// <![CDATA[
+        /// SetComboBoxOptions(catgoryTypes);
+        /// ]]>
+        /// </code></example>
         public void SetComboBoxOptions(Category.CategoryType[] categoryTypes)
         {
             categoryTypesCmb.SelectedIndex = previousCategoryTypeIndex;
