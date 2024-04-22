@@ -3,118 +3,106 @@ using Xunit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HomeCalendarWPF;
+using System.Data.SQLite;
+using System.Windows.Controls;
 
 namespace CalendarWPFTesting
 {
-    public class TestEventsPresenter : EventsViewInterface
+    public class TestView : EventsViewInterface
     {
         public bool calledShowError, calledShowMessage, calledShowDefaultCat, calledShowDefaultDate, calledReset;
 
         public void ShowError(string message)
         {
-
+            calledShowError = true;
         }
         public void ShowMessage(string message)
         {
-
+            calledShowError = true;
         }
         public void ShowDefaultCategories(List<Category> categoriesList)
         {
-
+            calledShowDefaultCat = true;
         }
         public void ShowDefaultDateTime()
         {
-
+            calledShowDefaultDate = true;
         }
-        void ResetEventForm();
+        public void ResetEventForm()
+        {
+            calledReset = true;
+        }
 
         [Fact]
         public void AddNewEvent_ValidInput_CallsModelAddEventAndShowsMessage()
         {
             // Arrange
-            string details = "Test event";
-            int categoryId = 1;
-            DateTime start = DateTime.Now;
-            double duration = 60;
+            TestView view = new TestView();
+            EventsPresenter presenter = new EventsPresenter(view, "testPath");
 
             // Act
-            presenter.AddNewEvent(details, categoryId, start, duration);
+            presenter.AddNewEvent("Event details", 1, DateTime.Now, 60);
 
             // Assert
-            mockView.Verify(v => v.ShowMessage("Event successfully added!"), Times.Once);
-            mockView.Verify(v => v.ResetEventForm(), Times.Once);
+            Assert.True(view.calledShowMessage);
+            Assert.True(view.calledReset);
         }
 
         [Fact]
-        public void AddNewEvent_NullStart_CallsModelAddEventWithCurrentDate()
+        public void AddNewEvent_ThrowsException_ShowsError()
         {
             // Arrange
-            string details = "Test event";
-            int categoryId = 1;
-            double duration = 60;
+            TestView view = new TestView();
+            EventsPresenter presenter = new EventsPresenter(view, "testPath");
 
             // Act
-            presenter.AddNewEvent(details, categoryId, null, duration);
+            presenter.AddNewEvent("Event details", 1, DateTime.Now, 60);
 
             // Assert
-            mockView.Verify(v => v.ShowMessage("Event successfully added!"), Times.Once);
-            mockView.Verify(v => v.ResetEventForm(), Times.Once);
-        }
-
-        [Fact]
-        public void AddNewEvent_InvalidInput_ShowsError()
-        {
-            // Arrange
-            string details = "Test event";
-            int categoryId = 1;
-            DateTime start = DateTime.Now;
-            double duration = -10; // Invalid duration
-
-            // Act
-            presenter.AddNewEvent(details, categoryId, start, duration);
-
-            // Assert
-            mockView.Verify(v => v.ShowError(It.IsAny<string>()), Times.Once);
+            Assert.True(view.calledShowError);
         }
 
         [Fact]
         public void AddNewCategory_ValidInput_CallsModelAddCategoryAndShowsMessage()
         {
             // Arrange
-            string categoryName = "Test Category";
+            TestView view = new TestView();
+            EventsPresenter presenter = new EventsPresenter(view, "testPath");
 
             // Act
-            presenter.AddNewCategory(categoryName);
+            presenter.AddNewCategory("TestCategory");
 
             // Assert
-            mockView.Verify(v => v.ShowMessage($"A new category {categoryName} has been added!"), Times.Once);
+            Assert.True(view.calledShowMessage);
         }
 
         [Fact]
-        public void AddNewCategory_InvalidInput_ShowsError()
+        public void AddNewCategory_ThrowsException_ShowsError()
         {
             // Arrange
-            string categoryName = null; // Invalid category name
+            TestView view = new TestView();
+            EventsPresenter presenter = new EventsPresenter(view, "testPath");
 
             // Act
-            presenter.AddNewCategory(categoryName);
+            presenter.AddNewCategory("TestCategory");
 
             // Assert
-            mockView.Verify(v => v.ShowError(It.IsAny<string>()), Times.Once);
+            Assert.True(view.calledShowError);
         }
 
         [Fact]
         public void GetDefaultCategories_CallsModelListAndShowsCategories()
         {
             // Arrange
-            var categoriesList = new List<Category>(); // Mock categories list
-            mockView.Setup(v => v.ShowDefaultCategories(categoriesList)).Verifiable();
+            TestView view = new TestView();
+            EventsPresenter presenter = new EventsPresenter(view, "testPath");
 
             // Act
             presenter.GetDefaultCategories();
 
             // Assert
-            mockView.Verify();
+            Assert.True(view.calledShowDefaultCat);
         }
     }
 }

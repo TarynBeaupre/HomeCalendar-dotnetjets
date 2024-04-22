@@ -78,6 +78,17 @@ namespace HomeCalendarWPF
         /// path = GetFilePath()
         /// ]]>
         /// </code></example>
-        string GetFilePath();  
+        string GetFilePath();
+        /// <summary>
+        /// Enables confirm button 
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <!<![CDATA[
+        /// EnableConfirmButton();
+        /// ]]>
+        /// </code>
+        /// </example>
+        void EnableConfirmButton();
     }
 }

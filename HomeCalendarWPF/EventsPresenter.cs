@@ -35,7 +35,6 @@ namespace HomeCalendarWPF
             categoriesList = model.categories.List();
         }
 
-        public void AddNewEvent(string details, int categoryId, DateTime? start, double duration, string categoryName)
         /// <summary>
         /// Adds a new event with the specified details, category ID, start time, and duration.
         /// </summary>
@@ -49,7 +48,7 @@ namespace HomeCalendarWPF
         /// AddNewEvent("ok", 2, 10:24:15, 360)
         /// ]]>
         /// </code></example>
-        public void AddNewEvent(string details, int categoryId, DateTime? start, double duration)
+        public void AddNewEvent(string details, int categoryId, DateTime? start, double duration, string categoryName)
         {
             // Delegate to the model to add the new event
             if (start == null)
