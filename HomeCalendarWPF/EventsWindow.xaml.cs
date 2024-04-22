@@ -12,8 +12,8 @@ namespace HomeCalendarWPF
     public partial class EventsWindow : Window, EventsViewInterface
     {
         private EventsPresenter presenter;
-        private DateTime previousDate = System.DateTime.Now;
-        private int previousCategoryIndex = 0;
+        private static DateTime previousDate = System.DateTime.Now;
+        private static int previousCategoryIndex = 0;
 
         public EventsWindow(bool darkmode)
         {
