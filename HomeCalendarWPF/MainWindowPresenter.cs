@@ -19,7 +19,7 @@ namespace HomeCalendarWPF
     /// <summary>
     /// Represents the Presenter for MainWindow in MVP design.
     /// </summary>
-    public class Presenter
+    public class MainWindowPresenter
     {
         // Links from view, model to Presenter
         private readonly ViewInterface view;
