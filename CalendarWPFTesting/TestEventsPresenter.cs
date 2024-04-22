@@ -11,27 +11,28 @@ namespace CalendarWPFTesting
 {
     public class TestView : EventsViewInterface
     {
-        public bool calledShowError, calledShowMessage, calledShowDefaultCat, calledShowDefaultDate, calledReset;
+        public bool calledPresenter_AddNewEvent, calledPresenter_AddNewCategory, calledPresenter_GetDefaultCategories;
+        public bool calledView_ShowError, calledView_ShowMessage, calledView_ShowDefaultCat, calledView_ShowDefaultDate, calledView_Reset;
 
         public void ShowError(string message)
         {
-            calledShowError = true;
+            calledView_ShowError = true;
         }
         public void ShowMessage(string message)
         {
-            calledShowError = true;
+            calledView_ShowError = true;
         }
         public void ShowDefaultCategories(List<Category> categoriesList)
         {
-            calledShowDefaultCat = true;
+            calledView_ShowDefaultCat = true;
         }
         public void ShowDefaultDateTime()
         {
-            calledShowDefaultDate = true;
+            calledView_ShowDefaultDate = true;
         }
         public void ResetEventForm()
         {
-            calledReset = true;
+            calledView_Reset = true;
         }
 
         [Fact]
@@ -45,8 +46,8 @@ namespace CalendarWPFTesting
             presenter.AddNewEvent("Event details", 1, DateTime.Now, 60);
 
             // Assert
-            Assert.True(view.calledShowMessage);
-            Assert.True(view.calledReset);
+            Assert.True(view.calledView_ShowMessage);
+            Assert.True(view.calledView_Reset);
         }
 
         [Fact]
@@ -60,7 +61,7 @@ namespace CalendarWPFTesting
             presenter.AddNewEvent("Event details", 1, DateTime.Now, 60);
 
             // Assert
-            Assert.True(view.calledShowError);
+            Assert.True(view.calledView_ShowError);
         }
 
         [Fact]
@@ -74,7 +75,7 @@ namespace CalendarWPFTesting
             presenter.AddNewCategory("TestCategory");
 
             // Assert
-            Assert.True(view.calledShowMessage);
+            Assert.True(view.calledView_ShowMessage);
         }
 
         [Fact]
@@ -88,7 +89,7 @@ namespace CalendarWPFTesting
             presenter.AddNewCategory("TestCategory");
 
             // Assert
-            Assert.True(view.calledShowError);
+            Assert.True(view.calledView_ShowError);
         }
 
         [Fact]
@@ -102,7 +103,7 @@ namespace CalendarWPFTesting
             presenter.GetDefaultCategories();
 
             // Assert
-            Assert.True(view.calledShowDefaultCat);
+            Assert.True(view.calledView_ShowDefaultCat);
         }
     }
 }

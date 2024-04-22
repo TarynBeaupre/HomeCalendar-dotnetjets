@@ -40,8 +40,8 @@ namespace HomeCalendarWPF
             Calendar.Category.CategoryType type = Calendar.Category.CategoryType.Event;
             try
             {
-                model.categories.Add(categoryName, type);
                 view.ShowMessage($"A new category {categoryName} of type Event has been added!");
+                model.categories.Add(categoryName, type);
             }
             catch (SQLiteException ex)
             {
