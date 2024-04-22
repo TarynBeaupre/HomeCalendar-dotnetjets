@@ -81,6 +81,8 @@ namespace HomeCalendarWPF
             MainWindow.darkMode = dark_theme_star.Visibility == Visibility.Collapsed;
             if (clickedButton != null)
             {
+                string theme = clickedButton.Name;
+                presenter.ShowTheme(theme);
                 if (clickedButton.Name == "button_dark_theme")
                 {
                     SetThemeDark();
