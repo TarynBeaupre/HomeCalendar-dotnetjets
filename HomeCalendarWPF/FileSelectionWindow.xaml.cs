@@ -25,8 +25,12 @@ namespace HomeCalendarWPF
     {
         private readonly FileSelectionWindowPresenter presenter;
         public MainWindow.InitializationParams initParams;
-        bool overrideClosing = false;
+        private bool overrideClosing = false;
 
+        /// <summary>
+        /// Initializes a new instance of the  <see cref="FileSelectionWindow"/> class.
+        /// </summary>
+        /// <param name="darkMode">Indicates which theme to be used in Windows.</param>
         public FileSelectionWindow(bool darkMode)
         {
             InitializeComponent();
@@ -62,32 +66,98 @@ namespace HomeCalendarWPF
 
 
         // Methods called by the presenter on the view
-        public void SetDirectoryText(string text)
+        /// <summary>
+        /// Sets the file path for the calendar and updates the path text block.
+        /// </summary>
+        /// <param name="path">THe path to the chosen file.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// SetDirectoryText("./hello.db");
+        /// ]]>
+        /// </code></example>
+        public void SetDirectoryText(string path)
         {
-            tbDir.Text = text;
+            tbDir.Text = path;
         }
 
+        /// <summary>
+        /// Enables confirm button, once file is chosen or created
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// if (filepath)
+        ///     EnableConfirmButton();
+        /// ]]>
+        /// </code></example>
         public void EnableConfirmButton()
         {
             btnConfirm.IsEnabled = true;
         }
-
+        /// <summary>
+        /// Sets the filePath and if new database to params
+        /// </summary>
+        /// <param name="filePath">Path to the chosen file</param>
+        /// <param name="newDB">Indicates if need new database, if true create new database</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// if (filepath && newDB)
+        ///     SetInitializationParams(filepath, newDB);
+        /// ]]>
+        /// </code></example>
         public void SetInitializationParams(string filePath, bool newDB)
         {
             initParams.filePath = filePath;
             initParams.newDB = newDB;
         }
-
+        /// <summary>
+        /// Shows error messages to the user
+        /// </summary>
+        /// <param name="message">Error message</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// if (filepath && newDB)
+        ///     SetInitializationParams(filepath, newDB);
+        /// else
+        ///     ShowError("Error: FilePath is null");
+        /// ]]>
+        /// </code></example>
         public void ShowError(string message)
         {
             MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-
+        /// <summary>
+        /// Closes the current window
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// if (filepath && newDB)
+        ///     SetInitializationParams(filepath, newDB);
+        /// else
+        ///     ShowError("Error: FilePath is null");
+        ///     CloseWindow();
+        /// ]]>
+        /// </code></example>
         public void CloseWindow()
         {
             this.Close();
         }
-
+        /// <summary>
+        /// Gets the path of the directory depending on path text block
+        /// </summary>
+        /// <returns>A string of the path to the path</returns>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// if (filepath && newDB)
+        ///     SetInitializationParams(filepath, newDB);
+        /// path = GetFilePath()
+        /// ]]>
+        /// </code></example>
         public string GetFilePath()
         {
             return tbDir.Text;
@@ -98,15 +168,11 @@ namespace HomeCalendarWPF
             {
                 child_window_background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop-dark.jpg", UriKind.Relative));
                 menu_gradient.Color = Colors.Gray;
-                //light_theme_star.Visibility = Visibility.Collapsed;
-                //dark_theme_star.Visibility = Visibility.Visible;
             }
             else
             {
                 child_window_background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop.jpg", UriKind.Relative));
                 menu_gradient.Color = Colors.LightGreen;
-                //light_theme_star.Visibility = Visibility.Visible;
-                //dark_theme_star.Visibility = Visibility.Collapsed;
             }
         }
     }

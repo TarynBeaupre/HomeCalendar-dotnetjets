@@ -13,26 +13,38 @@ namespace HomeCalendarWPF
     {
         private EventsPresenter presenter;
         private static DateTime previousDate = System.DateTime.Now;
-        private static int previousCategoryIndex = 0;
+        public static int previousCategoryIndex = 0;
+        private bool darkMode;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EventsWindow"/> class.
+        /// </summary>
+        /// <param name="darkmode">Specifies which theme should be picked for Window, if true then display dark mode.</param>
         public EventsWindow(bool darkmode)
         {
             InitializeComponent();
             txbCalendarFileinEvents.Text = ((MainWindow)Application.Current.MainWindow).calendarFiletxb.Text;
             string filePath = txbCalendarFileinEvents.Text;
             this.presenter = new EventsPresenter(this, filePath);
+            this.darkMode = darkmode;
 
             // Sets default date and times on the window
             ShowDefaultDateTime();
             // Sets default categories on the window
             presenter.GetDefaultCategories();
-
-
             // Set the theme from the mainWindow
-            SetTheme(darkmode);
+            SetTheme(this.darkMode);
         }
 
         // If user types in a category that doesn't exist, runs the addCategory code
+        /// <summary>
+        /// Adds a new category based on the user selection.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// AddNewCategory();
+        /// ]]></code></example>
         public void AddNewCategory()
         {
             ComboBoxItem typeItem = (ComboBoxItem)categoriescmb.SelectedItem;
@@ -40,7 +52,7 @@ namespace HomeCalendarWPF
             presenter.AddNewCategory(categoryName);
         }
 
-        public void Btn_Click_Add_Event(object sender, RoutedEventArgs e)
+        private void Btn_Click_Add_Event(object sender, RoutedEventArgs e)
         {
             //Validating form data
             if (!ValidateEventForm())
@@ -55,12 +67,13 @@ namespace HomeCalendarWPF
             double duration = Convert.ToDouble(txbDuration.Text);
 
             //Replacing previous options
+            // TODO: maybe do categoylist.length
             previousCategoryIndex = categoryId;
 
-            presenter.AddNewEvent(details, categoryId, startdp.SelectedDate, duration);
+            presenter.AddNewEvent(details, categoryId, startdp.SelectedDate, duration, categoriescmb.Text);
 
         }
-        public void Btn_Click_Cancel_Event(object sender, EventArgs e)
+        private void Btn_Click_Cancel_Event(object sender, EventArgs e)
         {
             // if user cancels addition, resent the default values for the category and the dates
             this.Close();
@@ -110,21 +123,57 @@ namespace HomeCalendarWPF
         }
 
         //===== VIEW INTERFACE METHODS =====
+        /// <summary>
+        /// Shows an error message in message box.
+        /// </summary>
+        /// <param name="message">Error message to display.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// ShowError("You're bad");
+        /// ]]></code></example>
         public void ShowError(string message)
         {
             MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-
+        /// <summary>
+        /// Shows a message in message box.
+        /// </summary>
+        /// <param name="message">Message to be displayed.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// ShowMessage("You're cool");
+        /// ]]></code></example>
         public void ShowMessage(string message)
         {
             MessageBox.Show(message);
         }
+        /// <summary>
+        /// Displays the default categories in the categories dropdown list.
+        /// </summary>
+        /// <param name="categoriesList">The list of default categories to display.</param>
+        /// <example>
+        /// <code>
+        /// For this example, assume we have implemented a categoriesList
+        /// <![CDATA[
+        /// ShowDefaultCategories(categoriesList);
+        /// ]]></code></example>
         public void ShowDefaultCategories(List<Category> categoriesList)
         {
-            categoriescmb.SelectedIndex = previousCategoryIndex;
+            // if previousCategoryIndex is -1 this means that a new category was added so
+            // we can just set it to the length of the list -1 as it's added at the end.
+            categoriescmb.SelectedIndex = previousCategoryIndex != -1 ? previousCategoryIndex : categoriesList.Count - 1;
             categoriescmb.ItemsSource = categoriesList;
         }
-
+        /// <summary>
+        /// Sets the default date and time values on the window.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// ShowDefaultDateTime();
+        /// ]]></code></example>
         public void ShowDefaultDateTime()
         {
             //=== Set Start/End date defaults ===
@@ -165,7 +214,14 @@ namespace HomeCalendarWPF
             //=== Set default duration (30 mins) ===
             txbDuration.Text = "30";
         }
-
+        /// <summary>
+        /// Resets the event form by clearing input fields and setting default values.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// ResetEventForm();
+        /// ]]></code></example>
         public void ResetEventForm()
         {
             //Set details textbox to empty
@@ -176,6 +232,17 @@ namespace HomeCalendarWPF
 
             //Reset time and date 
             ShowDefaultDateTime();
+        }
+
+        private void Btn_Click_AddNewCategory(object sender, RoutedEventArgs e)
+        {
+            CategoriesWindow categoryWindow = new CategoriesWindow(darkMode);
+            categoryWindow.ShowDialog();
+
+            // this is so ugly and definitely doesn't follow mvp, but it's the only thing i found would work, sorry! -ec
+            string filePath = txbCalendarFileinEvents.Text;
+            this.presenter = new EventsPresenter(this, filePath);
+            presenter.GetDefaultCategories();
         }
     }
 }

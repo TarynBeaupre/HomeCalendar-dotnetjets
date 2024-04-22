@@ -18,13 +18,19 @@ namespace HomeCalendarWPF
     /// </summary>
     public partial class MainWindow : Window, ViewInterface
     {
-        //! No clue how to use this -jh
-        //! We should probably remove this (i wrote this) -ec
+        /// <summary>
+        /// Represents initialization parameters used to configure the model.
+        /// </summary>
         public struct InitializationParams
         {
             public string filePath;
             public bool newDB;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="InitializationParams"/> struct with the specified file path and the new database indicator.
+            /// </summary>
+            /// <param name="filePath">The file path.</param>
+            /// <param name="newDB">Indicates whether a new database needs to be created.</param>
             public InitializationParams(string filePath, bool newDB)
             {
                 this.filePath = filePath; this.newDB = newDB;
@@ -41,6 +47,9 @@ namespace HomeCalendarWPF
 
         private MainWindowPresenter presenter;
 
+        /// <summary>
+        /// Initializes a new instance of the  <see cref="MainWindow"/> class.
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
@@ -55,6 +64,11 @@ namespace HomeCalendarWPF
         {
             EventsWindow eventWindow = new EventsWindow(darkMode);
             eventWindow.Show();
+        }
+        private void OpenCategory(object sender, RoutedEventArgs e)
+        {
+            CategoriesWindow categoryWindow = new CategoriesWindow(darkMode);
+            categoryWindow.Show();
         }
         private void Btn_Click_ChangeDBFile(object sender, RoutedEventArgs e)
         {
@@ -85,11 +99,30 @@ namespace HomeCalendarWPF
             Application.Current.Shutdown();
         }
 
+        /// <summary>
+        /// Sets the file path for the calendar and updates the path text block.
+        /// </summary>
+        /// <param name="filePath">THe path to the chosen file.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// SetCalendarFilePath("./hello.db");
+        /// ]]>
+        /// </code></example>
         public void SetCalendarFilePath(string filePath)
         {
             calendarFiletxb.Text = filePath;
         }
-
+        /// <summary>
+        /// Shows error messages to the user
+        /// </summary>
+        /// <param name="message">Error message</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// ShowMessage("Error, you're bad.");
+        /// ]]>
+        /// </code></example>
         public void ShowMessage(string message)
         {
             MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -115,8 +148,6 @@ namespace HomeCalendarWPF
             background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop-dark.jpg", UriKind.Relative));
             sidemenu_gradient.Color = Colors.Gray;
             calendar_gradient.Color = Colors.Gray;
-            // Changing only the URISource of the image doesn't work...
-            //star_image.UriSource = new Uri("images/stardew-star-dark.png", UriKind.RelativeOrAbsolute);
             light_theme_star.Visibility = Visibility.Collapsed;
             dark_theme_star.Visibility = Visibility.Visible;
         }
