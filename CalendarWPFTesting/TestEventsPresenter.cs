@@ -11,7 +11,6 @@ namespace CalendarWPFTesting
 {
     public class TestView : EventsViewInterface
     {
-        public bool calledPresenter_AddNewEvent, calledPresenter_AddNewCategory, calledPresenter_GetDefaultCategories;
         public bool calledView_ShowError = false, calledView_ShowMessage = false, calledView_ShowDefaultCat = false, calledView_ShowDefaultDate = false, calledView_Reset = false;
 
         public void ShowError(string message)
@@ -34,7 +33,10 @@ namespace CalendarWPFTesting
         {
             calledView_Reset = true;
         }
+    }
 
+    public class UnitTest
+    {
         [Fact]
         public void Initialization_CallsShowDefaultDate()
         {
@@ -78,7 +80,7 @@ namespace CalendarWPFTesting
         }
 
         [Fact]
-        public void AddNewCategory_ValidInput_CallsModelAddCategoryAndShowsMessage()
+        public void AddNewCategory_ValidInput_CallsShowMessage()
         {
             // Arrange
             TestView view = new TestView();
@@ -106,7 +108,7 @@ namespace CalendarWPFTesting
         }
 
         [Fact]
-        public void GetDefaultCategories_CallsModelListAndShowsCategories()
+        public void GetDefaultCategories_CallsGetDefaultCategories()
         {
             // Arrange
             TestView view = new TestView();
@@ -117,6 +119,29 @@ namespace CalendarWPFTesting
 
             // Assert
             Assert.True(view.calledView_ShowDefaultCat);
+        }
+
+        [Fact]
+        public void AddNewEvent_EventAddedToModel()
+        {
+            // Arrange
+            TestView view = new TestView();
+            string path = "testPath";
+            EventsPresenter presenter = new EventsPresenter(view, path);
+            string details = "Test event";
+            int categoryId = 1; // Assuming categoryId for test purpose
+            DateTime start = DateTime.Now;
+            double duration = 60;
+
+            // Act
+            presenter.AddNewEvent(details, categoryId, start, duration);
+
+        }
+
+        [Fact]
+        public void AddNewCategory_InvalidDuration_DoesNotCallAddEvent()
+        {
+    
         }
     }
 }

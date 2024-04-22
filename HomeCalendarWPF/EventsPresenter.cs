@@ -1,6 +1,7 @@
 ﻿using Calendar;
 using System.Data.SQLite;
-
+using System.Runtime.CompilerServices;
+[assembly: InternalsVisibleToAttribute("CalendarWPFTesting")]
 
 namespace HomeCalendarWPF
 {
@@ -55,5 +56,7 @@ namespace HomeCalendarWPF
             List<Category> categoriesList = model.categories.List();
             view.ShowDefaultCategories(categoriesList);
         }
+
+
     }
 }

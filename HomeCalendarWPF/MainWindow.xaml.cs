@@ -39,12 +39,12 @@ namespace HomeCalendarWPF
         // This is for debugging, ONLY REMOVE IF DONE TESTING
         public static readonly string REGISTRY_SUB_KEY_NAME = "DotNetJetsCalendary";
 
-        private Presenter presenter;
+        private MainWindowPresenter presenter;
 
         public MainWindow()
         {
             InitializeComponent();
-            presenter = new Presenter(this);
+            presenter = new MainWindowPresenter(this);
             if (darkMode)
                 SetThemeDark();
             else
@@ -58,7 +58,7 @@ namespace HomeCalendarWPF
         }
         private void Btn_Click_ChangeDBFile(object sender, RoutedEventArgs e)
         {
-            presenter = new Presenter(this);
+            presenter = new MainWindowPresenter(this);
         }
 
         private void Btn_Click_Change_Theme(object sender, RoutedEventArgs e)

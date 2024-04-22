@@ -16,7 +16,7 @@ using System.Windows.Media.Animation;
 
 namespace HomeCalendarWPF
 {
-    public class Presenter
+    public class MainWindowPresenter
     {
         // Links from view, model to Presenter
         private readonly ViewInterface view;
@@ -24,25 +24,20 @@ namespace HomeCalendarWPF
 
 
         // Presenter constructor
-        public Presenter(ViewInterface view)
+        public MainWindowPresenter(ViewInterface view)
         {
             InitializationParams initParams = this.GetInitParams();
             //GetTheme();
 
             this.model = new HomeCalendar(initParams.filePath, initParams.newDB);
             this.view = view;
+            view.SetCalendarFilePath(initParams.filePath);
 
-            this.Initialize(initParams.filePath);
         }
-        public Presenter(ViewInterface view, string filePath, bool newDB = false)
+        public MainWindowPresenter(ViewInterface view, string filePath, bool newDB = false)
         {
             this.model = new HomeCalendar(filePath, newDB);
             this.view = view;
-        }
-
-        public void Initialize(string path)
-        {
-            view.SetCalendarFilePath(path);
         }
 
         public void ShowWarning()
