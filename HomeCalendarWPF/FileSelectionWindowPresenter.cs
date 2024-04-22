@@ -4,7 +4,7 @@ using System.IO;
 
 namespace HomeCalendarWPF
 {
-    internal class FileSelectionWindowPresenter
+    public class FileSelectionWindowPresenter
     {
         private readonly FileSelectionWindowInterface fopView;
 
@@ -29,7 +29,6 @@ namespace HomeCalendarWPF
 
                 // Calls methods in view that make action with view variable names
                 ChangeViewMethods(filename, true);
-
             }
         }
 
@@ -57,7 +56,6 @@ namespace HomeCalendarWPF
 
         public void OpenRecentFile()
         {
-            // Actual bullshit if this works       -- Why is there a disgusting curse word on the first line
             string keyName = @$"HKEY_CURRENT_USER\Software\{MainWindow.REGISTRY_SUB_KEY_NAME}";
             string? recentFilePath = Registry.GetValue(keyName, "RECENT_FILE", "DOES_NOT_EXIST") as string;
 
