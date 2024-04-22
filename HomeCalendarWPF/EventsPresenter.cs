@@ -9,17 +9,31 @@ namespace HomeCalendarWPF
         private readonly EventsViewInterface view;
         private readonly HomeCalendar model;
 
+        private List<Category> categoriesList;
+
         public EventsPresenter(EventsViewInterface view, string path)
         {
             this.model = new HomeCalendar(path, false);
             this.view = view;
+
+            categoriesList = model.categories.List();
         }
 
-        public void AddNewEvent(string details, int categoryId, DateTime? start, double duration)
+        public void AddNewEvent(string details, int categoryId, DateTime? start, double duration, string categoryName)
         {
             // Delegate to the model to add the new event
             if (start == null)
                 start = DateTime.Now;
+
+
+            // Category doesn't exist
+            if (categoryId == -1)
+            {
+                AddNewCategory(categoryName);
+                categoryId = categoriesList.Count;
+
+                categoriesList = model.categories.List();
+            }
 
             try
             {
@@ -51,7 +65,6 @@ namespace HomeCalendarWPF
 
         public void GetDefaultCategories()
         {
-            List<Category> categoriesList = model.categories.List();
             view.ShowDefaultCategories(categoriesList);
         }
     }
