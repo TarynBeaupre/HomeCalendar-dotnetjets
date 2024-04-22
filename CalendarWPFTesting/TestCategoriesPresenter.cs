@@ -37,7 +37,7 @@ namespace CalendarWPFTesting
         {
             // Arrange
             TestCategoriesPresenter view = new TestCategoriesPresenter();
-            CategoriesPresenter presenter = new CategoriesPresenter(view, "test.db");
+            CategoriesPresenter presenter = new CategoriesPresenter(view, "./../../../test.db");
 
             // Act
             presenter.AddNewCategory("Work", Category.CategoryType.Event);
