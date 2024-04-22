@@ -10,7 +10,7 @@ using System.Data.SQLite;
 
 namespace HomeCalendarWPF
 {
-    internal class CategoriesPresenter
+    public class CategoriesPresenter
     {
         private readonly CategoriesViewInterface view;
         private readonly HomeCalendar model;
@@ -47,7 +47,8 @@ namespace HomeCalendarWPF
 
             try
             {
-                model.categories.Add(description, type);
+                //TODO: This makes it bug out, says categories table doesnt exist in db
+                model.categories.Add(description, type); 
                 view.ResetCategoriesForm();
                 CategoriesWindow.previousCategoryTypeIndex = (int)type - 1;
 
