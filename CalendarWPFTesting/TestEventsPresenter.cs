@@ -19,7 +19,7 @@ namespace CalendarWPFTesting
         }
         public void ShowMessage(string message)
         {
-            calledView_ShowError = true;
+            calledView_ShowMessage = true;
         }
         public void ShowDefaultCategories(List<Category> categoriesList)
         {
@@ -58,7 +58,7 @@ namespace CalendarWPFTesting
             EventsPresenter presenter = new EventsPresenter(view, "testPath");
 
             // Act
-            presenter.AddNewEvent("Event details", 1, DateTime.Now, 60);
+            presenter.AddNewEvent("Event details", 1, DateTime.Now, 60, "");
 
             // Assert
             Assert.True(view.calledView_ShowMessage);
@@ -73,7 +73,7 @@ namespace CalendarWPFTesting
             EventsPresenter presenter = new EventsPresenter(view, "testPath");
 
             // Act
-            presenter.AddNewEvent("Event details", 1, DateTime.Now, 60);
+            presenter.AddNewEvent("Event details", 1, DateTime.Now, 60, "");
 
             // Assert
             Assert.True(view.calledView_ShowError);
@@ -134,7 +134,7 @@ namespace CalendarWPFTesting
             double duration = 60;
 
             // Act
-            presenter.AddNewEvent(details, categoryId, start, duration);
+            presenter.AddNewEvent(details, categoryId, start, duration, "");
 
         }
 
