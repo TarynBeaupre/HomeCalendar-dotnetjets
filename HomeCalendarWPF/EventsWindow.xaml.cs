@@ -13,7 +13,7 @@ namespace HomeCalendarWPF
     {
         private EventsPresenter presenter;
         private static DateTime previousDate = System.DateTime.Now;
-        private static int previousCategoryIndex = 0;
+        public static int previousCategoryIndex = 0;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventsWindow"/> class.
@@ -65,9 +65,10 @@ namespace HomeCalendarWPF
             double duration = Convert.ToDouble(txbDuration.Text);
 
             //Replacing previous options
+            // TODO: maybe do categoylist.length
             previousCategoryIndex = categoryId;
 
-            presenter.AddNewEvent(details, categoryId, startdp.SelectedDate, duration);
+            presenter.AddNewEvent(details, categoryId, startdp.SelectedDate, duration, categoriescmb.Text);
 
         }
         private void Btn_Click_Cancel_Event(object sender, EventArgs e)
@@ -158,7 +159,9 @@ namespace HomeCalendarWPF
         /// ]]></code></example>
         public void ShowDefaultCategories(List<Category> categoriesList)
         {
-            categoriescmb.SelectedIndex = previousCategoryIndex;
+            // if previousCategoryIndex is -1 this means that a new category was added so
+            // we can just set it to the length of the list -1 as it's added at the end.
+            categoriescmb.SelectedIndex = previousCategoryIndex != -1 ? previousCategoryIndex : categoriesList.Count - 1;
             categoriescmb.ItemsSource = categoriesList;
         }
         /// <summary>

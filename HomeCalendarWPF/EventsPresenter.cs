@@ -12,6 +12,8 @@ namespace HomeCalendarWPF
         private readonly EventsViewInterface view;
         private readonly HomeCalendar model;
 
+        private List<Category> categoriesList;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="EventsPresenter"/> class with the specified view and calendar file path.
         /// </summary>
@@ -29,8 +31,11 @@ namespace HomeCalendarWPF
         {
             this.model = new HomeCalendar(path, false);
             this.view = view;
+
+            categoriesList = model.categories.List();
         }
 
+        public void AddNewEvent(string details, int categoryId, DateTime? start, double duration, string categoryName)
         /// <summary>
         /// Adds a new event with the specified details, category ID, start time, and duration.
         /// </summary>
@@ -49,6 +54,16 @@ namespace HomeCalendarWPF
             // Delegate to the model to add the new event
             if (start == null)
                 start = DateTime.Now;
+
+
+            // Category doesn't exist
+            if (categoryId == -1)
+            {
+                AddNewCategory(categoryName);
+                categoryId = categoriesList.Count;
+
+                categoriesList = model.categories.List();
+            }
 
             try
             {
@@ -80,7 +95,7 @@ namespace HomeCalendarWPF
             try
             {
                 model.categories.Add(categoryName, type);
-                view.ShowMessage($"A new category {categoryName} has been added!");
+                view.ShowMessage($"A new category {categoryName} of type Event has been added!");
             }
             catch (SQLiteException ex)
             {
@@ -98,7 +113,6 @@ namespace HomeCalendarWPF
         /// </code></example>
         public void GetDefaultCategories()
         {
-            List<Category> categoriesList = model.categories.List();
             view.ShowDefaultCategories(categoriesList);
         }
     }
