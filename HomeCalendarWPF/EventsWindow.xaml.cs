@@ -51,7 +51,10 @@ namespace HomeCalendarWPF
 
         public void Btn_Click_Add_Event(object sender, RoutedEventArgs e)
         {
-            //Add the event to the database and the view calendar via the presenter
+            //Validating form data
+            ValidateEventForm();
+
+            //Add the event to the database via the presenter
             string details = eventDescription.Text;
             int categoryId = categoriescmb.SelectedIndex;
 
@@ -61,7 +64,7 @@ namespace HomeCalendarWPF
             }
 
             previousDate = (DateTime)startdp.SelectedDate;
-            //Add checks here for a double value entered
+
             double duration = Convert.ToDouble(txbDuration.Text);
 
             //Replacing previous options
@@ -73,6 +76,11 @@ namespace HomeCalendarWPF
         {
             // if user cancels addition, resent the default values for the category and the dates
             this.Close();
+        }
+
+        public void ValidateEventForm()
+        {
+
         }
 
         private void SetTheme(bool darkmode)
@@ -93,12 +101,7 @@ namespace HomeCalendarWPF
             }
         }
 
-        public void ShowDefaultCategories(List<Category> categoriesList)
-        {
-            categoriescmb.SelectedIndex = previousCategoryIndex;
-            categoriescmb.ItemsSource = categoriesList;
-        }
-
+        //===== VIEW INTERFACE METHODS =====
         public void ShowError(string message)
         {
             MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -108,27 +111,37 @@ namespace HomeCalendarWPF
         {
             MessageBox.Show(message);
         }
+        public void ShowDefaultCategories(List<Category> categoriesList)
+        {
+            categoriescmb.SelectedIndex = previousCategoryIndex;
+            categoriescmb.ItemsSource = categoriesList;
+        }
 
         public void ShowDefaultDateTime()
         {
+            //=== Set Start/End date defaults ===
             startdp.SelectedDate = previousDate;
-            int startHour;
-            DateTime date = System.DateTime.Now;
+            enddp.SelectedDate = previousDate;
 
+
+            //Creating a drop down for 24 hour selection
             List<string> hourList = new List<string> { };
             for (int i = 1; i <= 24; i++)
             {
                 hourList.Add(i.ToString());
             }
+            cmbStartTimeHour.ItemsSource = hourList;
+
+            //Creating a drop down for the start time minutes
             List<string> minList = new List<string>
             {
                 "00", "15", "30", "45"
             };
-
-            cmbStartTimeHour.ItemsSource = hourList;
-
-
             cmbStartTimeMins.ItemsSource = minList;
+
+            //=== Set start time default (the next 30 min block) ===
+            int startHour;
+            DateTime date = System.DateTime.Now;
             if (date.Minute < 30)
             {
                 startHour = date.Hour;
@@ -139,9 +152,9 @@ namespace HomeCalendarWPF
                 startHour = date.Hour + 1;
                 cmbStartTimeMins.SelectedIndex = 0;
             }
-            cmbStartTimeHour.SelectedIndex = startHour - 1;
+            cmbStartTimeHour.SelectedIndex = startHour - 1; //-1 because it index 0 in the cmb is hour 1 of the day
 
-            //Default duration to 30mins
+            //=== Set default duration (30 mins) ===
             txbDuration.Text = "30";
         }
     }
