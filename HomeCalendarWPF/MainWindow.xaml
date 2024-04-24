@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:HomeCalendarWPF"
         mc:Ignorable="d"
         FontFamily="Verdana"
-        Title="Calendar" Height="600" Width="1000"
+        Title="Calendar" Height="800" Width="1000"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
     <Window.Resources>
@@ -20,18 +20,23 @@
         <ImageBrush x:Name="background_theme" ImageSource="images/stardew-backdrop.jpg"></ImageBrush>
     </Window.Background>
 
-    <Grid Margin="20" HorizontalAlignment="Center" >
+    <Grid Margin="20" >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.3*"/>
-            <RowDefinition Height="3*"/>
-            <RowDefinition Height="0.25*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="440*"/>
+            <RowDefinition Height="170*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="50*"/>
         </Grid.RowDefinitions>
+
+        <!--TOP-->
         <!--Header-->
-        <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Background="#FFD0EFFF" Opacity="0.9">
+        <StackPanel Grid.ColumnSpan="3" Orientation="Horizontal" Background="#FFD0EFFF" Opacity="0.9">
             <!--Stardew stardrop image-->
             <Image Margin="5, 0, 20, 0" Width="40" Visibility="Visible" x:Name="light_theme_star">
                 <Image.Source>
@@ -48,8 +53,9 @@
             <TextBlock VerticalAlignment="Center" FontSize="24" FontWeight="Bold" FontStyle="Italic">Home Calendar ~</TextBlock>
         </StackPanel>
 
-        <!--Side Menu Background-->
-        <StackPanel Grid.Row="1" Grid.ColumnSpan="1" Margin="10" Opacity="0.9">
+        <!--LEFT SIDE-->
+        <!--Left Menu Panel Background-->
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="1" Margin="10,10,0,10" Opacity="0.9">
             <StackPanel.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFD0EFFF"/>
@@ -58,36 +64,17 @@
             </StackPanel.Background>
         </StackPanel>
 
-        <!--Calendar editing side bar-->
-        <!--Change file-->
-        <StackPanel Margin="15, 30, 15, 20" Grid.Row="1" VerticalAlignment="Top">
-            <Label FontWeight="Bold">Edit Calendar</Label>
-            <TextBlock>current path:</TextBlock>
-            <TextBlock Name="calendarFiletxb" Background="LightGray" Margin="2" FontSize="10" TextWrapping="WrapWithOverflow">path here</TextBlock>
-            <Button Click="Btn_Click_ChangeDBFile" Style="{StaticResource button}" Margin="10">Change Database File</Button>
-        </StackPanel>
-
         <!--Event edit-->
-        <StackPanel Margin="15, 30, 15, 20" Grid.Row="1" VerticalAlignment="Center">
-            <Label FontWeight="Bold">Edit Events</Label>
-            <TextBlock>Add a new event</TextBlock>
+        <StackPanel Grid.Row="1" Margin="10,20,0,0">
+            <Label FontWeight="Bold">Add New</Label>
             <Button Style="{StaticResource button}" Margin="10" Click="OpenEvent">
                 Add Event</Button>
             <Button Style="{StaticResource button}" Margin="10" Click="OpenCategory">
                 Add Category</Button>
         </StackPanel>
 
-        <!--Colour themes-->
-        <StackPanel Margin="10" Grid.Row="1" Grid.Column="0" VerticalAlignment="Bottom">
-            <Label FontWeight="Bold">Change color theme</Label>
-            <TextBlock>Select a new colour theme</TextBlock>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button x:Name="button_light_theme" Margin="10" Width="60" Click="Btn_Click_Change_Theme" Background="LightGreen" Style="{StaticResource button}">Light</Button>
-                <Button x:Name="button_dark_theme" Margin="10" Width="60" Click="Btn_Click_Change_Theme" Background="DarkGray" Style="{StaticResource button}">Dark</Button>
-            </StackPanel>
-        </StackPanel>
-
-        <Viewbox HorizontalAlignment="Left" Grid.Column="1" Grid.Row="1">
+        <!--Calendar display-->
+        <Viewbox Grid.Row="1" Margin="0,438,0,10" Grid.RowSpan="2">
             <Calendar Opacity="0.9">
                 <Calendar.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -98,8 +85,57 @@
             </Calendar>
         </Viewbox>
 
+        <!--CENTER-->
+        <!--Event data grid -->
+        <Grid Grid.Column="1" Margin="10,10,10,10" Grid.Row="1" Grid.RowSpan="2">
+            <DataGrid Name="Events"></DataGrid>
+        </Grid>
+
+        <!--RIGHT SIDE-->
+        <!--Right Menu Panel Background-->
+        <StackPanel Grid.Row="1" Grid.Column="2" Grid.RowSpan="3" Margin="0,10,10,0" Opacity="0.9">
+            <StackPanel.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFD0EFFF"/>
+                    <GradientStop Color="#FF91E8AA" Offset="1"/>
+                </LinearGradientBrush>
+            </StackPanel.Background>
+        </StackPanel>
+
+        <!--Display Options-->
+        <StackPanel Grid.Row="1" Grid.Column="2" Grid.RowSpan="4"  Margin="10,20,10,0" >
+            <StackPanel>
+                <Label FontWeight="Bold">Filter</Label>
+                <CheckBox></CheckBox>
+                <Label FontWeight="Bold">Group By</Label>
+                <CheckBox>Month</CheckBox>
+                <CheckBox>Category</CheckBox>
+            </StackPanel>
+
+            <!--Colour themes-->
+            <StackPanel Margin="10,0,0,0" Grid.Row="1" Grid.Column="2" VerticalAlignment="Top">
+                <Label FontWeight="Bold">Change color theme</Label>
+                <TextBlock>Select a new colour theme</TextBlock>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="button_light_theme" Margin="10" Width="60" Click="Btn_Click_Change_Theme" Background="LightGreen" Style="{StaticResource button}">Light</Button>
+                    <Button x:Name="button_dark_theme" Margin="10" Width="60" Click="Btn_Click_Change_Theme" Background="DarkGray" Style="{StaticResource button}">Dark</Button>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+
+        <!--BOTTOM-->
+        <!--Change file-->
+        <StackPanel Margin="10,170,10,0" Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" Background="AliceBlue" Grid.RowSpan="2">
+            <Label FontWeight="Bold">File Options</Label>
+            <TextBlock VerticalAlignment="Center">path:</TextBlock>
+            <TextBlock Name="calendarFiletxb" VerticalAlignment="Center" Background="LightGray" Margin="2" FontSize="10" TextWrapping="WrapWithOverflow" Width="200">path here</TextBlock>
+            <Button Click="Btn_Click_ChangeDBFile" Style="{StaticResource button}" Margin="10">Change Database File</Button>
+        </StackPanel>
+
         <!--Footer-->
-        <Button Click="Btn_Click_ShowWarning" Grid.Row="2" Grid.ColumnSpan="1" Margin="35, 3, 35, 3" Style="{StaticResource button}" Foreground="#FFC83F13" Background="#FFFF9800" BorderThickness="4, 3, 4, 0">
+        <StackPanel Grid.ColumnSpan="3" Grid.Row="4" Orientation="Horizontal" Background="#FFD0EFFF" Opacity="0.9" Margin="0,10,0,0">
+        </StackPanel>
+        <Button Click="Btn_Click_ShowWarning" Margin="10,15,0,5" Grid.Row="4" Grid.ColumnSpan="1" Style="{StaticResource button}" Foreground="#FFC83F13" Background="#FFFF9800" BorderThickness="4, 3, 4, 0">
             <Button.BorderBrush>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFFFEB3B" Offset="0.107"/>
@@ -108,6 +144,6 @@
                 </LinearGradientBrush>
             </Button.BorderBrush> Close and Save Calendar
         </Button>
-        <TextBlock Grid.Column="1" Grid.Row="2" VerticalAlignment="Top" HorizontalAlignment="Right" FontStyle="Italic"> by Taryn B., Julien H., Eric C.</TextBlock>
+        <TextBlock Grid.Column="2" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="4,0,0,0" FontStyle="Italic" Height="15" Width="178"> by Taryn B., Julien H., Eric C.</TextBlock>
     </Grid>
 </Window>
