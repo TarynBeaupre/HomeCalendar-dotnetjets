@@ -25,7 +25,6 @@ namespace HomeCalendarWPF
     {
         private readonly FileSelectionWindowPresenter presenter;
         public MainWindow.InitializationParams initParams;
-        private bool overrideClosing = false;
 
         /// <summary>
         /// Initializes a new instance of the  <see cref="FileSelectionWindow"/> class.

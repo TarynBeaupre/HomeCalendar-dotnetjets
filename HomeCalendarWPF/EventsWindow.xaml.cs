@@ -48,7 +48,7 @@ namespace HomeCalendarWPF
         public void AddNewCategory()
         {
             ComboBoxItem typeItem = (ComboBoxItem)categoriescmb.SelectedItem;
-            string categoryName = typeItem.Content.ToString();
+            string categoryName = typeItem.Content.ToString()!;
             presenter.AddNewCategory(categoryName);
         }
 
@@ -62,7 +62,7 @@ namespace HomeCalendarWPF
             string details = txbEventDescription.Text;
             int categoryId = categoriescmb.SelectedIndex;
 
-            previousDate = (DateTime)startdp.SelectedDate;
+            previousDate = (DateTime)startdp.SelectedDate!;
 
             double duration = Convert.ToDouble(txbDuration.Text);
 
