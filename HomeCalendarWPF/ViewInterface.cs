@@ -54,5 +54,7 @@ namespace HomeCalendarWPF
         /// ]]>
         /// </code></example>
         void SetThemeDark();
+        void SetDefaultDateTime();
+        void SetDefaultCategories(List<Category> categoryList);
     }
 }

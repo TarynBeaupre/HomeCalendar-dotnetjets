@@ -25,7 +25,6 @@ namespace HomeCalendarWPF
         private readonly ViewInterface view;
         private readonly HomeCalendar model;
 
-
         // Presenter constructor
         /// <summary>
         /// Initializes a new instance of the <see cref="Presenter"/> class with the specified view interface.
@@ -41,13 +40,31 @@ namespace HomeCalendarWPF
         public MainWindowPresenter(ViewInterface view)
         {
             InitializationParams initParams = this.GetInitParams();
-            //GetTheme();
-
             this.model = new HomeCalendar(initParams.filePath, initParams.newDB);
             this.view = view;
             view.SetCalendarFilePath(initParams.filePath);
-
+            SetDefaults();
         }
+
+        private void SetDefaults()
+        {
+            view.SetDefaultDateTime();
+            List<Category> categoryList  = model.categories.List();
+            view.SetDefaultCategories(categoryList);
+        }
+
+        public void FilterByCategory(int categoryIndex)
+        {
+            //1 get the events from the model
+            //2 set the events into the grid
+        }
+
+        public void ShowAllEvents()
+        {
+            //show all events in the grid
+        }
+
+        /*
         /// <summary>
         /// Initializes a new instance of the <see cref="Presenter"/> class with the specified view interface, file path, and new database flag.
         /// </summary>
@@ -65,7 +82,8 @@ namespace HomeCalendarWPF
         {
             this.model = new HomeCalendar(filePath, newDB);
             this.view = view;
-        }
+        } */
+
         /// <summary>
         /// Shows a warning message to the user.
         /// </summary>
@@ -78,6 +96,19 @@ namespace HomeCalendarWPF
         public void ShowWarning()
         {
             view.ShowMessage("If you close the next window, unsaved changes will be lost.");
+        }
+
+        public void SetTheme(string theme)
+        {
+            SaveThemeSettingsToRegistry();
+            if (theme == "button_dark_theme")
+            {
+                view.SetThemeDark();
+            }
+            else if (theme == "button_light_theme")
+            {
+                view.SetThemeLight();
+            }
         }
 
         private bool IsFirstUse()
@@ -106,43 +137,32 @@ namespace HomeCalendarWPF
             Registry.SetValue(keyName, "FIRST_USE", 0);
             Registry.SetValue(keyName, "DARK_THEME", 0);
         }
+
         private InitializationParams GetInitParams()
         {
             if (IsFirstUse())
-            {
                 ReadyForUse();
-            }
             else
-            {
                 GetTheme();
-            }
 
-            // IDK why i called this fop it should be fow (don't change fop sounds better)
-            // Also renamed it so it makes even less sense now :shrug: -ec
-            FileSelectionWindow fop = new FileSelectionWindow(MainWindow.darkMode);
-            fop.ShowDialog();
+            FileSelectionWindow newFileSelectWindow = new FileSelectionWindow(MainWindow.darkMode);
+            newFileSelectWindow.ShowDialog();
 
-            return new InitializationParams(fop.initParams.filePath, fop.initParams.newDB);
+            return new InitializationParams(newFileSelectWindow.initParams.filePath, newFileSelectWindow.initParams.newDB);
         }
+
         private void GetTheme()
         {
             string keyName = @$"HKEY_CURRENT_USER\Software\{MainWindow.REGISTRY_SUB_KEY_NAME}";
             var a = Registry.GetValue(keyName, "DARK_THEME", 0);
             int b = (int)a;
             MainWindow.darkMode = b == 1 ? true : false;
-            //MainWindow.darkMode = ((int)Registry.GetValue(keyName, "DARK_THEME", 0)! == 1) ? true : false;
         }
 
-        public void SetTheme(string theme)
+        private void SaveThemeSettingsToRegistry()
         {
-            if (theme == "button_dark_theme")
-            {
-                view.SetThemeDark();
-            }
-            else if (theme == "button_light_theme")
-            {
-                view.SetThemeLight();
-            }
+            string keyName = @$"HKEY_CURRENT_USER\Software\{MainWindow.REGISTRY_SUB_KEY_NAME}";
+            Registry.SetValue(keyName, "DARK_THEME", (MainWindow.darkMode == true) ? 1 : 0);
         }
     }
 }

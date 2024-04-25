@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using Calendar;
+using Microsoft.Win32;
 using System.IO;
 using System.Text;
 using System.Windows;
@@ -60,16 +61,33 @@ namespace HomeCalendarWPF
                 SetThemeLight();
         }
 
+
         private void OpenEvent(object sender, RoutedEventArgs e)
         {
             EventsWindow eventWindow = new EventsWindow(darkMode);
             eventWindow.Show();
         }
+
         private void OpenCategory(object sender, RoutedEventArgs e)
         {
             CategoriesWindow categoryWindow = new CategoriesWindow(darkMode);
             categoryWindow.Show();
         }
+
+        private void filterCategoryToggle_Click(object sender, RoutedEventArgs e)
+        {
+            int chosenCategoryIndex = filterCategoryCmbx.SelectedIndex;
+         
+            if ((bool)filterCategoryToggle.IsChecked)
+            {
+                presenter.FilterByCategory(chosenCategoryIndex);
+            }
+            else
+            {
+                presenter.ShowAllEvents();
+            }
+        }
+
         private void Btn_Click_ChangeDBFile(object sender, RoutedEventArgs e)
         {
             presenter = new MainWindowPresenter(this);
@@ -83,7 +101,6 @@ namespace HomeCalendarWPF
             {
                 string theme = clickedButton.Name;
                 presenter.SetTheme(theme);
-                SaveThemeSettingsToRegistry();
             }
         }
 
@@ -107,6 +124,7 @@ namespace HomeCalendarWPF
         {
             calendarFiletxb.Text = filePath;
         }
+
         /// <summary>
         /// Shows error messages to the user
         /// </summary>
@@ -121,6 +139,7 @@ namespace HomeCalendarWPF
         {
             MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+
         /// <summary>
         /// Sets the theme of the application to light mode.
         /// </summary>
@@ -147,6 +166,7 @@ namespace HomeCalendarWPF
             dark_theme_star.Visibility = Visibility.Collapsed;
             dark_tree_image.Visibility = Visibility.Collapsed;
         }
+
         /// <summary>
         /// Sets the theme of the application to dark mode.
         /// </summary>
@@ -173,10 +193,18 @@ namespace HomeCalendarWPF
             light_chicken_image.Visibility = Visibility.Collapsed;
             light_tree_image.Visibility= Visibility.Collapsed;
         }
-        private void SaveThemeSettingsToRegistry()
+
+        public void SetDefaultDateTime()
         {
-            string keyName = @$"HKEY_CURRENT_USER\Software\{MainWindow.REGISTRY_SUB_KEY_NAME}";
-            Registry.SetValue(keyName, "DARK_THEME", (MainWindow.darkMode == true) ? 1 : 0);
+            filterStartDatePicker.SelectedDate = DateTime.Now;
+            filterEndDatePicker.SelectedDate = DateTime.Now;
         }
+
+        public void SetDefaultCategories(List<Category> categoryList)
+        {
+            filterCategoryCmbx.SelectedIndex = 0;
+            filterCategoryCmbx.ItemsSource = categoryList;
+        }
+
     }
 }
