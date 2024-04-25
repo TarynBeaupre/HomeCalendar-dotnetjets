@@ -27,20 +27,20 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50*"/>
-            <RowDefinition Height="170*"/>
-            <RowDefinition Height="440*"/>
-            <RowDefinition Height="50*"/>
-            <RowDefinition Height="50*"/>
+            <RowDefinition Height="49*"/>
+            <RowDefinition Height="166*"/>
+            <RowDefinition Height="403*"/>
+            <RowDefinition Height="77*"/>
+            <RowDefinition Height="49*"/>
         </Grid.RowDefinitions>
 
         <!--TOP-->
         <!--Header-->
-        <StackPanel Grid.ColumnSpan="3" Orientation="Horizontal" Background="#FFD0EFFF" Opacity="0.9">
+        <StackPanel Grid.ColumnSpan="3" Orientation="Horizontal" Background="White" Opacity="0.9">
             <!--Stardew stardrop image-->
             <Image Margin="5, 0, 20, 0" Width="40" Visibility="Visible" x:Name="light_theme_star">
                 <Image.Source>
-                    <BitmapImage x:Name="star_image" UriSource="images/stardew-star.png"/>
+                    <BitmapImage UriSource="images/stardew-star.png"/>
                 </Image.Source>
             </Image>
 
@@ -55,7 +55,7 @@
 
         <!--LEFT SIDE-->
         <!--Calendar display-->
-        <Viewbox Grid.Row="1" Margin="0, 10, 0, 0">
+        <Viewbox Grid.Row="1" Margin="0,10,0,0">
             <Calendar Opacity="0.9">
                 <Calendar.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -65,29 +65,50 @@
                 </Calendar.Background>
             </Calendar>
         </Viewbox>
-        
+
         <!--Left Menu Panel Background-->
         <StackPanel Grid.Row="2" Grid.ColumnSpan="1" Margin="0,10,0,10" Opacity="0.9">
             <StackPanel.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFD0EFFF"/>
-                    <GradientStop x:Name="sidemenu_gradient" Color="#FF91E8AA" Offset="1"/>
+                    <GradientStop x:Name="left_sidemenu_gradient" Color="#FF91E8AA" Offset="1"/>
                 </LinearGradientBrush>
             </StackPanel.Background>
         </StackPanel>
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="1" Margin="0,166,0,0" Grid.RowSpan="2">
+            <!--Event edit-->
+            <GroupBox Grid.Row="2"  Margin="10,20,10,20" BorderBrush="#FFFFEB3B">
+                <GroupBox.Header>
+                    <TextBlock>
+                        <Span FontWeight="Bold">Add New</Span>
+                    </TextBlock>
+                </GroupBox.Header>
+                <StackPanel>
+                    <Button Style="{StaticResource button}" Margin="10" Click="OpenEvent">
+                        Add Event</Button>
+                    <Button Style="{StaticResource button}" Margin="10" Click="OpenCategory">
+                        Add Category</Button>
+                </StackPanel>
+            </GroupBox>
 
-        <!--Event edit-->
-        <StackPanel Grid.Row="2" Margin="20,20,10,0">
-            <Label FontWeight="Bold">Add New</Label>
-            <Button Style="{StaticResource button}" Margin="10" Click="OpenEvent">
-                Add Event</Button>
-            <Button Style="{StaticResource button}" Margin="10" Click="OpenCategory">
-                Add Category</Button>
+            <!--Chicken picture-->
+            <Image Grid.Row="2" Visibility="Visible"  Height="150" VerticalAlignment="Bottom" Margin="0, 0, 0, 10" x:Name="light_chicken_image">
+                <Image.Source>
+                    <BitmapImage UriSource="images/chicken-light.png"/>
+                </Image.Source>
+            </Image>
+
+            <Image Grid.Row="2" Visibility="Collapsed"  Height="90" VerticalAlignment="Bottom" Margin="0, 0, 5, 30" x:Name="dark_chicken_image">
+                <Image.Source>
+                    <BitmapImage UriSource="images/chicken-dark.png"/>
+                </Image.Source>
+            </Image>
+
         </StackPanel>
 
         <!--CENTER-->
         <!--Event data grid -->
-        <Grid Grid.Column="1" Margin="10,10,10,10" Grid.Row="1" Grid.RowSpan="2">
+        <Grid Opacity="0.9" Grid.Column="1" Margin="10,10,10,10" Grid.Row="1" Grid.RowSpan="2">
             <DataGrid Name="Events"></DataGrid>
         </Grid>
 
@@ -97,43 +118,93 @@
             <StackPanel.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFD0EFFF"/>
-                    <GradientStop Color="#FF91E8AA" Offset="1"/>
+                    <GradientStop x:Name="right_sidemenu_gradient" Color="#FF91E8AA" Offset="1"/>
                 </LinearGradientBrush>
             </StackPanel.Background>
         </StackPanel>
 
-        <!--Display Options-->
+        <!--right menu Options-->
         <StackPanel Grid.Row="1" Grid.Column="2" Grid.RowSpan="4"  Margin="10,20,10,0" >
-            <StackPanel>
-                <Label FontWeight="Bold">Filter</Label>
-                <CheckBox></CheckBox>
-                <Label FontWeight="Bold">Group By</Label>
-                <CheckBox>Month</CheckBox>
-                <CheckBox>Category</CheckBox>
-            </StackPanel>
+            <GroupBox BorderBrush="#FFFFEB3B" >
+                <GroupBox.Header>
+                    <TextBlock>
+                    <Span FontWeight="Bold">Filter Options</Span>
+                    </TextBlock>
+                </GroupBox.Header>
+                <StackPanel>
+                    <Label Margin="0, 5, 0, 0">Start Date</Label>
+                    <DatePicker x:Name="filterStartDatePicker"></DatePicker>
+                    <Label Margin="0, 5, 0, 0">End Date</Label>
+                    <DatePicker x:Name="filterEndDatePicker"></DatePicker>
+                    <CheckBox Margin="0, 10, 0, 0" x:Name="filterCategoryToggle">Filter by Category?</CheckBox>
+                    <ComboBox x:Name="filterCategoryCmbx" Grid.Column="1" Height="20" SelectedIndex="0" IsEditable="True">
+                    </ComboBox>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox BorderBrush="#FFFFEB3B" Margin="0, 10, 0, 0">
+                <GroupBox.Header>
+                    <TextBlock>
+                    <Span FontWeight="Bold">Group By Options</Span>
+                    </TextBlock>
+                </GroupBox.Header>
+                <StackPanel>
+                    <CheckBox x:Name="GroupByMonthToggle">Month</CheckBox>
+                    <CheckBox x:Name="GroupByCategoryToggle">Category</CheckBox>
+                </StackPanel>
+            </GroupBox>
 
             <!--Colour themes-->
-            <StackPanel Margin="0,20,10,0" Grid.Row="1" Grid.Column="2" VerticalAlignment="Top">
-                <Label FontWeight="Bold">Change color theme</Label>
-                <TextBlock>Select a new colour theme</TextBlock>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button x:Name="button_light_theme" Margin="10" Width="60" Click="Btn_Click_Change_Theme" Background="LightGreen" Style="{StaticResource button}">Light</Button>
-                    <Button x:Name="button_dark_theme" Margin="10" Width="60" Click="Btn_Click_Change_Theme" Background="DarkGray" Style="{StaticResource button}">Dark</Button>
+            <GroupBox BorderBrush="#FFFFEB3B" Margin="0, 10, 0, 0">
+                <GroupBox.Header>
+                    <TextBlock>
+                    <Span FontWeight="Bold">Color Theme</Span>
+                    </TextBlock>
+                </GroupBox.Header>
+                <StackPanel Margin="0,0,10,0" Grid.Row="1" Grid.Column="2" VerticalAlignment="Top">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button x:Name="button_light_theme" Margin="10" Width="60" Click="Btn_Click_Change_Theme" Background="LightGreen" Style="{StaticResource button}">Light</Button>
+                        <Button x:Name="button_dark_theme" Margin="10" Width="60" Click="Btn_Click_Change_Theme" Background="DarkGray" Style="{StaticResource button}">Dark</Button>
+                    </StackPanel>
                 </StackPanel>
-            </StackPanel>
+            </GroupBox>
+            <!--Tree images-->
+            <Image Grid.Row="2" Grid.Column="2" Grid.RowSpan="2" Visibility="Collapsed" VerticalAlignment="Bottom" Margin="20" x:Name="light_tree_image">
+                <Image.Source>
+                    <BitmapImage UriSource="images/light-tree.png"/>
+                </Image.Source>
+            </Image>
+            <Image Grid.Row="2" Grid.Column="2" Grid.RowSpan="2" Visibility="Visible" Margin="20" x:Name="dark_tree_image" Height="260">
+                <Image.Source>
+                    <BitmapImage UriSource="images/dark-tree.png"/>
+                </Image.Source>
+            </Image>
         </StackPanel>
 
         <!--BOTTOM-->
         <!--Change file-->
-        <StackPanel Margin="0,0,10,0" Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" Background="AliceBlue">
-            <Label FontWeight="Bold">File Options</Label>
-            <TextBlock VerticalAlignment="Center">path:</TextBlock>
-            <TextBlock Name="calendarFiletxb" VerticalAlignment="Center" Background="LightGray" Margin="2" FontSize="10" TextWrapping="WrapWithOverflow" Width="200">path here</TextBlock>
-            <Button Click="Btn_Click_ChangeDBFile" Style="{StaticResource button}" Margin="10">Change Database File</Button>
+        <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Margin="0,0,10,0">
+            <StackPanel.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFD0EFFF"/>
+                    <GradientStop x:Name="file_sidemenu_gradient" Color="#FF91E8AA" Offset="1"/>
+                </LinearGradientBrush>
+            </StackPanel.Background>
         </StackPanel>
+        <GroupBox Grid.Row="3" Grid.ColumnSpan="2" Margin="10,0,20,10" BorderBrush="#FFFFEB3B">
+            <GroupBox.Header>
+                <TextBlock>
+                    <Span FontWeight="Bold">File Options</Span>
+                </TextBlock>
+            </GroupBox.Header>
+            <StackPanel Orientation="Horizontal" Opacity="0.9">
+                <TextBlock VerticalAlignment="Center">path:</TextBlock>
+                <TextBlock Name="calendarFiletxb" VerticalAlignment="Center" Background="LightGray" Margin="2" FontSize="10" TextWrapping="WrapWithOverflow" >path here</TextBlock>
+                <Button Click="Btn_Click_ChangeDBFile" Style="{StaticResource button}" Margin="5">Change Database File</Button>
+            </StackPanel>
+        </GroupBox>
 
         <!--Footer-->
-        <StackPanel Grid.ColumnSpan="3" Grid.Row="4" Orientation="Horizontal" Background="#FFD0EFFF" Opacity="0.9" Margin="0,10,0,0">
+        <StackPanel Grid.ColumnSpan="3" Grid.Row="4" Orientation="Horizontal" Background="White" Opacity="0.9" Margin="0,10,0,0">
         </StackPanel>
         <Button Click="Btn_Click_ShowWarning" Margin="10,15,0,5" Grid.Row="4" Grid.ColumnSpan="1" Style="{StaticResource button}" Foreground="#FFC83F13" Background="#FFFF9800" BorderThickness="4, 3, 4, 0">
             <Button.BorderBrush>

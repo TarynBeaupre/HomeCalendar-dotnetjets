@@ -9,11 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="images\chicken-dark.png" />
+    <None Remove="images\chicken-light.png" />
+    <None Remove="images\dark-tree.png" />
+    <None Remove="images\light-tree.png" />
     <None Remove="images\stardew-backdrop-dark.jpg" />
     <None Remove="images\stardew-backdrop.jpg" />
     <None Remove="images\stardew-star-dark.png" />
     <None Remove="images\stardew-star.png" />
-    <None Remove="images\stardew-tree.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,11 +24,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="images\chicken-dark.png" />
+    <Resource Include="images\chicken-light.png" />
+    <Resource Include="images\dark-tree.png" />
+    <Resource Include="images\light-tree.png" />
     <Resource Include="images\stardew-backdrop-dark.jpg" />
     <Resource Include="images\stardew-backdrop.jpg" />
     <Resource Include="images\stardew-star-dark.png" />
     <Resource Include="images\stardew-star.png" />
-    <Resource Include="images\stardew-tree.png" />
   </ItemGroup>
 
   <ItemGroup>
