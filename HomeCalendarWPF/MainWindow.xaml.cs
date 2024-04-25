@@ -1,4 +1,7 @@
-﻿using Microsoft.Win32;
+﻿using Calendar;
+using Microsoft.Win32;
+using System.Data.SQLite;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Windows;
@@ -8,6 +11,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
@@ -37,6 +41,7 @@ namespace HomeCalendarWPF
             }
         }
         public static bool darkMode = false;
+        public List<Event> eventsGridList = new List<Event>();
 
         // -------------------------------------------------
         // ACTUALLY SUPER IMPORTANT DO NOT FORGET ABOUT THIS
@@ -62,6 +67,18 @@ namespace HomeCalendarWPF
                 SetThemeDark();
             else
                 SetThemeLight();
+
+            PopulateDataGrid();
+
+
+            // >> TESTING <<
+            //Event event1 = new Event(3, new DateTime(04/04/04), 2, 15, "hello");
+            //List<Event> users = new List<Event>();
+            //users.Add(event1);
+            //users.Add(event1);
+            //users.Add(event1);
+
+            //EventsGrid.ItemsSource = users;
         }
 
         private void OpenEvent(object sender, RoutedEventArgs e)
@@ -165,6 +182,53 @@ namespace HomeCalendarWPF
         {
             string keyName = @$"HKEY_CURRENT_USER\Software\{MainWindow.REGISTRY_SUB_KEY_NAME}";
             Registry.SetValue(keyName, "DARK_THEME", (MainWindow.darkMode == true) ? 1 : 0);
+        }
+
+        public void SetEventsInGrid(List<Event> eventsList)
+        {
+
+            EventsGrid.ItemsSource = eventsList;
+        }
+        private void PopulateDataGrid()
+        {
+            presenter.SetGridEventsList(ref eventsGridList);
+            List<Dictionary<string, object>> columns = new List<Dictionary<string, object>>();
+
+            double busyTime = 0;
+            for (int i = 0; i < eventsGridList.Count; i++)
+            {
+                columns.Add(new Dictionary<string, object>());
+
+                var startDateTimeSplit = eventsGridList[i].StartDateTime.ToString().Split(' ');
+                var startDateSplit = startDateTimeSplit[0].Split('-');
+                busyTime += eventsGridList[i].DurationInMinutes;
+
+                columns[i]["Start Date"] = $"{startDateSplit[2]}/{startDateSplit[1]}/{startDateSplit[0]}";
+                columns[i]["Start Time"] = startDateTimeSplit[1];
+                columns[i]["Category"] = eventsGridList[i].Category;
+                columns[i]["Description"] = eventsGridList[i].Details;
+                columns[i]["Duration"] = eventsGridList[i].DurationInMinutes;
+                columns[i]["Busy Time"] = busyTime;
+            }
+
+            EventsGrid.ItemsSource = columns;
+            EventsGrid.Columns.Clear();
+
+            foreach (string key in columns[0].Keys)
+            {
+                var column = new DataGridTextColumn();
+                column.Header = key;
+                column.Binding = new Binding($"[{key}]");
+                EventsGrid.Columns.Add(column);
+            }
+        }
+
+        private void EventsGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var a = EventsGrid.CurrentItem;
+
+            if (a is null)
+                return;
         }
     }
 }

@@ -124,9 +124,6 @@ namespace HomeCalendarWPF
             FileSelectionWindow fop = new FileSelectionWindow(MainWindow.darkMode);
             fop.ShowDialog();
 
-            //if (fop.initParams.filePath == "Path")
-            //    System.Windows.Application.Current.Shutdown();
-
             return new InitializationParams(fop.initParams.filePath, fop.initParams.newDB);
         }
         private void GetTheme()
@@ -148,6 +145,12 @@ namespace HomeCalendarWPF
             {
                 view.SetThemeLight();
             }
+        }
+
+        public void SetGridEventsList(ref List<Event> eventsList)
+        {
+            // Presenter populates the list
+            eventsList = model.events.List();
         }
     }
 }
