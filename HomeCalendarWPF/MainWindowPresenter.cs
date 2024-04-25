@@ -41,12 +41,10 @@ namespace HomeCalendarWPF
         public MainWindowPresenter(ViewInterface view)
         {
             InitializationParams initParams = this.GetInitParams();
-            //GetTheme();
 
             this.model = new HomeCalendar(initParams.filePath, initParams.newDB);
             this.view = view;
-            view.SetCalendarFilePath(initParams.filePath);
-
+            view.SetCalendarFilePath(initParams.filePath);            
         }
         /// <summary>
         /// Initializes a new instance of the <see cref="Presenter"/> class with the specified view interface, file path, and new database flag.
@@ -143,6 +141,12 @@ namespace HomeCalendarWPF
             {
                 view.SetThemeLight();
             }
+        }
+
+        public void SetGridEventsList(ref List<Event> eventsList)
+        {
+            // Presenter populates the list
+            eventsList = model.events.List();
         }
     }
 }

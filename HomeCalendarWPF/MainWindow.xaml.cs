@@ -1,4 +1,6 @@
-﻿using Microsoft.Win32;
+﻿using Calendar;
+using Microsoft.Win32;
+using System.Data.SQLite;
 using System.IO;
 using System.Text;
 using System.Windows;
@@ -8,6 +10,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
@@ -37,6 +40,7 @@ namespace HomeCalendarWPF
             }
         }
         public static bool darkMode = false;
+        public List<Event> eventsGridList = new List<Event>();
 
         // -------------------------------------------------
         // ACTUALLY SUPER IMPORTANT DO NOT FORGET ABOUT THIS
@@ -58,6 +62,20 @@ namespace HomeCalendarWPF
                 SetThemeDark();
             else
                 SetThemeLight();
+
+            presenter.SetGridEventsList(ref eventsGridList);
+
+            EventsGrid.ItemsSource = eventsGridList;
+
+
+            // >> TESTING <<
+            //Event event1 = new Event(3, new DateTime(04/04/04), 2, 15, "hello");
+            //List<Event> users = new List<Event>();
+            //users.Add(event1);
+            //users.Add(event1);
+            //users.Add(event1);
+
+            //EventsGrid.ItemsSource = users;
         }
 
         private void OpenEvent(object sender, RoutedEventArgs e)
@@ -161,6 +179,12 @@ namespace HomeCalendarWPF
         {
             string keyName = @$"HKEY_CURRENT_USER\Software\{MainWindow.REGISTRY_SUB_KEY_NAME}";
             Registry.SetValue(keyName, "DARK_THEME", (MainWindow.darkMode == true) ? 1 : 0);
+        }
+
+        public void SetEventsInGrid(List<Event> eventsList)
+        {
+
+            EventsGrid.ItemsSource = eventsList;
         }
     }
 }
