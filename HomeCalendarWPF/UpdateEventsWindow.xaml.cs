@@ -23,5 +23,17 @@ namespace HomeCalendarWPF
         {
             InitializeComponent();
         }
+        private void Btn_Click_AddNewCategory(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+        private void Btn_Click_Add_Event(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+        private void Btn_Click_Cancel_Event(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
