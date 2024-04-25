@@ -164,5 +164,29 @@ namespace HomeCalendarWPF
             string keyName = @$"HKEY_CURRENT_USER\Software\{MainWindow.REGISTRY_SUB_KEY_NAME}";
             Registry.SetValue(keyName, "DARK_THEME", (MainWindow.darkMode == true) ? 1 : 0);
         }
+
+        public void SetGridEventsList(ref List<Event> eventsList, ref List<Dictionary<string, object>> eventsListByCatMonth, 
+            ref List<CalendarItemsByMonth> eventsListByMonth, ref List<CalendarItemsByCategory> eventsListByCategory,
+            bool groupByMonth = false, bool groupByCat = false)
+        {
+            // Yeah always passing all the lists is not super efficient...To improve - jh
+            if (groupByMonth && groupByCat)
+            {
+                eventsListByCatMonth = model.GetCalendarDictionaryByCategoryAndMonth(null, null, false, 0);
+            }
+            else if (groupByMonth)
+            {
+                eventsListByMonth = model.GetCalendarItemsByMonth(null, null, false, 0);
+            }
+            else if (groupByCat)
+            {
+                eventsListByCategory = model.GetCalendarItemsByCategory(null, null, false, 0);
+            }
+            else
+            {
+                // Presenter populates the list
+                eventsList = model.events.List();
+            }
+        }
     }
 }

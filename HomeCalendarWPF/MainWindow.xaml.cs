@@ -1,5 +1,7 @@
 ﻿using Calendar;
 using Microsoft.Win32;
+using System.Data.SQLite;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Windows;
@@ -9,6 +11,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
@@ -38,6 +41,14 @@ namespace HomeCalendarWPF
             }
         }
         public static bool darkMode = false;
+        
+        // My variables for the grid table
+        public List<Event> eventsGridList = new();
+        public List<Dictionary<string, object>> eventsGridListByCatAndMonth = new();
+        public List<CalendarItemsByMonth> eventsGridListByMonth = new();
+        public List<CalendarItemsByCategory> eventsGridListByCat = new();
+
+        public bool groupByMonthFlag = false, groupByCatFlag = false;
 
         // -------------------------------------------------
         // ACTUALLY SUPER IMPORTANT DO NOT FORGET ABOUT THIS
@@ -59,6 +70,18 @@ namespace HomeCalendarWPF
                 SetThemeDark();
             else
                 SetThemeLight();
+
+            PopulateDataGrid();
+
+
+            // >> TESTING <<
+            //Event event1 = new Event(3, new DateTime(04/04/04), 2, 15, "hello");
+            //List<Event> users = new List<Event>();
+            //users.Add(event1);
+            //users.Add(event1);
+            //users.Add(event1);
+
+            //EventsGrid.ItemsSource = users;
         }
 
 
@@ -206,5 +229,98 @@ namespace HomeCalendarWPF
             filterCategoryCmbx.ItemsSource = categoryList;
         }
 
+        private void CheckBox_Checked_by_Month(object sender, RoutedEventArgs e)
+        {
+            groupByMonthFlag = true;
+            if (check_category.IsChecked == true)
+            {
+                presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+                EventsGrid.ItemsSource = eventsGridListByCatAndMonth;
+            }
+            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+            EventsGrid.ItemsSource = eventsGridListByMonth;
+        }
+
+        private void CheckBox_Checked_by_Category(object sender, RoutedEventArgs e)
+        {
+            groupByCatFlag = true;
+            if (check_month.IsChecked == true)
+            {
+                presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+                EventsGrid.ItemsSource = eventsGridListByCatAndMonth;
+            }
+            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+            EventsGrid.ItemsSource = eventsGridListByCat;
+        }
+
+        private void CheckBox_Unchecked_by_Month(object sender, RoutedEventArgs e)
+        {
+            groupByMonthFlag = false;
+            if (check_category.IsChecked == true)
+            {
+                presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+                EventsGrid.ItemsSource = eventsGridListByCat;
+            }
+            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+            EventsGrid.ItemsSource = eventsGridList;
+        }
+        private void CheckBox_Unchecked_by_Category(object sender, RoutedEventArgs e)
+        {
+            groupByCatFlag = false;
+            if (check_month.IsChecked == true)
+            {
+                presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+                EventsGrid.ItemsSource = eventsGridListByMonth;
+            }
+            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+            EventsGrid.ItemsSource = eventsGridList;
+        }
+
+
+        public void SetEventsInGrid(List<Event> eventsList)
+        {
+            EventsGrid.ItemsSource = eventsList;
+        }
+        private void PopulateDataGrid()
+        {
+            presenter.SetGridEventsList(ref eventsGridList);
+            List<Dictionary<string, object>> columns = new List<Dictionary<string, object>>();
+
+            double busyTime = 0;
+            for (int i = 0; i < eventsGridList.Count; i++)
+            {
+                columns.Add(new Dictionary<string, object>());
+
+                var startDateTimeSplit = eventsGridList[i].StartDateTime.ToString().Split(' ');
+                var startDateSplit = startDateTimeSplit[0].Split('-');
+                busyTime += eventsGridList[i].DurationInMinutes;
+
+                columns[i]["Start Date"] = $"{startDateSplit[2]}/{startDateSplit[1]}/{startDateSplit[0]}";
+                columns[i]["Start Time"] = startDateTimeSplit[1];
+                columns[i]["Category"] = eventsGridList[i].Category;
+                columns[i]["Description"] = eventsGridList[i].Details;
+                columns[i]["Duration"] = eventsGridList[i].DurationInMinutes;
+                columns[i]["Busy Time"] = busyTime;
+            }
+
+            EventsGrid.ItemsSource = columns;
+            EventsGrid.Columns.Clear();
+
+            foreach (string key in columns[0].Keys)
+            {
+                var column = new DataGridTextColumn();
+                column.Header = key;
+                column.Binding = new Binding($"[{key}]");
+                EventsGrid.Columns.Add(column);
+            }
+        }
+
+        private void EventsGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var a = EventsGrid.CurrentItem;
+
+            if (a is null)
+                return;
+        }
     }
 }
