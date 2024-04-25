@@ -56,13 +56,13 @@ namespace HomeCalendarWPF
         {
             presenter.Confirm();
         }
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            if (btnConfirm.IsEnabled == true || overrideClosing)
-                base.OnClosing(e);
-            else
-                e.Cancel = true;
-        }
+        //protected override void OnClosing(CancelEventArgs e)
+        //{
+        //    if (btnConfirm.IsEnabled == true || overrideClosing)
+        //        base.OnClosing(e);
+        //    else
+        //        e.Cancel = true;
+        //}
 
 
         // Methods called by the presenter on the view

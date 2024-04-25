@@ -54,6 +54,10 @@ namespace HomeCalendarWPF
         {
             InitializeComponent();
             presenter = new MainWindowPresenter(this);
+
+            if (calendarFiletxb.Text == "path here")
+                Application.Current.Shutdown();
+
             if (darkMode)
                 SetThemeDark();
             else

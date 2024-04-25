@@ -41,12 +41,14 @@ namespace HomeCalendarWPF
         public MainWindowPresenter(ViewInterface view)
         {
             InitializationParams initParams = this.GetInitParams();
-            //GetTheme();
+            if (initParams.filePath is not null)
+            {
+                //GetTheme();
 
-            this.model = new HomeCalendar(initParams.filePath, initParams.newDB);
-            this.view = view;
-            view.SetCalendarFilePath(initParams.filePath);
-
+                this.model = new HomeCalendar(initParams.filePath, initParams.newDB);
+                this.view = view;
+                view.SetCalendarFilePath(initParams.filePath);
+            }
         }
         /// <summary>
         /// Initializes a new instance of the <see cref="Presenter"/> class with the specified view interface, file path, and new database flag.
@@ -121,6 +123,9 @@ namespace HomeCalendarWPF
             // Also renamed it so it makes even less sense now :shrug: -ec
             FileSelectionWindow fop = new FileSelectionWindow(MainWindow.darkMode);
             fop.ShowDialog();
+
+            //if (fop.initParams.filePath == "Path")
+            //    System.Windows.Application.Current.Shutdown();
 
             return new InitializationParams(fop.initParams.filePath, fop.initParams.newDB);
         }
