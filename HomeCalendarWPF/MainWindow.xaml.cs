@@ -40,7 +40,14 @@ namespace HomeCalendarWPF
             }
         }
         public static bool darkMode = false;
-        public List<Event> eventsGridList = new List<Event>();
+        
+        // My variables for the grid table
+        public List<Event> eventsGridList = new();
+        public List<Dictionary<string, object>> eventsGridListByCatAndMonth = new();
+        public List<CalendarItemsByMonth> eventsGridListByMonth = new();
+        public List<CalendarItemsByCategory> eventsGridListByCat = new();
+
+        public bool groupByMonthFlag = false, groupByCatFlag = false;
 
         // -------------------------------------------------
         // ACTUALLY SUPER IMPORTANT DO NOT FORGET ABOUT THIS
@@ -63,8 +70,10 @@ namespace HomeCalendarWPF
             else
                 SetThemeLight();
 
-            presenter.SetGridEventsList(ref eventsGridList);
+            // Sends the events list to get populated by the presenter
+            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
 
+            // Links the events List for the item Source
             EventsGrid.ItemsSource = eventsGridList;
 
 
@@ -181,9 +190,56 @@ namespace HomeCalendarWPF
             Registry.SetValue(keyName, "DARK_THEME", (MainWindow.darkMode == true) ? 1 : 0);
         }
 
+        private void CheckBox_Checked_by_Month(object sender, RoutedEventArgs e)
+        {
+            groupByMonthFlag = true;
+            if (check_category.IsChecked == true)
+            {
+                presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+                EventsGrid.ItemsSource = eventsGridListByCatAndMonth;
+            }
+            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+            EventsGrid.ItemsSource = eventsGridListByMonth;
+        }
+
+        private void CheckBox_Checked_by_Category(object sender, RoutedEventArgs e)
+        {
+            groupByCatFlag = true;
+            if (check_month.IsChecked == true)
+            {
+                presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+                EventsGrid.ItemsSource = eventsGridListByCatAndMonth;
+            }
+            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+            EventsGrid.ItemsSource = eventsGridListByCat;
+        }
+
+        private void CheckBox_Unchecked_by_Month(object sender, RoutedEventArgs e)
+        {
+            groupByMonthFlag = false;
+            if (check_category.IsChecked == true)
+            {
+                presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+                EventsGrid.ItemsSource = eventsGridListByCat;
+            }
+            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+            EventsGrid.ItemsSource = eventsGridList;
+        }
+        private void CheckBox_Unchecked_by_Category(object sender, RoutedEventArgs e)
+        {
+            groupByCatFlag = false;
+            if (check_month.IsChecked == true)
+            {
+                presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+                EventsGrid.ItemsSource = eventsGridListByMonth;
+            }
+            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+            EventsGrid.ItemsSource = eventsGridList;
+        }
+
+
         public void SetEventsInGrid(List<Event> eventsList)
         {
-
             EventsGrid.ItemsSource = eventsList;
         }
     }

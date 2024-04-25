@@ -143,10 +143,28 @@ namespace HomeCalendarWPF
             }
         }
 
-        public void SetGridEventsList(ref List<Event> eventsList)
+        public void SetGridEventsList(ref List<Event> eventsList, ref List<Dictionary<string, object>> eventsListByCatMonth, 
+            ref List<CalendarItemsByMonth> eventsListByMonth, ref List<CalendarItemsByCategory> eventsListByCategory,
+            bool groupByMonth = false, bool groupByCat = false)
         {
-            // Presenter populates the list
-            eventsList = model.events.List();
+            // Yeah always passing all the lists is not super efficient...To improve - jh
+            if (groupByMonth && groupByCat)
+            {
+                eventsListByCatMonth = model.GetCalendarDictionaryByCategoryAndMonth(null, null, false, 0);
+            }
+            else if (groupByMonth)
+            {
+                eventsListByMonth = model.GetCalendarItemsByMonth(null, null, false, 0);
+            }
+            else if (groupByCat)
+            {
+                eventsListByCategory = model.GetCalendarItemsByCategory(null, null, false, 0);
+            }
+            else
+            {
+                // Presenter populates the list
+                eventsList = model.events.List();
+            }
         }
     }
 }
