@@ -229,10 +229,11 @@ namespace HomeCalendarWPF
             filterCategoryCmbx.ItemsSource = categoryList;
         }
 
-        private void CheckBox_Checked_by_Month(object sender, RoutedEventArgs e)
+        private void CheckBox_by_Month(object sender, RoutedEventArgs e)
         {
+            //check if checked
             groupByMonthFlag = true;
-            if (check_category.IsChecked == true)
+            if (GroupByMonthToggle.IsChecked == true)
             {
                 presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
                 EventsGrid.ItemsSource = eventsGridListByCatAndMonth;
@@ -241,10 +242,11 @@ namespace HomeCalendarWPF
             EventsGrid.ItemsSource = eventsGridListByMonth;
         }
 
-        private void CheckBox_Checked_by_Category(object sender, RoutedEventArgs e)
+        private void CheckBox_by_Category(object sender, RoutedEventArgs e)
         {
+            //check if checked
             groupByCatFlag = true;
-            if (check_month.IsChecked == true)
+            if (GroupByMonthToggle.IsChecked == true)
             {
                 presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
                 EventsGrid.ItemsSource = eventsGridListByCatAndMonth;
@@ -253,37 +255,13 @@ namespace HomeCalendarWPF
             EventsGrid.ItemsSource = eventsGridListByCat;
         }
 
-        private void CheckBox_Unchecked_by_Month(object sender, RoutedEventArgs e)
-        {
-            groupByMonthFlag = false;
-            if (check_category.IsChecked == true)
-            {
-                presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
-                EventsGrid.ItemsSource = eventsGridListByCat;
-            }
-            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
-            EventsGrid.ItemsSource = eventsGridList;
-        }
-        private void CheckBox_Unchecked_by_Category(object sender, RoutedEventArgs e)
-        {
-            groupByCatFlag = false;
-            if (check_month.IsChecked == true)
-            {
-                presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
-                EventsGrid.ItemsSource = eventsGridListByMonth;
-            }
-            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
-            EventsGrid.ItemsSource = eventsGridList;
-        }
-
-
         public void SetEventsInGrid(List<Event> eventsList)
         {
             EventsGrid.ItemsSource = eventsList;
         }
         private void PopulateDataGrid()
         {
-            presenter.SetGridEventsList(ref eventsGridList);
+            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
             List<Dictionary<string, object>> columns = new List<Dictionary<string, object>>();
 
             double busyTime = 0;

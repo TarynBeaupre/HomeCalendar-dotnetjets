@@ -148,8 +148,8 @@
                     </TextBlock>
                 </GroupBox.Header>
                 <StackPanel>
-                    <CheckBox x:Name="GroupByMonthToggle">Month</CheckBox>
-                    <CheckBox x:Name="GroupByCategoryToggle">Category</CheckBox>
+                    <CheckBox x:Name="GroupByMonthToggle" Click="CheckBox_by_Month">Month</CheckBox>
+                    <CheckBox x:Name="GroupByCategoryToggle" Click="CheckBox_by_Category">Category</CheckBox>
                 </StackPanel>
             </GroupBox>
 
