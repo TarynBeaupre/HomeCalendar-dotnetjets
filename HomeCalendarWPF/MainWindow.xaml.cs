@@ -1,6 +1,7 @@
 ﻿using Calendar;
 using Microsoft.Win32;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Windows;
@@ -70,11 +71,7 @@ namespace HomeCalendarWPF
             else
                 SetThemeLight();
 
-            // Sends the events list to get populated by the presenter
-            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
-
-            // Links the events List for the item Source
-            EventsGrid.ItemsSource = eventsGridList;
+            PopulateDataGrid();
 
 
             // >> TESTING <<
@@ -241,6 +238,47 @@ namespace HomeCalendarWPF
         public void SetEventsInGrid(List<Event> eventsList)
         {
             EventsGrid.ItemsSource = eventsList;
+        }
+        private void PopulateDataGrid()
+        {
+            presenter.SetGridEventsList(ref eventsGridList);
+            List<Dictionary<string, object>> columns = new List<Dictionary<string, object>>();
+
+            double busyTime = 0;
+            for (int i = 0; i < eventsGridList.Count; i++)
+            {
+                columns.Add(new Dictionary<string, object>());
+
+                var startDateTimeSplit = eventsGridList[i].StartDateTime.ToString().Split(' ');
+                var startDateSplit = startDateTimeSplit[0].Split('-');
+                busyTime += eventsGridList[i].DurationInMinutes;
+
+                columns[i]["Start Date"] = $"{startDateSplit[2]}/{startDateSplit[1]}/{startDateSplit[0]}";
+                columns[i]["Start Time"] = startDateTimeSplit[1];
+                columns[i]["Category"] = eventsGridList[i].Category;
+                columns[i]["Description"] = eventsGridList[i].Details;
+                columns[i]["Duration"] = eventsGridList[i].DurationInMinutes;
+                columns[i]["Busy Time"] = busyTime;
+            }
+
+            EventsGrid.ItemsSource = columns;
+            EventsGrid.Columns.Clear();
+
+            foreach (string key in columns[0].Keys)
+            {
+                var column = new DataGridTextColumn();
+                column.Header = key;
+                column.Binding = new Binding($"[{key}]");
+                EventsGrid.Columns.Add(column);
+            }
+        }
+
+        private void EventsGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var a = EventsGrid.CurrentItem;
+
+            if (a is null)
+                return;
         }
     }
 }
