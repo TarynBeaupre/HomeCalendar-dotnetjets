@@ -28,8 +28,8 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="50*"/>
-            <RowDefinition Height="440*"/>
             <RowDefinition Height="170*"/>
+            <RowDefinition Height="440*"/>
             <RowDefinition Height="50*"/>
             <RowDefinition Height="50*"/>
         </Grid.RowDefinitions>
@@ -54,27 +54,8 @@
         </StackPanel>
 
         <!--LEFT SIDE-->
-        <!--Left Menu Panel Background-->
-        <StackPanel Grid.Row="1" Grid.ColumnSpan="1" Margin="10,10,0,10" Opacity="0.9">
-            <StackPanel.Background>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="#FFD0EFFF"/>
-                    <GradientStop x:Name="sidemenu_gradient" Color="#FF91E8AA" Offset="1"/>
-                </LinearGradientBrush>
-            </StackPanel.Background>
-        </StackPanel>
-
-        <!--Event edit-->
-        <StackPanel Grid.Row="1" Margin="10,20,0,0">
-            <Label FontWeight="Bold">Add New</Label>
-            <Button Style="{StaticResource button}" Margin="10" Click="OpenEvent">
-                Add Event</Button>
-            <Button Style="{StaticResource button}" Margin="10" Click="OpenCategory">
-                Add Category</Button>
-        </StackPanel>
-
         <!--Calendar display-->
-        <Viewbox Grid.Row="1" Margin="0,438,0,10" Grid.RowSpan="2">
+        <Viewbox Grid.Row="1" Margin="0, 10, 0, 0">
             <Calendar Opacity="0.9">
                 <Calendar.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -84,6 +65,25 @@
                 </Calendar.Background>
             </Calendar>
         </Viewbox>
+        
+        <!--Left Menu Panel Background-->
+        <StackPanel Grid.Row="2" Grid.ColumnSpan="1" Margin="0,10,0,10" Opacity="0.9">
+            <StackPanel.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFD0EFFF"/>
+                    <GradientStop x:Name="sidemenu_gradient" Color="#FF91E8AA" Offset="1"/>
+                </LinearGradientBrush>
+            </StackPanel.Background>
+        </StackPanel>
+
+        <!--Event edit-->
+        <StackPanel Grid.Row="2" Margin="20,20,10,0">
+            <Label FontWeight="Bold">Add New</Label>
+            <Button Style="{StaticResource button}" Margin="10" Click="OpenEvent">
+                Add Event</Button>
+            <Button Style="{StaticResource button}" Margin="10" Click="OpenCategory">
+                Add Category</Button>
+        </StackPanel>
 
         <!--CENTER-->
         <!--Event data grid -->
@@ -93,7 +93,7 @@
 
         <!--RIGHT SIDE-->
         <!--Right Menu Panel Background-->
-        <StackPanel Grid.Row="1" Grid.Column="2" Grid.RowSpan="3" Margin="0,10,10,0" Opacity="0.9">
+        <StackPanel Grid.Row="1" Grid.Column="2" Grid.RowSpan="3" Margin="0,10,0,0" Opacity="0.9">
             <StackPanel.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFD0EFFF"/>
@@ -113,7 +113,7 @@
             </StackPanel>
 
             <!--Colour themes-->
-            <StackPanel Margin="10,0,0,0" Grid.Row="1" Grid.Column="2" VerticalAlignment="Top">
+            <StackPanel Margin="0,20,10,0" Grid.Row="1" Grid.Column="2" VerticalAlignment="Top">
                 <Label FontWeight="Bold">Change color theme</Label>
                 <TextBlock>Select a new colour theme</TextBlock>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -125,7 +125,7 @@
 
         <!--BOTTOM-->
         <!--Change file-->
-        <StackPanel Margin="10,170,10,0" Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" Background="AliceBlue" Grid.RowSpan="2">
+        <StackPanel Margin="0,0,10,0" Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" Background="AliceBlue">
             <Label FontWeight="Bold">File Options</Label>
             <TextBlock VerticalAlignment="Center">path:</TextBlock>
             <TextBlock Name="calendarFiletxb" VerticalAlignment="Center" Background="LightGray" Margin="2" FontSize="10" TextWrapping="WrapWithOverflow" Width="200">path here</TextBlock>
