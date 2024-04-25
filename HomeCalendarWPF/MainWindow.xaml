@@ -88,7 +88,7 @@
         <!--CENTER-->
         <!--Event data grid -->
         <Grid Grid.Column="1" Margin="10,10,10,10" Grid.Row="1" Grid.RowSpan="2">
-            <DataGrid Name="EventsGrid"></DataGrid>
+            <DataGrid Name="EventsGrid" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="EventsGrid_MouseDoubleClick"></DataGrid>
         </Grid>
 
         <!--RIGHT SIDE-->
