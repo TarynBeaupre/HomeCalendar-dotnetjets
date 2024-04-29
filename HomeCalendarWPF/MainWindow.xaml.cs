@@ -225,10 +225,16 @@ namespace HomeCalendarWPF
 
         private void EventsGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var a = EventsGrid.CurrentItem;
+            // Type that EventsGrid.CurrentItem returns is object, but actual type of
+            // the object is Dictionary<string, object> if you check with a.GetType()
+            // so I immediately cast it as such
+            var a = EventsGrid.CurrentItem as Dictionary<string, object>;
 
             if (a is null)
                 return;
+
+            var updateEventsWindow = new UpdateEventsWindow(presenter.model, calendarFiletxb, a);
+            updateEventsWindow.ShowDialog();
         }
     }
 }

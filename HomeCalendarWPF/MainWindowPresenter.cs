@@ -23,7 +23,7 @@ namespace HomeCalendarWPF
     {
         // Links from view, model to Presenter
         private readonly ViewInterface view;
-        private readonly HomeCalendar model;
+        public readonly HomeCalendar model;
 
 
         // Presenter constructor

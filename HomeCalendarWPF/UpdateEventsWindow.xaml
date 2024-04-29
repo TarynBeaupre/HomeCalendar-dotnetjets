@@ -132,16 +132,16 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Button Click="Btn_Click_Add_Event" Grid.Column="1" Style="{StaticResource button}" Foreground="White" Background="#FF61B63B" BorderThickness="4, 3, 4, 0">
+            <Button Click="Btn_Click_UpdateEvent" Grid.Column="1" Style="{StaticResource button}" Foreground="White" Background="#FF61B63B" BorderThickness="4, 3, 4, 0">
                 <Button.BorderBrush>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="#FF71FF33" Offset="0.107"/>
                         <GradientStop Color="#FF1F7125" Offset="1"/>
                         <GradientStop Color="White" Offset="0"/>
                     </LinearGradientBrush>
-                </Button.BorderBrush> Add new event
+                </Button.BorderBrush> Update event
             </Button>
-            <Button Click="Btn_Click_Cancel_Event" Grid.Column="3" Style="{StaticResource button}" Foreground="White" Background="Red" BorderThickness="4, 3, 4, 0">
+            <Button Click="Btn_Click_CancelUpdate" Grid.Column="3" Style="{StaticResource button}" Foreground="White" Background="Red" BorderThickness="4, 3, 4, 0">
                 <Button.BorderBrush>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="#FFFF9B35" Offset="0.107"/>
