@@ -191,6 +191,8 @@ namespace HomeCalendarWPF
         }
         private void PopulateDataGrid()
         {
+            // Code crashes if there is not event in the db
+            // TODO: Fix this
             presenter.SetGridEventsList(ref eventsGridList);
             List<Dictionary<string, object>> columns = new List<Dictionary<string, object>>();
 
