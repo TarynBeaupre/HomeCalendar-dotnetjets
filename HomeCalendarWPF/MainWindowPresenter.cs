@@ -25,7 +25,7 @@ namespace HomeCalendarWPF
         private readonly ViewInterface view;
         private readonly HomeCalendar model;
 
-        // Presenter constructor
+        #region Constructor
         /// <summary>
         /// Initializes a new instance of the <see cref="Presenter"/> class with the specified view interface.
         /// </summary>
@@ -45,14 +45,18 @@ namespace HomeCalendarWPF
             view.SetCalendarFilePath(initParams.filePath);
             SetDefaults();
         }
+        #endregion
 
+        #region Initialization Methods
         private void SetDefaults()
         {
             view.SetDefaultDateTime();
             List<Category> categoryList  = model.categories.List();
             view.SetDefaultCategories(categoryList);
         }
+        #endregion
 
+        #region Public Methods
         public void FilterByCategory(int categoryIndex)
         {
             //1 get the events from the model
@@ -111,6 +115,9 @@ namespace HomeCalendarWPF
             }
         }
 
+        #endregion
+
+        #region Private Methods
         private bool IsFirstUse()
         {
             // Credit for how to check if key exists in registry https://stackoverflow.com/a/4276150
@@ -165,6 +172,8 @@ namespace HomeCalendarWPF
             Registry.SetValue(keyName, "DARK_THEME", (MainWindow.darkMode == true) ? 1 : 0);
         }
 
+        #endregion
+
         public void SetGridEventsList(ref List<Event> eventsList, ref List<Dictionary<string, object>> eventsListByCatMonth, 
             ref List<CalendarItemsByMonth> eventsListByMonth, ref List<CalendarItemsByCategory> eventsListByCategory,
             bool groupByMonth = false, bool groupByCat = false)
@@ -187,6 +196,12 @@ namespace HomeCalendarWPF
                 // Presenter populates the list
                 eventsList = model.events.List();
             }
+        }
+
+        internal void GetFilteredDateEvents(DateTime? selectedDate1, DateTime? selectedDate2, bool filterFlag, int categoryId)
+        {
+            List<CalendarItemsByMonth> filteredEvents = model.GetCalendarItemsByMonth(selectedDate1, selectedDate2, filterFlag, categoryId);
+            view.ShowFilteredDateEventsInGrid(filteredEvents);
         }
     }
 }

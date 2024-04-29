@@ -22,6 +22,8 @@ namespace HomeCalendarWPF
     /// </summary>
     public partial class MainWindow : Window, ViewInterface
     {
+        #region Initialization methods
+
         /// <summary>
         /// Represents initialization parameters used to configure the model.
         /// </summary>
@@ -41,6 +43,7 @@ namespace HomeCalendarWPF
             }
         }
         public static bool darkMode = false;
+        bool awaitFilterInput = false;
         
         // My variables for the grid table
         public List<Event> eventsGridList = new();
@@ -66,6 +69,7 @@ namespace HomeCalendarWPF
         {
             InitializeComponent();
             presenter = new MainWindowPresenter(this);
+            awaitFilterInput = true;
             if (darkMode)
                 SetThemeDark();
             else
@@ -84,54 +88,6 @@ namespace HomeCalendarWPF
             //EventsGrid.ItemsSource = users;
         }
 
-
-        private void OpenEvent(object sender, RoutedEventArgs e)
-        {
-            EventsWindow eventWindow = new EventsWindow(darkMode);
-            eventWindow.Show();
-        }
-
-        private void OpenCategory(object sender, RoutedEventArgs e)
-        {
-            CategoriesWindow categoryWindow = new CategoriesWindow(darkMode);
-            categoryWindow.Show();
-        }
-
-        private void filterCategoryToggle_Click(object sender, RoutedEventArgs e)
-        {
-            int chosenCategoryIndex = filterCategoryCmbx.SelectedIndex;
-         
-            if ((bool)filterCategoryToggle.IsChecked)
-            {
-                presenter.FilterByCategory(chosenCategoryIndex);
-            }
-            else
-            {
-                presenter.ShowAllEvents();
-            }
-        }
-
-        private void Btn_Click_ChangeDBFile(object sender, RoutedEventArgs e)
-        {
-            presenter = new MainWindowPresenter(this);
-        }
-
-        private void Btn_Click_Change_Theme(object sender, RoutedEventArgs e)
-        {
-            Button? clickedButton = sender as Button;
-            MainWindow.darkMode = dark_theme_star.Visibility == Visibility.Collapsed;
-            if (clickedButton != null)
-            {
-                string theme = clickedButton.Name;
-                presenter.SetTheme(theme);
-            }
-        }
-
-        private void Btn_Click_ShowWarning(object sender, RoutedEventArgs e)
-        {
-            presenter.ShowWarning();
-            Application.Current.Shutdown();
-        }
 
         /// <summary>
         /// Sets the file path for the calendar and updates the path text block.
@@ -229,6 +185,66 @@ namespace HomeCalendarWPF
             filterCategoryCmbx.ItemsSource = categoryList;
         }
 
+        #endregion
+
+        #region Opening new windows
+        private void OpenEvent(object sender, RoutedEventArgs e)
+        {
+            EventsWindow eventWindow = new EventsWindow(darkMode);
+            eventWindow.Show();
+        }
+
+        private void OpenCategory(object sender, RoutedEventArgs e)
+        {
+            CategoriesWindow categoryWindow = new CategoriesWindow(darkMode);
+            categoryWindow.Show();
+        }
+
+        #endregion 
+
+        #region Filtering Events
+       
+        private void filterDatePicker_SelectedDateChanged(object sender, RoutedEventArgs e)
+        {
+            if (awaitFilterInput)
+            {
+                ShowMessage("ran");
+                bool filterFlag = (bool)filterCategoryToggle.IsChecked;
+                int categoryId = filterCategoryCmbx.SelectedIndex + 1;
+                presenter.GetFilteredDateEvents(selectedDate1: filterStartDatePicker.SelectedDate, selectedDate2: filterEndDatePicker.SelectedDate, filterFlag, categoryId);
+            }
+            else
+                return;
+        }
+        #endregion
+
+        #region Button changes
+
+        private void Btn_Click_ChangeDBFile(object sender, RoutedEventArgs e)
+        {
+            presenter = new MainWindowPresenter(this);
+        }
+
+        private void Btn_Click_Change_Theme(object sender, RoutedEventArgs e)
+        {
+            Button? clickedButton = sender as Button;
+            MainWindow.darkMode = dark_theme_star.Visibility == Visibility.Collapsed;
+            if (clickedButton != null)
+            {
+                string theme = clickedButton.Name;
+                presenter.SetTheme(theme);
+            }
+        }
+
+        private void Btn_Click_ShowWarning(object sender, RoutedEventArgs e)
+        {
+            presenter.ShowWarning();
+            Application.Current.Shutdown();
+        }
+
+        #endregion
+
+        #region Grouping Events
         private void CheckBox_by_Month(object sender, RoutedEventArgs e)
         {
             //check if checked
@@ -254,11 +270,46 @@ namespace HomeCalendarWPF
             presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
             EventsGrid.ItemsSource = eventsGridListByCat;
         }
+        #endregion Events
 
+        #region Displaying events
         public void SetEventsInGrid(List<Event> eventsList)
         {
             EventsGrid.ItemsSource = eventsList;
         }
+        //TODO: Change the logic here to work with the list of calendaritems by month
+        public void ShowFilteredDateEventsInGrid(List<CalendarItemsByMonth> filteredEvents)
+        {
+            List<Dictionary<string, object>> columns = new List<Dictionary<string, object>>();
+
+            double busyTime = 0;
+            for (int i = 0; i < eventsGridList.Count; i++)
+            {
+                columns.Add(new Dictionary<string, object>());
+                var startDateTimeSplit = filteredEvents[i].StartDateTime.ToString().Split(' ');
+                var startDateSplit = startDateTimeSplit[0].Split('-');
+                busyTime += eventsGridList[i].DurationInMinutes;
+
+                columns[i]["Start Date"] = $"{startDateSplit[2]}/{startDateSplit[1]}/{startDateSplit[0]}";
+                columns[i]["Start Time"] = startDateTimeSplit[1];
+                columns[i]["Category"] = eventsGridList[i].Category;
+                columns[i]["Description"] = eventsGridList[i].Details;
+                columns[i]["Duration"] = eventsGridList[i].DurationInMinutes;
+                columns[i]["Busy Time"] = busyTime;
+            }
+
+            EventsGrid.ItemsSource = columns;
+            EventsGrid.Columns.Clear();
+
+            foreach (string key in columns[0].Keys)
+            {
+                var column = new DataGridTextColumn();
+                column.Header = key;
+                column.Binding = new Binding($"[{key}]");
+                EventsGrid.Columns.Add(column);
+            }
+        }
+
         private void PopulateDataGrid()
         {
             presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
@@ -300,5 +351,7 @@ namespace HomeCalendarWPF
             if (a is null)
                 return;
         }
+        #endregion
+
     }
 }
