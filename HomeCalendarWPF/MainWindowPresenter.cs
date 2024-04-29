@@ -147,23 +147,28 @@ namespace HomeCalendarWPF
             ref List<CalendarItemsByMonth> eventsListByMonth, ref List<CalendarItemsByCategory> eventsListByCategory,
             bool groupByMonth = false, bool groupByCat = false)
         {
-            // Yeah always passing all the lists is not super efficient...To improve - jh
+            // Presenter populates the list
+            //! Yeah always passing all the lists is not super efficient...To improve - jh
             if (groupByMonth && groupByCat)
             {
                 eventsListByCatMonth = model.GetCalendarDictionaryByCategoryAndMonth(null, null, false, 0);
+                view.SetEventsInGrid(eventsListByCatMonth);
             }
             else if (groupByMonth)
             {
                 eventsListByMonth = model.GetCalendarItemsByMonth(null, null, false, 0);
+                view.SetEventsInGrid(eventsListByMonth);
+
             }
             else if (groupByCat)
             {
                 eventsListByCategory = model.GetCalendarItemsByCategory(null, null, false, 0);
+                view.SetEventsInGrid(eventsListByCategory);
             }
             else
             {
-                // Presenter populates the list
                 eventsList = model.events.List();
+                view.SetEventsInGrid(eventsList);
             }
         }
     }

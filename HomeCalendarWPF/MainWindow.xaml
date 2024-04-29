@@ -108,8 +108,8 @@
                 <Label FontWeight="Bold">Filter</Label>
                 <CheckBox></CheckBox>
                 <Label FontWeight="Bold">Group By</Label>
-                <CheckBox x:Name="check_month" Checked="CheckBox_Checked_by_Month" Unchecked="CheckBox_Unchecked_by_Month">Month</CheckBox>
-                <CheckBox x:Name="check_category" Checked="CheckBox_Checked_by_Category" Unchecked="CheckBox_Unchecked_by_Category">Category</CheckBox>
+                <CheckBox x:Name="check_month" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed">Month</CheckBox>
+                <CheckBox x:Name="check_category" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed">Category</CheckBox>
             </StackPanel>
 
             <!--Colour themes-->
