@@ -41,12 +41,10 @@ namespace HomeCalendarWPF
         public MainWindowPresenter(ViewInterface view)
         {
             InitializationParams initParams = this.GetInitParams();
-            //GetTheme();
 
             this.model = new HomeCalendar(initParams.filePath, initParams.newDB);
             this.view = view;
-            view.SetCalendarFilePath(initParams.filePath);
-
+            view.SetCalendarFilePath(initParams.filePath);            
         }
         /// <summary>
         /// Initializes a new instance of the <see cref="Presenter"/> class with the specified view interface, file path, and new database flag.
@@ -142,6 +140,35 @@ namespace HomeCalendarWPF
             else if (theme == "button_light_theme")
             {
                 view.SetThemeLight();
+            }
+        }
+
+        public void SetGridEventsList(ref List<Event> eventsList, ref List<Dictionary<string, object>> eventsListByCatMonth, 
+            ref List<CalendarItemsByMonth> eventsListByMonth, ref List<CalendarItemsByCategory> eventsListByCategory,
+            bool groupByMonth = false, bool groupByCat = false)
+        {
+            // Presenter populates the list
+            //! Yeah always passing all the lists is not super efficient...To improve - jh
+            if (groupByMonth && groupByCat)
+            {
+                eventsListByCatMonth = model.GetCalendarDictionaryByCategoryAndMonth(null, null, false, 0);
+                view.SetEventsInGrid(eventsListByCatMonth);
+            }
+            else if (groupByMonth)
+            {
+                eventsListByMonth = model.GetCalendarItemsByMonth(null, null, false, 0);
+                view.SetEventsInGrid(eventsListByMonth);
+
+            }
+            else if (groupByCat)
+            {
+                eventsListByCategory = model.GetCalendarItemsByCategory(null, null, false, 0);
+                view.SetEventsInGrid(eventsListByCategory);
+            }
+            else
+            {
+                eventsList = model.events.List();
+                view.SetEventsInGrid(eventsList);
             }
         }
     }

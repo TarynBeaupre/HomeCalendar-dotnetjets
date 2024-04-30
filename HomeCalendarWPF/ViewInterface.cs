@@ -54,5 +54,6 @@ namespace HomeCalendarWPF
         /// ]]>
         /// </code></example>
         void SetThemeDark();
+        void SetEventsInGrid<T>(List<T> eventsList);
     }
 }
