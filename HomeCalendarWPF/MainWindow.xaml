@@ -109,8 +109,8 @@
         <!--CENTER-->
         <!--Event data grid -->
         <Grid Opacity="0.9" Grid.Column="1" Margin="10,10,10,10" Grid.Row="1" Grid.RowSpan="2">
-            <DataGrid Name="Events"></DataGrid>
             <DataGrid Name="EventsGrid" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="EventsGrid_MouseDoubleClick"></DataGrid>
+            <!--<DataGrid x:Name="EventsGrid"></DataGrid>-->
         </Grid>
 
         <!--RIGHT SIDE-->
