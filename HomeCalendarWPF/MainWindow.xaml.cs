@@ -161,10 +161,18 @@ namespace HomeCalendarWPF
         {
             // Change the string in Window.Background > ImageSource to light theme image
             background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop.jpg", UriKind.Relative));
-            sidemenu_gradient.Color = Colors.LightGreen;
-            calendar_gradient.Color = Colors.LightGreen;
             light_theme_star.Visibility = Visibility.Visible;
+            light_chicken_image.Visibility = Visibility.Visible;
+            light_tree_image.Visibility = Visibility.Visible;
+
+            left_sidemenu_gradient.Color = Colors.LightGreen;
+            right_sidemenu_gradient.Color = Colors.LightGreen;
+            calendar_gradient.Color = Colors.LightGreen;
+            file_sidemenu_gradient.Color = Colors.LightGreen;
+
+            dark_chicken_image.Visibility = Visibility.Collapsed;
             dark_theme_star.Visibility = Visibility.Collapsed;
+            dark_tree_image.Visibility = Visibility.Collapsed;
         }
         /// <summary>
         /// Sets the theme of the application to dark mode.
@@ -179,10 +187,18 @@ namespace HomeCalendarWPF
         {
             // Change the string in ImageSource to dark theme image
             background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop-dark.jpg", UriKind.Relative));
-            sidemenu_gradient.Color = Colors.Gray;
-            calendar_gradient.Color = Colors.Gray;
-            light_theme_star.Visibility = Visibility.Collapsed;
             dark_theme_star.Visibility = Visibility.Visible;
+            dark_chicken_image.Visibility = Visibility.Visible;
+            dark_tree_image.Visibility = Visibility.Visible;
+
+            right_sidemenu_gradient.Color = Colors.Gray;
+            left_sidemenu_gradient.Color = Colors.Gray;
+            calendar_gradient.Color = Colors.Gray;
+            file_sidemenu_gradient.Color = Colors.Gray;
+
+            light_theme_star.Visibility = Visibility.Collapsed;
+            light_chicken_image.Visibility = Visibility.Collapsed;
+            light_tree_image.Visibility= Visibility.Collapsed;
         }
         private void SaveThemeSettingsToRegistry()
         {
