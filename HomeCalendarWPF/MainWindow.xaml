@@ -109,7 +109,16 @@
         <!--CENTER-->
         <!--Event data grid -->
         <Grid Opacity="0.9" Grid.Column="1" Margin="10,10,10,10" Grid.Row="1" Grid.RowSpan="2">
-            <DataGrid x:Name="EventsGrid" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="EventsGrid_MouseDoubleClick"></DataGrid>
+            <DataGrid Name="EventsGrid" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="EventsGrid_MouseDoubleClick">
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Click="Event_Update_Click" Header="Update"></MenuItem>
+                        <MenuItem Click="Event_Delete_Click" Header="Delete"></MenuItem>
+                        <MenuItem Header="Cancel"></MenuItem>
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
+            </DataGrid>
+            <!--<DataGrid x:Name="EventsGrid"></DataGrid>-->
         </Grid>
 
         <!--RIGHT SIDE-->

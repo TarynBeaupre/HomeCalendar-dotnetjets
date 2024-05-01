@@ -172,9 +172,7 @@ namespace HomeCalendarWPF
             Registry.SetValue(keyName, "DARK_THEME", (MainWindow.darkMode == true) ? 1 : 0);
         }
 
-        #endregion
-
-        public void SetGridEventsList(ref List<Event> eventsList, ref List<Dictionary<string, object>> eventsListByCatMonth, 
+        public void SetGridEventsList(ref List<CalendarItem> eventsList, ref List<Dictionary<string, object>> eventsListByCatMonth, 
             ref List<CalendarItemsByMonth> eventsListByMonth, ref List<CalendarItemsByCategory> eventsListByCategory,
             bool groupByMonth = false, bool groupByCat = false, bool filterByCat = false,  int filterCategoryId = 0, DateTime? filterByStartDate = null, DateTime? filterByEndDate = null)
         {
@@ -212,7 +210,7 @@ namespace HomeCalendarWPF
             }
             else
             {
-                eventsList = model.events.List();
+                eventsList = model.GetCalendarItems(null, null, false, 0);
                 view.SetEventsInGrid(eventsList);
             }
 
@@ -222,6 +220,14 @@ namespace HomeCalendarWPF
         {
             List<CalendarItemsByMonth> filteredEvents = model.GetCalendarItemsByMonth(selectedDate1, selectedDate2, filterFlag, categoryId);
             view.ShowFilteredDateEventsInGrid(filteredEvents);
+        }
+
+        public void DeleteEvent(CalendarItem? chosenEvent)
+        {
+            var eventId = chosenEvent.EventID;
+
+            // Delete the event in the db
+            model.events.Delete(eventId);
         }
     }
 }
