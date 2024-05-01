@@ -109,6 +109,7 @@ namespace HomeCalendarWPF
             double duration = Convert.ToDouble(txbDuration.Text);
 
             presenter.UpdateEvent(eventToUpdate.EventID, date, categoryId, duration, details);
+            MessageBox.Show("Event successfully updated");
             this.Close();
         }
         private void Btn_Click_CancelUpdate(object sender, RoutedEventArgs e)

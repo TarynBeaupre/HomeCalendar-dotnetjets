@@ -31,7 +31,7 @@ namespace HomeCalendarWPF
         }
         public void UpdateEvent(int eventId, DateTime startDateTime, int categoryId, double durationInMinutes, string details)
         {
-            model.events.UpdateProperties(eventId, startDateTime, categoryId, durationInMinutes, details);
+            model.events.UpdateProperties(eventId, startDateTime, categoryId + 1, durationInMinutes, details);
         }
     }
 }
