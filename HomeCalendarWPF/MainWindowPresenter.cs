@@ -172,7 +172,7 @@ namespace HomeCalendarWPF
             }
         }
 
-        public void DeleteEvent(CalendarItem chosenEvent)
+        public void DeleteEvent(CalendarItem? chosenEvent)
         {
             var eventId = chosenEvent.EventID;
 

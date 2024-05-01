@@ -337,9 +337,16 @@ namespace HomeCalendarWPF
 
             var b = a.GetType();
 
-            if (eventToDelete is null)
+            if (groupByMonthFlag || groupByCatFlag)
+            {
+                MessageBox.Show("Need to select singular event.");
+                return;
+            }
+            else if (eventToDelete is null)
+            {
                 MessageBox.Show("Event is null");
-
+                return;
+            }
 
             var choice = MessageBox.Show("Are you sure you want to delete Event?", "Delete Confirmation", MessageBoxButton.YesNo);
 
@@ -350,14 +357,6 @@ namespace HomeCalendarWPF
                 presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
                 SetGridColumns();
             }
-            else
-                Close();
-            
-        }
-
-        private void Event_Cancel_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
         }
 
         private void EventsGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)

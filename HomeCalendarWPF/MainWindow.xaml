@@ -114,7 +114,7 @@
                     <ContextMenu>
                         <MenuItem Click="Event_Update_Click" Header="Update"></MenuItem>
                         <MenuItem Click="Event_Delete_Click" Header="Delete"></MenuItem>
-                        <MenuItem Click="Event_Cancel_Click" Header="Cancel"></MenuItem>
+                        <MenuItem Header="Cancel"></MenuItem>
                     </ContextMenu>
                 </DataGrid.ContextMenu>
             </DataGrid>
