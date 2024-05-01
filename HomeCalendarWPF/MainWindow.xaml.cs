@@ -394,6 +394,7 @@ namespace HomeCalendarWPF
         }
         //TODO: Change the logic here to work with the list of calendaritems by month
 
+        /*
         public void ShowFilteredDateEventsInGrid(List<CalendarItemsByMonth> filteredEvents)
         {
             List<Dictionary<string, object>> columns = new List<Dictionary<string, object>>();
@@ -413,7 +414,7 @@ namespace HomeCalendarWPF
                 columns[i]["Duration"] = eventsGridList[i].DurationInMinutes;
                 columns[i]["Busy Time"] = busyTime;
             }
-        }
+        }*/
 
         private void Event_Update_Click(object sender, RoutedEventArgs e)
         {

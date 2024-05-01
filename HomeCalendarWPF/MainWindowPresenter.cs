@@ -216,11 +216,12 @@ namespace HomeCalendarWPF
 
         }
 
+        /*
         internal void GetFilteredDateEvents(DateTime? selectedDate1, DateTime? selectedDate2, bool filterFlag, int categoryId)
         {
             List<CalendarItemsByMonth> filteredEvents = model.GetCalendarItemsByMonth(selectedDate1, selectedDate2, filterFlag, categoryId);
             view.ShowFilteredDateEventsInGrid(filteredEvents);
-        }
+        }*/
 
         public void DeleteEvent(CalendarItem? chosenEvent)
         {
@@ -230,4 +231,5 @@ namespace HomeCalendarWPF
             model.events.Delete(eventId);
         }
     }
+    #endregion
 }
