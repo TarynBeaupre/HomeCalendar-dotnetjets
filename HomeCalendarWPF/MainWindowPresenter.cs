@@ -175,5 +175,13 @@ namespace HomeCalendarWPF
                 view.SetEventsInGrid(eventsList);
             }
         }
+
+        public void DeleteEvent(CalendarItem chosenEvent)
+        {
+            var eventId = chosenEvent.EventID;
+
+            // Delete the event in the db
+            model.events.Delete(eventId);
+        }
     }
 }

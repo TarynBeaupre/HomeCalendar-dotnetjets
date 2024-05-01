@@ -11,6 +11,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
@@ -334,6 +335,41 @@ namespace HomeCalendarWPF
                 column.Binding = new Binding("TotalBusyTime") { StringFormat = "0.00" };
                 EventsGrid.Columns.Add(column);
             }
+        }
+
+        private void Event_Update_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Update Event");
+        }
+
+        private void Event_Delete_Click(object sender, RoutedEventArgs e)
+        {
+            var a = EventsGrid.CurrentItem;
+            var eventToDelete = EventsGrid.CurrentItem as CalendarItem;
+
+            var b = a.GetType();
+
+            if (eventToDelete is null)
+                MessageBox.Show("Event is null");
+
+
+            var choice = MessageBox.Show("Are you sure you want to delete Event?", "Delete Confirmation", MessageBoxButton.YesNo);
+
+            if (choice == MessageBoxResult.Yes)
+            {
+                presenter.DeleteEvent(eventToDelete);
+                // Yeah not efficient repopulating all the list everytime
+                presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+                SetGridColumns();
+            }
+            else
+                Close();
+            
+        }
+
+        private void Event_Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
 
         private void EventsGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
