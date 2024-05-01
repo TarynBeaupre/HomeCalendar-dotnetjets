@@ -251,7 +251,7 @@ namespace HomeCalendarWPF
 
         private void SetGridColumns()
         {
-            // Columns for the normal
+            // Columns to loop over for the normal events grid 
             List<string> columnProperties = new List<string>
             {
                 "StartDate",
@@ -290,12 +290,26 @@ namespace HomeCalendarWPF
             }
             else if (groupByMonthFlag && groupByCatFlag)
             {
-                // To implement
+                // Puts all the categories as columns
+                foreach (string key in eventsGridListByCatAndMonth[3].Keys)
+                {
+                    var column = new DataGridTextColumn();
+                    column.Header = key;
+                    column.Binding = new Binding($"[{key}]");
+                    EventsGrid.Columns.Add(column);
+                }
+
+                // Get the busy time column
+                var TBTcolumn = new DataGridTextColumn();
+                TBTcolumn.Header = "TotalBusyTime";
+                TBTcolumn.Binding = new Binding($"[TotalBusyTime]");
+                EventsGrid.Columns.Add(TBTcolumn);
+
             }
 
             else if (groupByMonthFlag)
             {
-                // Month colum
+                // Month column
                 var column = new DataGridTextColumn();
                 column.Header = "Month";
                 column.Binding = new Binding("Month");
@@ -309,7 +323,7 @@ namespace HomeCalendarWPF
             }
             else if (groupByCatFlag)
             {
-                // Month colum
+                // Month column
                 var column = new DataGridTextColumn();
                 column.Header = "Category";
                 column.Binding = new Binding("Category");
