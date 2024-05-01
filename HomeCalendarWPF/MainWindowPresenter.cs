@@ -143,7 +143,7 @@ namespace HomeCalendarWPF
             }
         }
 
-        public void SetGridEventsList(ref List<Event> eventsList, ref List<Dictionary<string, object>> eventsListByCatMonth, 
+        public void SetGridEventsList(ref List<CalendarItem> eventsList, ref List<Dictionary<string, object>> eventsListByCatMonth, 
             ref List<CalendarItemsByMonth> eventsListByMonth, ref List<CalendarItemsByCategory> eventsListByCategory,
             bool groupByMonth = false, bool groupByCat = false)
         {
@@ -167,7 +167,7 @@ namespace HomeCalendarWPF
             }
             else
             {
-                eventsList = model.events.List();
+                eventsList = model.GetCalendarItems(null, null, false, 0);
                 view.SetEventsInGrid(eventsList);
             }
         }
