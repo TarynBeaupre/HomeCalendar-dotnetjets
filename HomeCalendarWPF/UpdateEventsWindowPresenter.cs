@@ -22,11 +22,16 @@ namespace HomeCalendarWPF
             this.categoriesList = model.categories.List();
 
             this.view.ShowDefaultCategories(categoriesList);
+            this.view.ShowDefaultDateTime();
             this.view.PopulateFields();
         } 
         public void GetDefaultCategories()
         {
             view.ShowDefaultCategories(categoriesList);
+        }
+        public void UpdateEvent(int eventId, DateTime startDateTime, int categoryId, double durationInMinutes, string details)
+        {
+            model.events.UpdateProperties(eventId, startDateTime, categoryId, durationInMinutes, details);
         }
     }
 }

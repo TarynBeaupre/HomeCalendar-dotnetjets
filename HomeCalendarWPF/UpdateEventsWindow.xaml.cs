@@ -24,34 +24,71 @@ namespace HomeCalendarWPF
     {
         readonly private UpdateEventsWindowPresenter presenter;
         readonly private string dbPath;
-        readonly private Dictionary<string, object> eventToUpdate;
-        public static int previousCategoryIndex = 0;
+        readonly private CalendarItem eventToUpdate;
+        //public static int previousCategoryIndex = 0;
 
-        public UpdateEventsWindow(HomeCalendar model, string filePath, Dictionary<string, object> eventToUpdate)
+        public UpdateEventsWindow(HomeCalendar model, string filePath, CalendarItem eventToUpdate)
         {
             InitializeComponent();
             this.eventToUpdate = eventToUpdate;
             this.dbPath = filePath;
             presenter = new UpdateEventsWindowPresenter(this, model);
+            this.SetTheme(MainWindow.darkMode);
         }
 
         public void ShowDefaultCategories(List<Category> categoriesList)
         {
-            categoriescmb.SelectedIndex = previousCategoryIndex != -1 ? previousCategoryIndex : categoriesList.Count - 1;
             categoriescmb.ItemsSource = categoriesList;
         }
         public void PopulateFields()
         {
-            txbEventDescription.Text = eventToUpdate["Description"] as string;
+            txbEventDescription.Text = eventToUpdate.ShortDescription;
             txbCalendarFileinEvents.Text = dbPath;
-            categoriescmb.SelectedIndex = (int)eventToUpdate["Category"] - 1;
+            categoriescmb.SelectedIndex = eventToUpdate.CategoryID - 1;
 
-            // TODO: Start / End date, Start Time, Duration
-            var a = eventToUpdate;
-            foreach (var b in a)
+            startdp.SelectedDate = eventToUpdate.StartDateTime;
+            cmbStartTimeHour.SelectedIndex = eventToUpdate.StartDateTime.Hour - 1;
+            cmbStartTimeMins.SelectedIndex = eventToUpdate.StartDateTime.Minute / 15;
+            txbDuration.Text = eventToUpdate.DurationInMinutes.ToString();
+        }
+        public void ShowDefaultDateTime()
+        {
+            //Creating a drop down for 24 hour selection
+            List<string> hourList = new List<string> { };
+            for (int i = 1; i <= 24; i++)
             {
-                Trace.WriteLine(b.Key + ": " + b.Value);
+                hourList.Add(i.ToString());
             }
+            cmbStartTimeHour.ItemsSource = hourList;
+
+            //Creating a drop down for the start time minutes
+            List<string> minList = new List<string>
+            {
+                "00", "15", "30", "45"
+            };
+            cmbStartTimeMins.ItemsSource = minList;
+
+            //=== Set start time default (the next 30 min block) ===
+            int startHour;
+            DateTime date = System.DateTime.Now;
+            if (date.Minute < 30)
+            {
+                startHour = date.Hour;
+                cmbStartTimeMins.SelectedIndex = 2;
+            }
+            else
+            {
+                startHour = date.Hour + 1;
+                cmbStartTimeMins.SelectedIndex = 0;
+            }
+            cmbStartTimeHour.SelectedIndex = startHour - 1; //-1 because it index 0 in the cmb is hour 1 of the day
+
+            //=== Set default duration (30 mins) ===
+            txbDuration.Text = "30";
+        }
+        public void ShowError(string message)
+        {
+            MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         private void Btn_Click_AddNewCategory(object sender, RoutedEventArgs e)
@@ -60,11 +97,57 @@ namespace HomeCalendarWPF
         }
         private void Btn_Click_UpdateEvent(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            if (!ValidateEventForm())
+                return;
+
+            string details = txbEventDescription.Text;
+            int categoryId = categoriescmb.SelectedIndex;
+
+            var tmp = (DateTime)startdp.SelectedDate!;
+            var date = new DateTime(tmp.Year, tmp.Month, tmp.Day, int.Parse(cmbStartTimeHour.Text), int.Parse(cmbStartTimeMins.Text), 0);
+
+            double duration = Convert.ToDouble(txbDuration.Text);
+
+            presenter.UpdateEvent(eventToUpdate.EventID, date, categoryId, duration, details);
+            this.Close();
         }
         private void Btn_Click_CancelUpdate(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            this.Close();
+        }
+        private void SetTheme(bool darkmode)
+        {
+            if (darkmode)
+            {
+                child_window_background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop-dark.jpg", UriKind.Relative));
+                menu_gradient.Color = Colors.Gray;
+                light_theme_star.Visibility = Visibility.Collapsed;
+                dark_theme_star.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                child_window_background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop.jpg", UriKind.Relative));
+                menu_gradient.Color = Colors.LightGreen;
+                light_theme_star.Visibility = Visibility.Visible;
+                dark_theme_star.Visibility = Visibility.Collapsed;
+            }
+        }
+        private bool ValidateEventForm()
+        {
+            //Check that start date has a value
+            if (!startdp.SelectedDate.HasValue)
+            {
+                ShowError("Please select a start date.");
+                return false;
+            }
+
+            // Check if duration is provided and is a positive double
+            if (!double.TryParse(txbDuration.Text, out double duration) || duration <= 0)
+            {
+                ShowError("Please provide a valid duration in minutes. The duration should be a positive number.");
+                return false;
+            }
+            return true;
         }
     }
 }

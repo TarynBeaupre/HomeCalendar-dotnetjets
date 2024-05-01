@@ -11,6 +11,8 @@ namespace HomeCalendarWPF
     internal interface UpdateEventsWindowInterface
     {
         void ShowDefaultCategories(List<Category> categoriesList);
+        void ShowDefaultDateTime();
         void PopulateFields();
+        void ShowError(string message);
     }
 }

@@ -101,20 +101,14 @@
                     <DatePicker.BlackoutDates>
                     </DatePicker.BlackoutDates>
                 </DatePicker>
-                <Label Grid.Row="1">End:</Label>
-                <DatePicker x:Name="enddp" Grid.Column="1" Grid.Row="1">
-                    <!--TODO: add blackout, cannot end event before start-->
-                    <DatePicker.BlackoutDates>
-                    </DatePicker.BlackoutDates>
-                </DatePicker>
 
                 <!--Start Time-->
                 <Label Grid.Row="2">Start Time:</Label>
                 <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
-                    <ComboBox x:Name="cmbStartTimeHour" Grid.Row="2" Grid.Column="1">
+                    <ComboBox x:Name="cmbStartTimeHour" Grid.Row="2" Grid.Column="1" IsEditable="True">
                     </ComboBox>
                     <TextBlock>:</TextBlock>
-                    <ComboBox x:Name="cmbStartTimeMins" Grid.Row="2" Grid.Column="1">
+                    <ComboBox x:Name="cmbStartTimeMins" Grid.Row="2" Grid.Column="1" IsEditable="True">
                     </ComboBox>
                 </StackPanel>
 
