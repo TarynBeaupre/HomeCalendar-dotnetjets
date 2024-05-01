@@ -217,19 +217,6 @@ namespace HomeCalendarWPF
             // Populate the list with the right events
             presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
             SetGridColumns();
-
-            //// No groupby selected
-            //if (!groupByMonthFlag && !groupByCatFlag)
-            //    EventsGrid.ItemsSource = eventsGridList;
-            //// Only groupby month
-            //else if (groupByMonthFlag)
-            //    EventsGrid.ItemsSource = eventsGridListByMonth;
-            //// Only groupby cat
-            //else if (groupByCatFlag)
-            //    EventsGrid.ItemsSource = eventsGridListByCat;
-            //// Groupby month, cat
-            //else if (groupByMonthFlag && groupByCatFlag)
-            //    EventsGrid.ItemsSource = eventsGridListByCatAndMonth;
         }
 
         public void SetEventsInGrid<T>(List<T> eventsList)
@@ -302,7 +289,7 @@ namespace HomeCalendarWPF
                 // Get the busy time column
                 var TBTcolumn = new DataGridTextColumn();
                 TBTcolumn.Header = "TotalBusyTime";
-                TBTcolumn.Binding = new Binding($"[TotalBusyTime]");
+                TBTcolumn.Binding = new Binding($"[TotalBusyTime]") { StringFormat = "0.00" };
                 EventsGrid.Columns.Add(TBTcolumn);
 
             }
@@ -318,7 +305,7 @@ namespace HomeCalendarWPF
                 // Total Busy Time
                 column = new DataGridTextColumn();
                 column.Header = "Total Busy Time";
-                column.Binding = new Binding("TotalBusyTime");
+                column.Binding = new Binding("TotalBusyTime") { StringFormat = "0.00" };
                 EventsGrid.Columns.Add(column);
             }
             else if (groupByCatFlag)
@@ -332,7 +319,7 @@ namespace HomeCalendarWPF
                 // Total Busy Time
                 column = new DataGridTextColumn();
                 column.Header = "Total Busy Time";
-                column.Binding = new Binding("TotalBusyTime");
+                column.Binding = new Binding("TotalBusyTime") { StringFormat = "0.00" };
                 EventsGrid.Columns.Add(column);
             }
         }
