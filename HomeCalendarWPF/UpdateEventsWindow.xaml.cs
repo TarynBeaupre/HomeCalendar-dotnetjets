@@ -1,6 +1,7 @@
 ﻿using Calendar;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security;
 using System.Text;
@@ -43,8 +44,14 @@ namespace HomeCalendarWPF
         {
             txbEventDescription.Text = eventToUpdate["Description"] as string;
             txbCalendarFileinEvents.Text = dbPath;
-            // TODO: Get index of category
-            //categoriescmb.SelectedIndex = 
+            categoriescmb.SelectedIndex = (int)eventToUpdate["Category"] - 1;
+
+            // TODO: Start / End date, Start Time, Duration
+            var a = eventToUpdate;
+            foreach (var b in a)
+            {
+                Trace.WriteLine(b.Key + ": " + b.Value);
+            }
         }
 
         private void Btn_Click_AddNewCategory(object sender, RoutedEventArgs e)
