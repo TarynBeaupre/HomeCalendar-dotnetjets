@@ -1,5 +1,6 @@
 ﻿using Calendar;
 using Microsoft.Win32;
+using System.ComponentModel;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.IO;
@@ -41,7 +42,7 @@ namespace HomeCalendarWPF
             }
         }
         public static bool darkMode = false;
-        
+
         // My variables for the grid table
         public List<CalendarItem> eventsGridList = new();
         public List<CalendarItemsByMonth> eventsGridListByMonth = new();
@@ -68,17 +69,24 @@ namespace HomeCalendarWPF
             presenter = new MainWindowPresenter(this);
 
             if (calendarFiletxb.Text == "path here")
+            {
+                Trace.WriteLine("Should close");
+                Close();
                 Application.Current.Shutdown();
-
-            if (darkMode)
-                SetThemeDark();
+                Trace.WriteLine("Did not close");
+            }
             else
-                SetThemeLight();
+            {
+                if (darkMode)
+                    SetThemeDark();
+                else
+                    SetThemeLight();
 
-            // Output the default events
-            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
-            EventsGrid.ItemsSource = eventsGridList;
-            SetGridColumns();
+                // Output the default events
+                presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+                EventsGrid.ItemsSource = eventsGridList;
+                SetGridColumns();
+            }
 
             //PopulateDataGrid();
 
@@ -203,7 +211,7 @@ namespace HomeCalendarWPF
 
             light_theme_star.Visibility = Visibility.Collapsed;
             light_chicken_image.Visibility = Visibility.Collapsed;
-            light_tree_image.Visibility= Visibility.Collapsed;
+            light_tree_image.Visibility = Visibility.Collapsed;
         }
         private void SaveThemeSettingsToRegistry()
         {
@@ -333,13 +341,17 @@ namespace HomeCalendarWPF
             // Type that EventsGrid.CurrentItem returns is object, but actual type of
             // the object is Dictionary<string, object> if you check with a.GetType()
             // so I immediately cast it as such
-            var a = EventsGrid.CurrentItem as Dictionary<string, object>;
+            var a = EventsGrid.CurrentItem as CalendarItem;
 
             if (a is null)
                 return;
 
             var updateEventsWindow = new UpdateEventsWindow(presenter.model, calendarFiletxb.Text, a);
             updateEventsWindow.ShowDialog();
+        }
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
     }
 }
