@@ -47,9 +47,9 @@ namespace HomeCalendarWPF
         
         // My variables for the grid table
         public List<Event> eventsGridList = new();
-        public List<Dictionary<string, object>> eventsGridListByCatAndMonth = new();
         public List<CalendarItemsByMonth> eventsGridListByMonth = new();
         public List<CalendarItemsByCategory> eventsGridListByCat = new();
+        public List<Dictionary<string, object>> eventsGridListByCatAndMonth = new();
 
         public bool groupByMonthFlag = false, groupByCatFlag = false;
 
@@ -75,11 +75,15 @@ namespace HomeCalendarWPF
             else
                 SetThemeLight();
 
-            PopulateDataGrid();
+            // Output the default events
+            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+            EventsGrid.ItemsSource = eventsGridList;
+            SetGridColumns();
 
+            //PopulateDataGrid();
 
             // >> TESTING <<
-            //Event event1 = new Event(3, new DateTime(04/04/04), 2, 15, "hello");
+            //Event event1 = new Event(3, new DateTime(04 / 04 / 04), 2, 15, "hello");
             //List<Event> users = new List<Event>();
             //users.Add(event1);
             //users.Add(event1);
@@ -225,8 +229,30 @@ namespace HomeCalendarWPF
             presenter = new MainWindowPresenter(this);
         }
 
-        private void Btn_Click_Change_Theme(object sender, RoutedEventArgs e)
+        // >>>GRID CODE<<<
+
+        private void CheckBox_Changed(object sender, RoutedEventArgs e)
         {
+            // Calls a method that checks which checkbox is checked and changes value of global variable
+            FindGroupBy();
+
+            // Populate the list with the right events
+            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+            SetGridColumns();
+        }
+
+        public void SetEventsInGrid<T>(List<T> eventsList)
+        {
+            EventsGrid.ItemsSource = eventsList;
+        }
+
+        private void FindGroupBy()
+        {
+            if (GroupByMonthToggle.IsChecked == true)
+                groupByMonthFlag = true;
+            else
+                groupByMonthFlag = false;
+            if (GroupByCategoryToggle.IsChecked == true)
             Button? clickedButton = sender as Button;
             MainWindow.darkMode = dark_theme_star.Visibility == Visibility.Collapsed;
             if (clickedButton != null)
@@ -260,20 +286,22 @@ namespace HomeCalendarWPF
 
         private void CheckBox_by_Category(object sender, RoutedEventArgs e)
         {
-            //check if checked
-            groupByCatFlag = true;
-            if (GroupByMonthToggle.IsChecked == true)
-            {
-                presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
-                EventsGrid.ItemsSource = eventsGridListByCatAndMonth;
-            }
-            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
             EventsGrid.ItemsSource = eventsGridListByCat;
         }
         #endregion Events
+            if (GroupByMonthToggle.IsChecked == true)
+                groupByMonthFlag = true;
+            else
+                groupByMonthFlag = false;
+            if (GroupByCategoryToggle.IsChecked == true)
+                groupByCatFlag = true;
+            else
+                groupByCatFlag = false;
+        }
 
         #region Displaying events
         public void SetEventsInGrid(List<Event> eventsList)
+        private void SetGridColumns()
         {
             EventsGrid.ItemsSource = eventsList;
         }
@@ -297,9 +325,61 @@ namespace HomeCalendarWPF
                 columns[i]["Duration"] = eventsGridList[i].DurationInMinutes;
                 columns[i]["Busy Time"] = busyTime;
             }
+            // Columns to loop over for the normal events grid 
+            List<string> columnProperties = new List<string>
+            {
+                "StartDate",
+                "StartTime",
+                "Category",
+                "ShortDescription",
+                "DurationInMinutes",
+                "BusyTime"
+            };
+
+            // Clear current columns
+            EventsGrid.Columns.Clear();
+
+            // Check which group by is active and create the columns depending on that
+            if (!groupByMonthFlag && !groupByCatFlag)
+            {
+                foreach (var propertyName in columnProperties)
+                {
+                    var column = new DataGridTextColumn();
+                    column.Header = propertyName;
+
+                    if (propertyName == "StartDate")
+                    {
+                        column.Binding = new Binding("StartDateTime");
+                        column.Binding.StringFormat = "dd/MM/yyyy";
+                    }
+                    else if (propertyName == "StartTime")
+                    {
+                        column.Binding = new Binding("StartDateTime");
+                        column.Binding.StringFormat = "hh:mm tt";
+                    }
+                    else
+                        column.Binding = new Binding(propertyName);
+                    EventsGrid.Columns.Add(column);
+                }
+            }
+            else if (groupByMonthFlag && groupByCatFlag)
+            {
+                // Puts all the categories as columns
+                foreach (string key in eventsGridListByCatAndMonth[3].Keys)
+                {
+                    var column = new DataGridTextColumn();
+                    column.Header = key;
+                    column.Binding = new Binding($"[{key}]");
+                    EventsGrid.Columns.Add(column);
+                }
 
             EventsGrid.ItemsSource = columns;
             EventsGrid.Columns.Clear();
+                // Get the busy time column
+                var TBTcolumn = new DataGridTextColumn();
+                TBTcolumn.Header = "TotalBusyTime";
+                TBTcolumn.Binding = new Binding($"[TotalBusyTime]") { StringFormat = "0.00" };
+                EventsGrid.Columns.Add(TBTcolumn);
 
             foreach (string key in columns[0].Keys)
             {
@@ -314,32 +394,34 @@ namespace HomeCalendarWPF
         {
             presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
             List<Dictionary<string, object>> columns = new List<Dictionary<string, object>>();
-
-            double busyTime = 0;
-            for (int i = 0; i < eventsGridList.Count; i++)
-            {
-                columns.Add(new Dictionary<string, object>());
-
-                var startDateTimeSplit = eventsGridList[i].StartDateTime.ToString().Split(' ');
-                var startDateSplit = startDateTimeSplit[0].Split('-');
-                busyTime += eventsGridList[i].DurationInMinutes;
-
-                columns[i]["Start Date"] = $"{startDateSplit[2]}/{startDateSplit[1]}/{startDateSplit[0]}";
-                columns[i]["Start Time"] = startDateTimeSplit[1];
-                columns[i]["Category"] = eventsGridList[i].Category;
-                columns[i]["Description"] = eventsGridList[i].Details;
-                columns[i]["Duration"] = eventsGridList[i].DurationInMinutes;
-                columns[i]["Busy Time"] = busyTime;
             }
 
-            EventsGrid.ItemsSource = columns;
-            EventsGrid.Columns.Clear();
-
-            foreach (string key in columns[0].Keys)
+            else if (groupByMonthFlag)
             {
+                // Month column
                 var column = new DataGridTextColumn();
-                column.Header = key;
-                column.Binding = new Binding($"[{key}]");
+                column.Header = "Month";
+                column.Binding = new Binding("Month");
+                EventsGrid.Columns.Add(column);
+
+                // Total Busy Time
+                column = new DataGridTextColumn();
+                column.Header = "Total Busy Time";
+                column.Binding = new Binding("TotalBusyTime") { StringFormat = "0.00" };
+                EventsGrid.Columns.Add(column);
+            }
+            else if (groupByCatFlag)
+            {
+                // Month column
+                var column = new DataGridTextColumn();
+                column.Header = "Category";
+                column.Binding = new Binding("Category");
+                EventsGrid.Columns.Add(column);
+
+                // Total Busy Time
+                column = new DataGridTextColumn();
+                column.Header = "Total Busy Time";
+                column.Binding = new Binding("TotalBusyTime") { StringFormat = "0.00" };
                 EventsGrid.Columns.Add(column);
             }
         }
@@ -353,5 +435,39 @@ namespace HomeCalendarWPF
         }
         #endregion
 
+
+        //private void PopulateDataGrid()
+        //{
+        //    presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+        //    List<Dictionary<string, object>> columns = new List<Dictionary<string, object>>();
+
+        //    double busyTime = 0;
+        //    for (int i = 0; i < eventsGridList.Count; i++)
+        //    {
+        //        columns.Add(new Dictionary<string, object>());
+
+        //        var startDateTimeSplit = eventsGridList[i].StartDateTime.ToString().Split(' ');
+        //        var startDateSplit = startDateTimeSplit[0].Split('-');
+        //        busyTime += eventsGridList[i].DurationInMinutes;
+
+        //        columns[i]["Start Date"] = $"{startDateSplit[2]}/{startDateSplit[1]}/{startDateSplit[0]}";
+        //        columns[i]["Start Time"] = startDateTimeSplit[1];
+        //        columns[i]["Category"] = eventsGridList[i].Category;
+        //        columns[i]["Description"] = eventsGridList[i].Details;
+        //        columns[i]["Duration"] = eventsGridList[i].DurationInMinutes;
+        //        columns[i]["Busy Time"] = busyTime;
+        //    }
+
+        //    EventsGrid.ItemsSource = columns;
+        //    EventsGrid.Columns.Clear();
+
+        //    foreach (string key in columns[0].Keys)
+        //    {
+        //        var column = new DataGridTextColumn();
+        //        column.Header = key;
+        //        column.Binding = new Binding($"[{key}]");
+        //        EventsGrid.Columns.Add(column);
+        //    }
+        //}
     }
 }

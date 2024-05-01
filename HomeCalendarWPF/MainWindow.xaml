@@ -108,7 +108,7 @@
 
         <!--CENTER-->
         <!--Event data grid -->
-        <Grid Opacity="0.9"  Grid.Column="1" Margin="10,10,10,10" Grid.Row="1" Grid.RowSpan="2">
+        <Grid Opacity="0.9" Grid.Column="1" Margin="10,10,10,10" Grid.Row="1" Grid.RowSpan="2">
             <DataGrid Name="EventsGrid" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="EventsGrid_MouseDoubleClick"></DataGrid>
         </Grid>
 
@@ -148,8 +148,8 @@
                     </TextBlock>
                 </GroupBox.Header>
                 <StackPanel>
-                    <CheckBox x:Name="GroupByMonthToggle" Click="CheckBox_by_Month">Month</CheckBox>
-                    <CheckBox x:Name="GroupByCategoryToggle" Click="CheckBox_by_Category">Category</CheckBox>
+                    <CheckBox x:Name="GroupByMonthToggle" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed">Month</CheckBox>
+                    <CheckBox x:Name="GroupByCategoryToggle" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed">Category</CheckBox>
                 </StackPanel>
             </GroupBox>
 

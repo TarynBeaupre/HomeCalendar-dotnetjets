@@ -116,7 +116,5 @@ namespace HomeCalendarWPF
         {
             view.ShowDefaultCategories(categoriesList);
         }
-
-
     }
 }
