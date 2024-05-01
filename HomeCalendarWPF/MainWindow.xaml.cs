@@ -339,7 +339,14 @@ namespace HomeCalendarWPF
 
         private void Event_Update_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Update Event");
+            var a = EventsGrid.CurrentItem as CalendarItem;
+
+            if (a is null)
+                return;
+
+            var updateEventsWindow = new UpdateEventsWindow(presenter.model, calendarFiletxb.Text, a);
+            updateEventsWindow.ShowDialog();
+            SetGridColumns();
         }
 
         private void Event_Delete_Click(object sender, RoutedEventArgs e)
