@@ -235,7 +235,7 @@ namespace HomeCalendarWPF
             if (a is null)
                 return;
 
-            var updateEventsWindow = new UpdateEventsWindow(presenter.model, calendarFiletxb, a);
+            var updateEventsWindow = new UpdateEventsWindow(presenter.model, calendarFiletxb.Text, a);
             updateEventsWindow.ShowDialog();
         }
     }
