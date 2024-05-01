@@ -57,7 +57,6 @@ namespace HomeCalendarWPF
         void SetDefaultDateTime();
         void SetDefaultCategories(List<Category> categoryList);
         void ShowFilteredDateEventsInGrid(List<CalendarItemsByMonth> filterDateEventsList);
-
         void SetEventsInGrid<T>(List<T> eventsList);
     }
 }
