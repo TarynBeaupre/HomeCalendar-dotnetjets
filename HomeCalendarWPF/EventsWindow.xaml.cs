@@ -62,7 +62,8 @@ namespace HomeCalendarWPF
             string details = txbEventDescription.Text;
             int categoryId = categoriescmb.SelectedIndex;
 
-            previousDate = (DateTime)startdp.SelectedDate!;
+            var tmp = (DateTime)startdp.SelectedDate!;
+            previousDate = new DateTime(tmp.Year, tmp.Month, tmp.Day, int.Parse(cmbStartTimeHour.Text), int.Parse(cmbStartTimeMins.Text), 0);
 
             double duration = Convert.ToDouble(txbDuration.Text);
 
@@ -70,7 +71,7 @@ namespace HomeCalendarWPF
             // TODO: maybe do categoylist.length
             previousCategoryIndex = categoryId;
 
-            presenter.AddNewEvent(details, categoryId, startdp.SelectedDate, duration, categoriescmb.Text);
+            presenter.AddNewEvent(details, categoryId, previousDate, duration, categoriescmb.Text);
 
         }
         private void Btn_Click_Cancel_Event(object sender, EventArgs e)
