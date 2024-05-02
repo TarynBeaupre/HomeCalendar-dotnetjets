@@ -84,9 +84,8 @@ namespace HomeCalendarWPF
                     SetThemeLight();
 
                 // Output the default events
-                presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+                RefreshGrid();
                 EventsGrid.ItemsSource = eventsGridList;
-                SetGridColumns();
             }
 
             //PopulateDataGrid();
@@ -103,13 +102,15 @@ namespace HomeCalendarWPF
 
         private void OpenEvent(object sender, RoutedEventArgs e)
         {
-            EventsWindow eventWindow = new EventsWindow(darkMode);
-            eventWindow.Show();
+            EventsWindow eventWindow = new EventsWindow(presenter.model, darkMode);
+            eventWindow.ShowDialog();
+            RefreshGrid();
         }
         private void OpenCategory(object sender, RoutedEventArgs e)
         {
-            CategoriesWindow categoryWindow = new CategoriesWindow(darkMode);
-            categoryWindow.Show();
+            CategoriesWindow categoryWindow = new CategoriesWindow(presenter.model, darkMode);
+            categoryWindow.ShowDialog();
+            RefreshGrid();
         }
         private void Btn_Click_ChangeDBFile(object sender, RoutedEventArgs e)
         {
@@ -339,12 +340,12 @@ namespace HomeCalendarWPF
 
         private void Event_Update_Click(object sender, RoutedEventArgs e)
         {
-            var a = EventsGrid.CurrentItem as CalendarItem;
+            var selectedItem = EventsGrid.CurrentItem as CalendarItem;
 
-            if (a is null)
+            if (selectedItem is null)
                 return;
 
-            var updateEventsWindow = new UpdateEventsWindow(presenter.model, calendarFiletxb.Text, a);
+            var updateEventsWindow = new UpdateEventsWindow(presenter.model, calendarFiletxb.Text, selectedItem);
             updateEventsWindow.ShowDialog();
             SetGridColumns();
         }
@@ -369,9 +370,6 @@ namespace HomeCalendarWPF
                 presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
                 SetGridColumns();
             }
-            else
-                Close();
-            
         }
 
         private void Event_Cancel_Click(object sender, RoutedEventArgs e)
@@ -391,6 +389,12 @@ namespace HomeCalendarWPF
 
             var updateEventsWindow = new UpdateEventsWindow(presenter.model, calendarFiletxb.Text, a);
             updateEventsWindow.ShowDialog();
+            SetGridColumns();
+        }
+        private void RefreshGrid()
+        {
+            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+            SetGridColumns();
         }
         protected override void OnClosing(CancelEventArgs e)
         {

@@ -28,11 +28,11 @@ namespace HomeCalendarWPF
         /// Initializes a new instance of the <see cref="CategoriesWindow"/> class.
         /// </summary>
         /// <param name="darkMode">Specifies which theme should be picked for Window, if true then display dark mode.</param>
-        public CategoriesWindow(bool darkMode)
+        public CategoriesWindow(HomeCalendar model, bool darkMode)
         {
             InitializeComponent();
             txbCalendarFileinCategories.Text = ((MainWindow)Application.Current.MainWindow).calendarFiletxb.Text;
-            this.presenter = new CategoriesPresenter(this, txbCalendarFileinCategories.Text);
+            this.presenter = new CategoriesPresenter(this, model, txbCalendarFileinCategories.Text);
 
             this.Initialize();
 
@@ -102,6 +102,7 @@ namespace HomeCalendarWPF
         {
             int index = categoryTypesCmb.SelectedIndex + 1;
             presenter.AddNewCategory(txbCategoryDescription.Text, (Category.CategoryType)index);
+            Close();
         }
         private void Initialize()
         {

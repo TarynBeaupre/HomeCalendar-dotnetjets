@@ -22,8 +22,8 @@ namespace HomeCalendarWPF
     public class MainWindowPresenter
     {
         // Links from view, model to Presenter
-        private readonly ViewInterface view;
-        public readonly HomeCalendar model;
+        private readonly ViewInterface? view;
+        public readonly HomeCalendar? model;
 
 
         // Presenter constructor
