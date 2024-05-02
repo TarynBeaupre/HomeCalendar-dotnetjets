@@ -72,7 +72,7 @@ namespace HomeCalendarWPF
             previousCategoryIndex = categoryId;
 
             presenter.AddNewEvent(details, categoryId, previousDate, duration, categoriescmb.Text);
-
+            presenter.GetDefaultCategories();
         }
         private void Btn_Click_Cancel_Event(object sender, EventArgs e)
         {
