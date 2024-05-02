@@ -109,7 +109,7 @@
         <!--CENTER-->
         <!--Event data grid -->
         <Grid Opacity="0.9" Grid.Column="1" Margin="10,10,10,10" Grid.Row="1" Grid.RowSpan="2">
-            <DataGrid Name="EventsGrid" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="EventsGrid_MouseDoubleClick">
+            <DataGrid Background="LightGray" Name="EventsGrid" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="EventsGrid_MouseDoubleClick">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem Click="Event_Update_Click" Header="Update"></MenuItem>
