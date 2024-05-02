@@ -66,21 +66,14 @@ namespace HomeCalendarWPF
             InitializeComponent();
             presenter = new MainWindowPresenter(this);
 
-            if (calendarFiletxb.Text == "path here")
-            {
-                Trace.WriteLine("Should close");
-                Close();
-                Application.Current.Shutdown();
-                Trace.WriteLine("Did not close");
-            }
-            else
+            if (calendarFiletxb.Text != "path here")
             {
                 if (darkMode)
                     SetThemeDark();
                 else
                     SetThemeLight();
                 awaitFilterInput = true;
-
+           
 
                 // Output the default events
                 RefreshGrid();
