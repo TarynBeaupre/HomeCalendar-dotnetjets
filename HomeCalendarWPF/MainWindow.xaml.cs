@@ -135,7 +135,6 @@ namespace HomeCalendarWPF
             {
                 string theme = clickedButton.Name;
                 presenter.SetTheme(theme);
-                SaveThemeSettingsToRegistry();
             }
         }
 
@@ -173,17 +172,6 @@ namespace HomeCalendarWPF
         public void ShowMessage(string message)
         {
             MessageBox.Show(message, "Message", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-
-        public void Btn_Click_Change_Theme(object sender, RoutedEventArgs e)
-        {
-            Button? clickedButton = sender as Button;
-            MainWindow.darkMode = dark_theme_star.Visibility == Visibility.Collapsed;
-            if (clickedButton != null)
-            {
-                string theme = clickedButton.Name;
-                presenter.SetTheme(theme);
-            }
         }
 
         /// <summary>
@@ -242,8 +230,8 @@ namespace HomeCalendarWPF
 
         public void SetDefaultDateTime()
         {
-            filterStartDatePicker.SelectedDate = DateTime.Now;
-            filterEndDatePicker.SelectedDate = DateTime.Now;
+            //filterStartDatePicker.SelectedDate = DateTime.Now;
+            //filterEndDatePicker.SelectedDate = DateTime.Now;
         }
 
         public void SetDefaultCategories(List<Category> categoryList)
@@ -253,20 +241,6 @@ namespace HomeCalendarWPF
         }
         #endregion
 
-        #region Opening new windows
-        private void OpenEvent(object sender, RoutedEventArgs e)
-        {
-            EventsWindow eventWindow = new EventsWindow(darkMode);
-            eventWindow.Show();
-        }
-
-        private void OpenCategory(object sender, RoutedEventArgs e)
-        {
-            CategoriesWindow categoryWindow = new CategoriesWindow(darkMode);
-            categoryWindow.Show();
-        }
-
-        #endregion
 
         #region Filtering Events
         private void FilterChoiceChanged(object sender, RoutedEventArgs e)
@@ -274,29 +248,37 @@ namespace HomeCalendarWPF
             // Populate the list with the right events
             if (awaitFilterInput)
             {
-                if (filterCategoryToggle.IsChecked == true)
-                    filterByCatFlag = true;
-                if (filterByCatFlag)
-                {
-                    int filterCategoryId = filterCategoryCmbx.SelectedIndex + 1;
-                    DateTime oldStart = new DateTime(2015, 1, 1);
-                    presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag, filterByCatFlag, filterCategoryId, oldStart, filterEndDatePicker.SelectedDate);
+                FindFilter();
+                //if (filterByCatFlag)
+                //{
+                   int filterCategoryId = filterCategoryCmbx.SelectedIndex + 1;
+                 //DateTime oldStart = new DateTime(2015, 1, 1);
+                    presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag, filterByCatFlag, filterCategoryId, filterStartDatePicker.SelectedDate, filterEndDatePicker.SelectedDate);
                     SetGridColumns();
-                }
-                else
-                {
-                    DateTime oldStart = new DateTime(2015, 1, 1);
-                    presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag, false, 0, oldStart, filterEndDatePicker.SelectedDate);
-                    SetGridColumns();
-                }
+                //}
+                //else
+                //{
+                //    DateTime oldStart = new DateTime(2015, 1, 1);
+                //    presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag, false, 0, oldStart, filterEndDatePicker.SelectedDate);
+                 //   SetGridColumns();
+                //}
             }
         }
-        #endregion
 
-        private void Btn_Click_ChangeDBFile(object sender, RoutedEventArgs e)
+        private void FindFilter()
         {
-            presenter = new MainWindowPresenter(this);
+            if (filterCategoryToggle.IsChecked == true)
+                filterByCatFlag = true;
+            else
+                filterByCatFlag = false;
+
+            if (filterStartDatePicker.SelectedDate != null && filterEndDatePicker.SelectedDate != null)
+                filterByDateFlag = true;
+            else
+                filterByDateFlag = false;
         }
+
+        #endregion
 
         // >>>GRID CODE<<<
 
@@ -306,16 +288,14 @@ namespace HomeCalendarWPF
             FindGroupBy();
 
             // Populate the list with the right events
-            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+            //presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+            int filterCategoryId = filterCategoryCmbx.SelectedIndex + 1;
+            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag, filterByCatFlag, filterCategoryId, filterStartDatePicker.SelectedDate, filterEndDatePicker.SelectedDate);
             SetGridColumns();
         }
 
         public void SetEventsInGrid<T>(List<T> eventsList)
         {
-            if (eventsList.Count == 0)
-            {
-                ShowMessage("No events");
-            }
             EventsGrid.ItemsSource = eventsList;
         }
 
@@ -329,12 +309,6 @@ namespace HomeCalendarWPF
                 groupByCatFlag = true;
             else
                 groupByCatFlag = false;
-        }
-
-        private void Btn_Click_ShowWarning(object sender, RoutedEventArgs e)
-        {
-            presenter.ShowWarning();
-            Application.Current.Shutdown();
         }
 
         public void SetEventsInGrid(List<Event> eventsList)
@@ -358,7 +332,7 @@ namespace HomeCalendarWPF
             // Clear current columns
             EventsGrid.Columns.Clear();
             // Check which group by is active and create the columns depending on that
-            if (!groupByMonthFlag && !groupByCatFlag)
+            if (!groupByMonthFlag && !groupByCatFlag && !filterByCatFlag && !filterByDateFlag)
             {
                 foreach (var propertyName in columnProperties)
                 {
@@ -399,7 +373,7 @@ namespace HomeCalendarWPF
                 TBTcolumn.Binding = new Binding($"[TotalBusyTime]") { StringFormat = "0.00" };
                 EventsGrid.Columns.Add(TBTcolumn);
             }
-            else if (groupByMonthFlag)
+            else if (groupByMonthFlag || filterByDateFlag)
             {
                 // Month column
                 var column = new DataGridTextColumn();
@@ -414,23 +388,7 @@ namespace HomeCalendarWPF
                 EventsGrid.Columns.Add(column);
             }
 
-            else if (groupByCatFlag)
-            {
-                // Category column
-                var column = new DataGridTextColumn();
-                column.Header = "Category";
-                column.Binding = new Binding("Category");
-                EventsGrid.Columns.Add(column);
-
-                // Total Busy Time
-                column = new DataGridTextColumn();
-                column.Header = "Total Busy Time";
-                column.Binding = new Binding("TotalBusyTime") { StringFormat = "0.00" };
-                EventsGrid.Columns.Add(column);
-                presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
-                //List<Dictionary<string, object>> columns = new List<Dictionary<string, object>>();
-            }
-            else if (filterByCatFlag)
+            else if (groupByCatFlag || filterByCatFlag)
             {
                 // Category column
                 var column = new DataGridTextColumn();
@@ -444,35 +402,13 @@ namespace HomeCalendarWPF
                 column.Binding = new Binding("TotalBusyTime") { StringFormat = "0.00" };
                 EventsGrid.Columns.Add(column);
 
-                int filterCategoryId = filterCategoryCmbx.SelectedIndex;
-                ShowMessage($"{filterCategoryCmbx.SelectedIndex}");
+                int filterCategoryId = filterCategoryCmbx.SelectedIndex + 1;
                 presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag, filterByCatFlag, filterCategoryId, filterStartDatePicker.SelectedDate, filterEndDatePicker.SelectedDate);
 
+                //presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+                //List<Dictionary<string, object>> columns = new List<Dictionary<string, object>>();
             }
         }
-        //TODO: Change the logic here to work with the list of calendaritems by month
-
-        /*
-        public void ShowFilteredDateEventsInGrid(List<CalendarItemsByMonth> filteredEvents)
-        {
-            List<Dictionary<string, object>> columns = new List<Dictionary<string, object>>();
-
-            double busyTime = 0;
-            for (int i = 0; i < eventsGridList.Count; i++)
-            {
-                columns.Add(new Dictionary<string, object>());
-                //var startDateTimeSplit = filteredEvents[i].StartDateTime.ToString().Split(' ');
-                //var startDateSplit = startDateTimeSplit[0].Split('-');
-                busyTime += eventsGridList[i].DurationInMinutes;
-
-                //columns[i]["Start Date"] = $"{startDateSplit[2]}/{startDateSplit[1]}/{startDateSplit[0]}";
-                //columns[i]["Start Time"] = startDateTimeSplit[1];
-                columns[i]["Category"] = eventsGridList[i].Category;
-                columns[i]["Description"] = eventsGridList[i].Details;
-                columns[i]["Duration"] = eventsGridList[i].DurationInMinutes;
-                columns[i]["Busy Time"] = busyTime;
-            }
-        }*/
 
         private void Event_Update_Click(object sender, RoutedEventArgs e)
         {
@@ -518,18 +454,6 @@ namespace HomeCalendarWPF
             
         }
 
-        private void Event_Cancel_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        private void Event_Cancel_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        private void Event_Cancel_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        private void Event_Cancel_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
         private void Event_Cancel_Click(object sender, RoutedEventArgs e)
         {
             Close();

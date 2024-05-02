@@ -44,10 +44,11 @@ namespace HomeCalendarWPF
             {
                 //GetTheme();
 
-            this.model = new HomeCalendar(initParams.filePath, initParams.newDB);
-            this.view = view;
-            view.SetCalendarFilePath(initParams.filePath);
-            SetDefaults();
+                this.model = new HomeCalendar(initParams.filePath, initParams.newDB);
+                this.view = view;
+                view.SetCalendarFilePath(initParams.filePath);
+                SetDefaults();
+            }
         }
         #endregion
 
@@ -182,35 +183,21 @@ namespace HomeCalendarWPF
         {
             // Presenter populates the list
             //! Yeah always passing all the lists is not super efficient...To improve - jh
-            if (groupByMonth && groupByCat)
+            if (groupByMonth && groupByCat && filterByCat)
             {
                 eventsListByCatMonth = model.GetCalendarDictionaryByCategoryAndMonth(filterByStartDate, filterByEndDate, filterByCat, filterCategoryId);
                 view.SetEventsInGrid(eventsListByCatMonth);
             }
-            else if (groupByMonth)
+            else if (groupByMonth || filterByStartDate != null || filterByEndDate != null)
             {
                 eventsListByMonth = model.GetCalendarItemsByMonth(filterByStartDate, filterByEndDate, filterByCat, filterCategoryId);
                 view.SetEventsInGrid(eventsListByMonth);
 
             }
-            else if (groupByCat)
+            else if (groupByCat || filterByCat)
             {
                 eventsListByCategory = model.GetCalendarItemsByCategory(filterByStartDate, filterByEndDate, filterByCat, filterCategoryId);
                 view.SetEventsInGrid(eventsListByCategory);
-            }
-            else if (filterByCat)
-            {
-                eventsListByCategory = model.GetCalendarItemsByCategory(filterByStartDate, filterByEndDate, filterByCat, filterCategoryId);
-                if (eventsListByCategory.Count == 0)
-                    view.ShowMessage("No events");
-                else
-                    view.SetEventsInGrid(eventsListByCategory);
-            }
-            else if (filterByStartDate != null || filterByEndDate != null)
-            {
-                eventsListByMonth = model.GetCalendarItemsByMonth(filterByStartDate, filterByEndDate, filterByCat, filterCategoryId);
-                view.SetEventsInGrid(eventsListByMonth);
-
             }
             else
             {
