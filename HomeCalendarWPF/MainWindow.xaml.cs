@@ -88,17 +88,6 @@ namespace HomeCalendarWPF
                 EventsGrid.ItemsSource = eventsGridList;
                 //SetGridColumns();
             }
-
-            //PopulateDataGrid();
-
-            // >> TESTING <<
-            //Event event1 = new Event(3, new DateTime(04 / 04 / 04), 2, 15, "hello");
-            //List<Event> users = new List<Event>();
-            //users.Add(event1);
-            //users.Add(event1);
-            //users.Add(event1);
-
-            //EventsGrid.ItemsSource = users;
         }
 
         private void OpenEvent(object sender, RoutedEventArgs e)
@@ -365,8 +354,8 @@ namespace HomeCalendarWPF
                     EventsGrid.Columns.Add(column);
                 }
 
-                EventsGrid.ItemsSource = eventsGridListByCatAndMonth;
-                EventsGrid.Columns.Clear();
+                // EventsGrid.ItemsSource = eventsGridListByCatAndMonth;
+                // EventsGrid.Columns.Clear();
                 // Get the busy time column
                 var TBTcolumn = new DataGridTextColumn();
                 TBTcolumn.Header = "TotalBusyTime";
