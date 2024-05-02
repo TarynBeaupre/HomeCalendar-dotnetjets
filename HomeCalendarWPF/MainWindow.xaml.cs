@@ -351,17 +351,22 @@ namespace HomeCalendarWPF
             }
             else if (groupByMonthFlag && groupByCatFlag)
             {
-                // Puts all the categories as columns
-                foreach (string key in eventsGridListByCatAndMonth[3].Keys)
+                var monthColumn = new DataGridTextColumn();
+                monthColumn.Header = "Month";
+                monthColumn.Binding = new Binding("[Month]");
+                EventsGrid.Columns.Add(monthColumn);
+
+                // TODO: Make presenter method to do this.
+                var cats = presenter.model!.categories.List();
+
+                foreach (var cat in cats)
                 {
                     var column = new DataGridTextColumn();
-                    column.Header = key;
-                    column.Binding = new Binding($"[{key}]");
+                    column.Header = cat.Description;
+                    column.Binding = new Binding($"[{cat.Description}]");
                     EventsGrid.Columns.Add(column);
                 }
 
-                EventsGrid.ItemsSource = eventsGridListByCatAndMonth;
-                EventsGrid.Columns.Clear();
                 // Get the busy time column
                 var TBTcolumn = new DataGridTextColumn();
                 TBTcolumn.Header = "TotalBusyTime";
