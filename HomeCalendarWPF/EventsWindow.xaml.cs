@@ -20,12 +20,12 @@ namespace HomeCalendarWPF
         /// Initializes a new instance of the <see cref="EventsWindow"/> class.
         /// </summary>
         /// <param name="darkmode">Specifies which theme should be picked for Window, if true then display dark mode.</param>
-        public EventsWindow(bool darkmode)
+        public EventsWindow(HomeCalendar model, bool darkmode)
         {
             InitializeComponent();
             txbCalendarFileinEvents.Text = ((MainWindow)Application.Current.MainWindow).calendarFiletxb.Text;
             string filePath = txbCalendarFileinEvents.Text;
-            this.presenter = new EventsPresenter(this, filePath);
+            this.presenter = new EventsPresenter(this, model, filePath);
             this.darkMode = darkmode;
 
             // Sets default date and times on the window
@@ -48,7 +48,7 @@ namespace HomeCalendarWPF
         public void AddNewCategory()
         {
             ComboBoxItem typeItem = (ComboBoxItem)categoriescmb.SelectedItem;
-            string categoryName = typeItem.Content.ToString();
+            string categoryName = typeItem.Content.ToString()!;
             presenter.AddNewCategory(categoryName);
         }
 
@@ -62,7 +62,8 @@ namespace HomeCalendarWPF
             string details = txbEventDescription.Text;
             int categoryId = categoriescmb.SelectedIndex;
 
-            previousDate = (DateTime)startdp.SelectedDate;
+            var tmp = (DateTime)startdp.SelectedDate!;
+            previousDate = new DateTime(tmp.Year, tmp.Month, tmp.Day, int.Parse(cmbStartTimeHour.Text), int.Parse(cmbStartTimeMins.Text), 0);
 
             double duration = Convert.ToDouble(txbDuration.Text);
 
@@ -70,7 +71,7 @@ namespace HomeCalendarWPF
             // TODO: maybe do categoylist.length
             previousCategoryIndex = categoryId;
 
-            presenter.AddNewEvent(details, categoryId, startdp.SelectedDate, duration, categoriescmb.Text);
+            presenter.AddNewEvent(details, categoryId, previousDate, duration, categoriescmb.Text);
 
         }
         private void Btn_Click_Cancel_Event(object sender, EventArgs e)
@@ -236,12 +237,14 @@ namespace HomeCalendarWPF
 
         private void Btn_Click_AddNewCategory(object sender, RoutedEventArgs e)
         {
-            CategoriesWindow categoryWindow = new CategoriesWindow(darkMode);
+            CategoriesWindow categoryWindow = new CategoriesWindow(presenter.model, darkMode);
             categoryWindow.ShowDialog();
 
             // this is so ugly and definitely doesn't follow mvp, but it's the only thing i found would work, sorry! -ec
-            string filePath = txbCalendarFileinEvents.Text;
-            this.presenter = new EventsPresenter(this, filePath);
+            //string filePath = txbCalendarFileinEvents.Text;
+            //this.presenter = new EventsPresenter(this, filePath);
+
+            previousCategoryIndex = -1;
             presenter.GetDefaultCategories();
         }
     }

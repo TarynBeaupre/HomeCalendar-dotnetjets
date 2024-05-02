@@ -11,7 +11,7 @@ namespace HomeCalendarWPF
     public class EventsPresenter
     {
         private readonly EventsViewInterface view;
-        private readonly HomeCalendar model;
+        public readonly HomeCalendar model;
 
         private List<Category> categoriesList;
 
@@ -28,9 +28,9 @@ namespace HomeCalendarWPF
         /// path = "./calendar.db";
         /// presenter = new EventsPresenter(view, path);
         /// ]]></code></example>
-        public EventsPresenter(EventsViewInterface view, string path)
+        public EventsPresenter(EventsViewInterface view, HomeCalendar model, string path)
         {
-            this.model = new HomeCalendar(path, false);
+            this.model = model;
             this.view = view;
             view.ShowDefaultDateTime();
 
@@ -114,7 +114,7 @@ namespace HomeCalendarWPF
         /// </code></example>
         public void GetDefaultCategories()
         {
-            view.ShowDefaultCategories(categoriesList);
+            view.ShowDefaultCategories(model.categories.List());
         }
     }
 }

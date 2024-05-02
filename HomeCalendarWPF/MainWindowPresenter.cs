@@ -22,8 +22,8 @@ namespace HomeCalendarWPF
     public class MainWindowPresenter
     {
         // Links from view, model to Presenter
-        private readonly ViewInterface view;
-        private readonly HomeCalendar model;
+        private readonly ViewInterface? view;
+        public readonly HomeCalendar? model;
 
         #region Constructor
         /// <summary>
@@ -40,6 +40,10 @@ namespace HomeCalendarWPF
         public MainWindowPresenter(ViewInterface view)
         {
             InitializationParams initParams = this.GetInitParams();
+            if (initParams.filePath is not null)
+            {
+                //GetTheme();
+
             this.model = new HomeCalendar(initParams.filePath, initParams.newDB);
             this.view = view;
             view.SetCalendarFilePath(initParams.filePath);

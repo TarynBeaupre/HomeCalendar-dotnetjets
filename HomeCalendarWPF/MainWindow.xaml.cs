@@ -1,11 +1,21 @@
 ﻿using Calendar;
+using Microsoft.Win32;
+using System.ComponentModel;
+using System.Data.SQLite;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace HomeCalendarWPF
 {
@@ -64,16 +74,29 @@ namespace HomeCalendarWPF
         {
             InitializeComponent();
             presenter = new MainWindowPresenter(this);
-            awaitFilterInput = true;
-            if (darkMode)
-                SetThemeDark();
-            else
-                SetThemeLight();
 
-            // Output the default events
-            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
-            EventsGrid.ItemsSource = eventsGridList;
-            SetGridColumns();
+            if (calendarFiletxb.Text == "path here")
+            {
+                Trace.WriteLine("Should close");
+                Close();
+                Application.Current.Shutdown();
+                Trace.WriteLine("Did not close");
+            }
+            else
+            {
+                if (darkMode)
+                    SetThemeDark();
+                else
+                    SetThemeLight();
+            awaitFilterInput = true;
+           
+
+                // Output the default events
+                RefreshGrid();
+                //presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+                EventsGrid.ItemsSource = eventsGridList;
+                //SetGridColumns();
+            }
 
             //PopulateDataGrid();
 
@@ -85,6 +108,41 @@ namespace HomeCalendarWPF
             //users.Add(event1);
 
             //EventsGrid.ItemsSource = users;
+        }
+
+        private void OpenEvent(object sender, RoutedEventArgs e)
+        {
+            EventsWindow eventWindow = new EventsWindow(presenter.model, darkMode);
+            eventWindow.ShowDialog();
+            RefreshGrid();
+        }
+        private void OpenCategory(object sender, RoutedEventArgs e)
+        {
+            CategoriesWindow categoryWindow = new CategoriesWindow(presenter.model, darkMode);
+            categoryWindow.ShowDialog();
+            RefreshGrid();
+        }
+        private void Btn_Click_ChangeDBFile(object sender, RoutedEventArgs e)
+        {
+            presenter = new MainWindowPresenter(this);
+        }
+
+        private void Btn_Click_Change_Theme(object sender, RoutedEventArgs e)
+        {
+            Button? clickedButton = sender as Button;
+            MainWindow.darkMode = dark_theme_star.Visibility == Visibility.Collapsed;
+            if (clickedButton != null)
+            {
+                string theme = clickedButton.Name;
+                presenter.SetTheme(theme);
+                SaveThemeSettingsToRegistry();
+            }
+        }
+
+        private void Btn_Click_ShowWarning(object sender, RoutedEventArgs e)
+        {
+            presenter.ShowWarning();
+            Application.Current.Shutdown();
         }
 
         /// <summary>
@@ -418,7 +476,14 @@ namespace HomeCalendarWPF
 
         private void Event_Update_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Update Event");
+            var selectedItem = EventsGrid.CurrentItem as CalendarItem;
+
+            if (selectedItem is null)
+                return;
+
+            var updateEventsWindow = new UpdateEventsWindow(presenter.model, calendarFiletxb.Text, selectedItem);
+            updateEventsWindow.ShowDialog();
+            SetGridColumns();
         }
 
         private void Event_Delete_Click(object sender, RoutedEventArgs e)
@@ -448,14 +513,50 @@ namespace HomeCalendarWPF
                 presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
                 SetGridColumns();
             }
+            else
+                Close();
+            
+        }
+
+        private void Event_Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        private void Event_Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        private void Event_Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        private void Event_Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        private void Event_Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
 
         private void EventsGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var a = EventsGrid.CurrentItem;
+            // Type that EventsGrid.CurrentItem returns is object, but actual type of
+            // the object is Dictionary<string, object> if you check with a.GetType()
+            // so I immediately cast it as such
+            var a = EventsGrid.CurrentItem as CalendarItem;
 
             if (a is null)
                 return;
+
+            var updateEventsWindow = new UpdateEventsWindow(presenter.model, calendarFiletxb.Text, a);
+            updateEventsWindow.ShowDialog();
+            SetGridColumns();
+        }
+        private void RefreshGrid()
+        {
+            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
+            SetGridColumns();
+        }
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
     }
 

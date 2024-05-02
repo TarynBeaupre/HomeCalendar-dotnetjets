@@ -25,7 +25,6 @@ namespace HomeCalendarWPF
     {
         private readonly FileSelectionWindowPresenter presenter;
         public MainWindow.InitializationParams initParams;
-        private bool overrideClosing = false;
 
         /// <summary>
         /// Initializes a new instance of the  <see cref="FileSelectionWindow"/> class.
@@ -56,13 +55,13 @@ namespace HomeCalendarWPF
         {
             presenter.Confirm();
         }
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            if (btnConfirm.IsEnabled == true || overrideClosing)
-                base.OnClosing(e);
-            else
-                e.Cancel = true;
-        }
+        //protected override void OnClosing(CancelEventArgs e)
+        //{
+        //    if (btnConfirm.IsEnabled == true || overrideClosing)
+        //        base.OnClosing(e);
+        //    else
+        //        e.Cancel = true;
+        //}
 
 
         // Methods called by the presenter on the view
