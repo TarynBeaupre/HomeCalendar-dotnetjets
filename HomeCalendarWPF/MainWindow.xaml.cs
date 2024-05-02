@@ -1,21 +1,12 @@
 ﻿using Calendar;
-using Microsoft.Win32;
 using System.ComponentModel;
-using System.Data.SQLite;
 using System.Diagnostics;
-using System.IO;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace HomeCalendarWPF
 {
@@ -88,8 +79,8 @@ namespace HomeCalendarWPF
                     SetThemeDark();
                 else
                     SetThemeLight();
-            awaitFilterInput = true;
-           
+                awaitFilterInput = true;
+
 
                 // Output the default events
                 RefreshGrid();
@@ -251,16 +242,16 @@ namespace HomeCalendarWPF
                 FindFilter();
                 //if (filterByCatFlag)
                 //{
-                   int filterCategoryId = filterCategoryCmbx.SelectedIndex + 1;
-                 //DateTime oldStart = new DateTime(2015, 1, 1);
-                    presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag, filterByCatFlag, filterCategoryId, filterStartDatePicker.SelectedDate, filterEndDatePicker.SelectedDate);
-                    SetGridColumns();
+                int filterCategoryId = filterCategoryCmbx.SelectedIndex + 1;
+                //DateTime oldStart = new DateTime(2015, 1, 1);
+                presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag, filterByCatFlag, filterCategoryId, filterStartDatePicker.SelectedDate, filterEndDatePicker.SelectedDate);
+                SetGridColumns();
                 //}
                 //else
                 //{
                 //    DateTime oldStart = new DateTime(2015, 1, 1);
                 //    presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag, false, 0, oldStart, filterEndDatePicker.SelectedDate);
-                 //   SetGridColumns();
+                //   SetGridColumns();
                 //}
             }
         }
@@ -328,29 +319,38 @@ namespace HomeCalendarWPF
                 "DurationInMinutes",
                 "BusyTime"
             };
+            List<string> header = new List<string>
+            {
+                "Start Date",
+                "Start Time",
+                "Category",
+                "Description",
+                "Duration",
+                "Busy Time"
+            };
 
             // Clear current columns
             EventsGrid.Columns.Clear();
             // Check which group by is active and create the columns depending on that
             if (!groupByMonthFlag && !groupByCatFlag)
             {
-                foreach (var propertyName in columnProperties)
+                for (int i = 0; i < columnProperties.Count(); i++)
                 {
                     var column = new DataGridTextColumn();
-                    column.Header = propertyName;
+                    column.Header = header[i];
 
-                    if (propertyName == "StartDate")
+                    if (columnProperties[i] == "StartDate")
                     {
                         column.Binding = new Binding("StartDateTime");
                         column.Binding.StringFormat = "dd/MM/yyyy";
                     }
-                    else if (propertyName == "StartTime")
+                    else if (columnProperties[i] == "StartTime")
                     {
                         column.Binding = new Binding("StartDateTime");
                         column.Binding.StringFormat = "hh:mm tt";
                     }
                     else
-                        column.Binding = new Binding(propertyName);
+                        column.Binding = new Binding(columnProperties[i]);
                     EventsGrid.Columns.Add(column);
                 }
             }
@@ -451,7 +451,7 @@ namespace HomeCalendarWPF
             }
             else
                 Close();
-            
+
         }
 
         private void Event_Cancel_Click(object sender, RoutedEventArgs e)
