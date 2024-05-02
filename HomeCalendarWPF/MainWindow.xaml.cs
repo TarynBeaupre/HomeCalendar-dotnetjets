@@ -75,20 +75,13 @@ namespace HomeCalendarWPF
             InitializeComponent();
             presenter = new MainWindowPresenter(this);
 
-            if (calendarFiletxb.Text == "path here")
-            {
-                Trace.WriteLine("Should close");
-                Close();
-                Application.Current.Shutdown();
-                Trace.WriteLine("Did not close");
-            }
-            else
+            if (calendarFiletxb.Text != "path here")
             {
                 if (darkMode)
                     SetThemeDark();
                 else
                     SetThemeLight();
-            awaitFilterInput = true;
+                awaitFilterInput = true;
            
 
                 // Output the default events
@@ -97,6 +90,8 @@ namespace HomeCalendarWPF
                 EventsGrid.ItemsSource = eventsGridList;
                 //SetGridColumns();
             }
+
+            //Close();
 
             //PopulateDataGrid();
 
@@ -112,13 +107,13 @@ namespace HomeCalendarWPF
 
         private void OpenEvent(object sender, RoutedEventArgs e)
         {
-            EventsWindow eventWindow = new EventsWindow(presenter.model, darkMode);
+            EventsWindow eventWindow = new EventsWindow(presenter.model!, darkMode);
             eventWindow.ShowDialog();
             RefreshGrid();
         }
         private void OpenCategory(object sender, RoutedEventArgs e)
         {
-            CategoriesWindow categoryWindow = new CategoriesWindow(presenter.model, darkMode);
+            CategoriesWindow categoryWindow = new CategoriesWindow(presenter.model!, darkMode);
             categoryWindow.ShowDialog();
             RefreshGrid();
         }
@@ -417,7 +412,7 @@ namespace HomeCalendarWPF
             if (selectedItem is null)
                 return;
 
-            var updateEventsWindow = new UpdateEventsWindow(presenter.model, calendarFiletxb.Text, selectedItem);
+            var updateEventsWindow = new UpdateEventsWindow(presenter.model!, calendarFiletxb.Text, selectedItem);
             updateEventsWindow.ShowDialog();
             SetGridColumns();
         }
@@ -467,7 +462,7 @@ namespace HomeCalendarWPF
             if (a is null)
                 return;
 
-            var updateEventsWindow = new UpdateEventsWindow(presenter.model, calendarFiletxb.Text, a);
+            var updateEventsWindow = new UpdateEventsWindow(presenter.model!, calendarFiletxb.Text, a);
             updateEventsWindow.ShowDialog();
             SetGridColumns();
         }

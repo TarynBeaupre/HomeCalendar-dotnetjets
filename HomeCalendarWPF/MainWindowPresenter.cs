@@ -55,8 +55,8 @@ namespace HomeCalendarWPF
         #region Initialization Methods
         private void SetDefaults()
         {
-            view.SetDefaultDateTime();
-            List<Category> categoryList  = model.categories.List();
+            view!.SetDefaultDateTime();
+            List<Category> categoryList  = model!.categories.List();
             view.SetDefaultCategories(categoryList);
         }
         #endregion
@@ -104,7 +104,7 @@ namespace HomeCalendarWPF
         /// ]]></code></example>
         public void ShowWarning()
         {
-            view.ShowMessage("If you close the next window, unsaved changes will be lost.");
+            view!.ShowMessage("If you close the next window, unsaved changes will be lost.");
         }
 
         public void SetTheme(string theme)
@@ -112,11 +112,11 @@ namespace HomeCalendarWPF
             SaveThemeSettingsToRegistry();
             if (theme == "button_dark_theme")
             {
-                view.SetThemeDark();
+                view!.SetThemeDark();
             }
             else if (theme == "button_light_theme")
             {
-                view.SetThemeLight();
+                view!.SetThemeLight();
             }
         }
 
@@ -128,7 +128,7 @@ namespace HomeCalendarWPF
             // Credit for how to check if key exists in registry https://stackoverflow.com/a/4276150
 
             // Open software folder under HKEY_CURRENT_USER
-            Microsoft.Win32.RegistryKey rKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("Software", true);
+            Microsoft.Win32.RegistryKey rKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("Software", true)!;
 
             // Check if software folder in registry has our program's info (if not, must be first use)
             return !rKey.GetSubKeyNames().Contains(MainWindow.REGISTRY_SUB_KEY_NAME);
@@ -167,7 +167,7 @@ namespace HomeCalendarWPF
         {
             string keyName = @$"HKEY_CURRENT_USER\Software\{MainWindow.REGISTRY_SUB_KEY_NAME}";
             var a = Registry.GetValue(keyName, "DARK_THEME", 0);
-            int b = (int)a;
+            int b = (int)a!;
             MainWindow.darkMode = b == 1 ? true : false;
         }
 
@@ -185,24 +185,24 @@ namespace HomeCalendarWPF
             //! Yeah always passing all the lists is not super efficient...To improve - jh
             if (groupByMonth && groupByCat)
             {
-                eventsListByCatMonth = model.GetCalendarDictionaryByCategoryAndMonth(filterByStartDate, filterByEndDate, filterByCat, filterCategoryId);
-                view.SetEventsInGrid(eventsListByCatMonth);
+                eventsListByCatMonth = model!.GetCalendarDictionaryByCategoryAndMonth(filterByStartDate, filterByEndDate, filterByCat, filterCategoryId);
+                view!.SetEventsInGrid(eventsListByCatMonth);
             }
             else if (groupByMonth)
             {
-                eventsListByMonth = model.GetCalendarItemsByMonth(filterByStartDate, filterByEndDate, filterByCat, filterCategoryId);
-                view.SetEventsInGrid(eventsListByMonth);
+                eventsListByMonth = model!.GetCalendarItemsByMonth(filterByStartDate, filterByEndDate, filterByCat, filterCategoryId);
+                view!.SetEventsInGrid(eventsListByMonth);
 
             }
             else if (groupByCat)
             {
-                eventsListByCategory = model.GetCalendarItemsByCategory(filterByStartDate, filterByEndDate, filterByCat, filterCategoryId);
-                view.SetEventsInGrid(eventsListByCategory);
+                eventsListByCategory = model!.GetCalendarItemsByCategory(filterByStartDate, filterByEndDate, filterByCat, filterCategoryId);
+                view!.SetEventsInGrid(eventsListByCategory);
             }
             else
             {
-                eventsList = model.GetCalendarItems(filterByStartDate, filterByEndDate, filterByCat, filterCategoryId);
-                view.SetEventsInGrid(eventsList);
+                eventsList = model!.GetCalendarItems(filterByStartDate, filterByEndDate, filterByCat, filterCategoryId);
+                view!.SetEventsInGrid(eventsList);
             }
 
         }
@@ -216,10 +216,10 @@ namespace HomeCalendarWPF
 
         public void DeleteEvent(CalendarItem? chosenEvent)
         {
-            var eventId = chosenEvent.EventID;
+            var eventId = chosenEvent!.EventID;
 
             // Delete the event in the db
-            model.events.Delete(eventId);
+            model!.events.Delete(eventId);
         }
     }
     #endregion
