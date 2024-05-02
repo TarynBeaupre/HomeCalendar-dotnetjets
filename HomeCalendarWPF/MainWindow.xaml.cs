@@ -449,8 +449,6 @@ namespace HomeCalendarWPF
                 presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
                 SetGridColumns();
             }
-            else
-                Close();
             
         }
 
