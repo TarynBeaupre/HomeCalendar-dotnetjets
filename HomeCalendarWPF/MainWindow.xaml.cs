@@ -332,7 +332,7 @@ namespace HomeCalendarWPF
             // Clear current columns
             EventsGrid.Columns.Clear();
             // Check which group by is active and create the columns depending on that
-            if (!groupByMonthFlag && !groupByCatFlag && !filterByCatFlag && !filterByDateFlag)
+            if ((!groupByMonthFlag && !groupByCatFlag) || filterByCatFlag || filterByDateFlag)
             {
                 foreach (var propertyName in columnProperties)
                 {

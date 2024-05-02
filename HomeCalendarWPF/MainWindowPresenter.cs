@@ -183,25 +183,25 @@ namespace HomeCalendarWPF
         {
             // Presenter populates the list
             //! Yeah always passing all the lists is not super efficient...To improve - jh
-            if (groupByMonth && groupByCat && filterByCat)
+            if (groupByMonth && groupByCat)
             {
                 eventsListByCatMonth = model.GetCalendarDictionaryByCategoryAndMonth(filterByStartDate, filterByEndDate, filterByCat, filterCategoryId);
                 view.SetEventsInGrid(eventsListByCatMonth);
             }
-            else if (groupByMonth || filterByStartDate != null || filterByEndDate != null)
+            else if (groupByMonth)
             {
                 eventsListByMonth = model.GetCalendarItemsByMonth(filterByStartDate, filterByEndDate, filterByCat, filterCategoryId);
                 view.SetEventsInGrid(eventsListByMonth);
 
             }
-            else if (groupByCat || filterByCat)
+            else if (groupByCat)
             {
                 eventsListByCategory = model.GetCalendarItemsByCategory(filterByStartDate, filterByEndDate, filterByCat, filterCategoryId);
                 view.SetEventsInGrid(eventsListByCategory);
             }
             else
             {
-                eventsList = model.GetCalendarItems(null, null, false, 0);
+                eventsList = model.GetCalendarItems(filterByStartDate, filterByEndDate, filterByCat, filterCategoryId);
                 view.SetEventsInGrid(eventsList);
             }
 
