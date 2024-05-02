@@ -332,7 +332,7 @@ namespace HomeCalendarWPF
             // Clear current columns
             EventsGrid.Columns.Clear();
             // Check which group by is active and create the columns depending on that
-            if ((!groupByMonthFlag && !groupByCatFlag) || filterByCatFlag || filterByDateFlag)
+            if (!groupByMonthFlag && !groupByCatFlag)
             {
                 foreach (var propertyName in columnProperties)
                 {
@@ -373,7 +373,7 @@ namespace HomeCalendarWPF
                 TBTcolumn.Binding = new Binding($"[TotalBusyTime]") { StringFormat = "0.00" };
                 EventsGrid.Columns.Add(TBTcolumn);
             }
-            else if (groupByMonthFlag || filterByDateFlag)
+            else if (groupByMonthFlag)
             {
                 // Month column
                 var column = new DataGridTextColumn();
@@ -388,7 +388,7 @@ namespace HomeCalendarWPF
                 EventsGrid.Columns.Add(column);
             }
 
-            else if (groupByCatFlag || filterByCatFlag)
+            else if (groupByCatFlag)
             {
                 // Category column
                 var column = new DataGridTextColumn();
