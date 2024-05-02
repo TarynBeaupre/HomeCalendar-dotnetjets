@@ -1,21 +1,12 @@
 ﻿using Calendar;
-using Microsoft.Win32;
 using System.ComponentModel;
-using System.Data.SQLite;
 using System.Diagnostics;
-using System.IO;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace HomeCalendarWPF
 {
@@ -88,37 +79,25 @@ namespace HomeCalendarWPF
                     SetThemeDark();
                 else
                     SetThemeLight();
-            awaitFilterInput = true;
-           
+                awaitFilterInput = true;
+
 
                 // Output the default events
                 RefreshGrid();
                 //presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
-                EventsGrid.ItemsSource = eventsGridList;
                 //SetGridColumns();
             }
-
-            //PopulateDataGrid();
-
-            // >> TESTING <<
-            //Event event1 = new Event(3, new DateTime(04 / 04 / 04), 2, 15, "hello");
-            //List<Event> users = new List<Event>();
-            //users.Add(event1);
-            //users.Add(event1);
-            //users.Add(event1);
-
-            //EventsGrid.ItemsSource = users;
         }
 
         private void OpenEvent(object sender, RoutedEventArgs e)
         {
-            EventsWindow eventWindow = new EventsWindow(presenter.model, darkMode);
+            EventsWindow eventWindow = new EventsWindow(presenter.model!, darkMode);
             eventWindow.ShowDialog();
             RefreshGrid();
         }
         private void OpenCategory(object sender, RoutedEventArgs e)
         {
-            CategoriesWindow categoryWindow = new CategoriesWindow(presenter.model, darkMode);
+            CategoriesWindow categoryWindow = new CategoriesWindow(presenter.model!, darkMode);
             categoryWindow.ShowDialog();
             RefreshGrid();
         }
@@ -251,16 +230,16 @@ namespace HomeCalendarWPF
                 FindFilter();
                 //if (filterByCatFlag)
                 //{
-                   int filterCategoryId = filterCategoryCmbx.SelectedIndex + 1;
-                 //DateTime oldStart = new DateTime(2015, 1, 1);
-                    presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag, filterByCatFlag, filterCategoryId, filterStartDatePicker.SelectedDate, filterEndDatePicker.SelectedDate);
-                    SetGridColumns();
+                int filterCategoryId = filterCategoryCmbx.SelectedIndex + 1;
+                //DateTime oldStart = new DateTime(2015, 1, 1);
+                presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag, filterByCatFlag, filterCategoryId, filterStartDatePicker.SelectedDate, filterEndDatePicker.SelectedDate);
+                SetGridColumns();
                 //}
                 //else
                 //{
                 //    DateTime oldStart = new DateTime(2015, 1, 1);
                 //    presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag, false, 0, oldStart, filterEndDatePicker.SelectedDate);
-                 //   SetGridColumns();
+                //   SetGridColumns();
                 //}
             }
         }
@@ -328,45 +307,59 @@ namespace HomeCalendarWPF
                 "DurationInMinutes",
                 "BusyTime"
             };
+            List<string> header = new List<string>
+            {
+                "Start Date",
+                "Start Time",
+                "Category",
+                "Description",
+                "Duration",
+                "Busy Time"
+            };
 
             // Clear current columns
             EventsGrid.Columns.Clear();
             // Check which group by is active and create the columns depending on that
             if (!groupByMonthFlag && !groupByCatFlag)
             {
-                foreach (var propertyName in columnProperties)
+                for (int i = 0; i < columnProperties.Count(); i++)
                 {
                     var column = new DataGridTextColumn();
-                    column.Header = propertyName;
+                    column.Header = header[i];
 
-                    if (propertyName == "StartDate")
+                    if (columnProperties[i] == "StartDate")
                     {
                         column.Binding = new Binding("StartDateTime");
                         column.Binding.StringFormat = "dd/MM/yyyy";
                     }
-                    else if (propertyName == "StartTime")
+                    else if (columnProperties[i] == "StartTime")
                     {
                         column.Binding = new Binding("StartDateTime");
                         column.Binding.StringFormat = "hh:mm tt";
                     }
                     else
-                        column.Binding = new Binding(propertyName);
+                        column.Binding = new Binding(columnProperties[i]);
                     EventsGrid.Columns.Add(column);
                 }
             }
             else if (groupByMonthFlag && groupByCatFlag)
             {
-                // Puts all the categories as columns
-                foreach (string key in eventsGridListByCatAndMonth[3].Keys)
+                var monthColumn = new DataGridTextColumn();
+                monthColumn.Header = "Month";
+                monthColumn.Binding = new Binding("[Month]");
+                EventsGrid.Columns.Add(monthColumn);
+
+                // TODO: Make presenter method to do this.
+                var cats = presenter.model!.categories.List();
+
+                foreach (var cat in cats)
                 {
                     var column = new DataGridTextColumn();
-                    column.Header = key;
-                    column.Binding = new Binding($"[{key}]");
+                    column.Header = cat.Description;
+                    column.Binding = new Binding($"[{cat.Description}]");
                     EventsGrid.Columns.Add(column);
                 }
 
-                EventsGrid.ItemsSource = eventsGridListByCatAndMonth;
-                EventsGrid.Columns.Clear();
                 // Get the busy time column
                 var TBTcolumn = new DataGridTextColumn();
                 TBTcolumn.Header = "TotalBusyTime";
@@ -404,9 +397,6 @@ namespace HomeCalendarWPF
 
                 int filterCategoryId = filterCategoryCmbx.SelectedIndex + 1;
                 presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag, filterByCatFlag, filterCategoryId, filterStartDatePicker.SelectedDate, filterEndDatePicker.SelectedDate);
-
-                //presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
-                //List<Dictionary<string, object>> columns = new List<Dictionary<string, object>>();
             }
         }
 
@@ -417,9 +407,9 @@ namespace HomeCalendarWPF
             if (selectedItem is null)
                 return;
 
-            var updateEventsWindow = new UpdateEventsWindow(presenter.model, calendarFiletxb.Text, selectedItem);
+            var updateEventsWindow = new UpdateEventsWindow(presenter.model!, calendarFiletxb.Text, selectedItem);
             updateEventsWindow.ShowDialog();
-            SetGridColumns();
+            RefreshGrid();
         }
 
         private void Event_Delete_Click(object sender, RoutedEventArgs e)
@@ -446,10 +436,8 @@ namespace HomeCalendarWPF
             {
                 presenter.DeleteEvent(eventToDelete);
                 // Yeah not efficient repopulating all the list everytime
-                presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
-                SetGridColumns();
+                this.RefreshGrid();
             }
-            
         }
 
         private void Event_Cancel_Click(object sender, RoutedEventArgs e)
@@ -467,9 +455,9 @@ namespace HomeCalendarWPF
             if (a is null)
                 return;
 
-            var updateEventsWindow = new UpdateEventsWindow(presenter.model, calendarFiletxb.Text, a);
+            var updateEventsWindow = new UpdateEventsWindow(presenter.model!, calendarFiletxb.Text, a);
             updateEventsWindow.ShowDialog();
-            SetGridColumns();
+            RefreshGrid();
         }
         private void RefreshGrid()
         {
