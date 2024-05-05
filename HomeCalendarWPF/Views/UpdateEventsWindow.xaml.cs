@@ -45,19 +45,7 @@ namespace HomeCalendarWPF
         }
         private void Btn_Click_UpdateEvent(object sender, RoutedEventArgs e)
         {
-            if (!ValidateEventForm())
-                return;
-
-            string details = txbEventDescription.Text;
-            int categoryId = categoriescmb.SelectedIndex;
-
-            var tmp = (DateTime)startdp.SelectedDate!;
-            var date = new DateTime(tmp.Year, tmp.Month, tmp.Day, int.Parse(cmbStartTimeHour.Text), int.Parse(cmbStartTimeMins.Text), 0);
-
-            double duration = Convert.ToDouble(txbDuration.Text);
-
-            presenter.UpdateEvent(eventToUpdate.EventID, date, categoryId, duration, details);
-            MessageBox.Show("Event successfully updated");
+            presenter.UpdateEvent(eventToUpdate.EventID, startdp, categoriescmb.SelectedIndex, txbDuration, txbEventDescription.Text, cmbStartTimeHour, cmbStartTimeMins);
             this.Close();
         }
         private void Btn_Click_CancelUpdate(object sender, RoutedEventArgs e)
@@ -145,23 +133,7 @@ namespace HomeCalendarWPF
                 dark_theme_star.Visibility = Visibility.Collapsed;
             }
         }
-        private bool ValidateEventForm()
-        {
-            //Check that start date has a value
-            if (!startdp.SelectedDate.HasValue)
-            {
-                ShowError("Please select a start date.");
-                return false;
-            }
-
-            // Check if duration is provided and is a positive double
-            if (!double.TryParse(txbDuration.Text, out double duration) || duration <= 0)
-            {
-                ShowError("Please provide a valid duration in minutes. The duration should be a positive number.");
-                return false;
-            }
-            return true;
-        }
+        
         #endregion
     }
 }
