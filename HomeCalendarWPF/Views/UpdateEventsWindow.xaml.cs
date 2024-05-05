@@ -27,7 +27,7 @@ namespace HomeCalendarWPF
         readonly private UpdateEventsWindowPresenter presenter;
         readonly private string dbPath;
         readonly private CalendarItem eventToUpdate;
-        //public static int previousCategoryIndex = 0;
+        public static int previousCategoryIndex = 0;
 
         public UpdateEventsWindow(HomeCalendar model, string filePath, CalendarItem eventToUpdate)
         {
@@ -41,7 +41,11 @@ namespace HomeCalendarWPF
         #region Event Handlers
         private void Btn_Click_AddNewCategory(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            CategoriesWindow cw = new CategoriesWindow(presenter.model, MainWindow.darkMode);
+            cw.ShowDialog();
+
+            previousCategoryIndex = -1;
+            presenter.GetDefaultCategories();
         }
         private void Btn_Click_UpdateEvent(object sender, RoutedEventArgs e)
         {
@@ -70,6 +74,9 @@ namespace HomeCalendarWPF
         public void ShowDefaultCategories(List<Category> categoriesList)
         {
             categoriescmb.ItemsSource = categoriesList;
+
+            if (previousCategoryIndex == -1) previousCategoryIndex = categoriesList.Count - 1;
+            categoriescmb.SelectedIndex = previousCategoryIndex;
         }
         public void PopulateFields()
         {
@@ -78,7 +85,10 @@ namespace HomeCalendarWPF
             categoriescmb.SelectedIndex = eventToUpdate.CategoryID - 1;
 
             startdp.SelectedDate = eventToUpdate.StartDateTime;
-            cmbStartTimeHour.SelectedIndex = eventToUpdate.StartDateTime.Hour - 1;
+
+            // Adding 24 then mod by 24 to avoid edge case where time is 12am would cause no index to be selected.
+            cmbStartTimeHour.SelectedIndex = (eventToUpdate.StartDateTime.Hour - 1 + 24) % 24;
+
             cmbStartTimeMins.SelectedIndex = eventToUpdate.StartDateTime.Minute / 15;
             txbDuration.Text = eventToUpdate.DurationInMinutes.ToString();
         }

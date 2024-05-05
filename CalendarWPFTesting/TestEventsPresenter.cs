@@ -11,7 +11,7 @@ using HomeCalendarWPF.Presenters;
 
 namespace CalendarWPFTesting
 {
-    public class TestView : EventsViewInterface
+    public class TestView : AddEventsViewInterface
     {
         public bool calledView_ShowError = false, calledView_ShowMessage = false, calledView_ShowDefaultCat = false, calledView_ShowDefaultDate = false, calledView_Reset = false;
 

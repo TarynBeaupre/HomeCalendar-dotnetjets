@@ -11,7 +11,7 @@ namespace HomeCalendarWPF
     /// <summary>
     /// Interaction logic for Events.xaml
     /// </summary>
-    public partial class EventsWindow : Window, EventsViewInterface
+    public partial class EventsWindow : Window, AddEventsViewInterface
     {
         private EventsPresenter presenter;
         private static DateTime previousDate = System.DateTime.Now;
@@ -55,7 +55,7 @@ namespace HomeCalendarWPF
             previousCategoryIndex = categoryId;
 
             presenter.AddNewEvent(details, categoryId, previousDate, duration, categoriescmb.Text);
-            Close();
+            ResetEventForm();
         }
         private void Btn_Click_Cancel_Event(object sender, EventArgs e)
         {
