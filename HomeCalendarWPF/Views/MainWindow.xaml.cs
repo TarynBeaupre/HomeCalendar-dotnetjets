@@ -293,7 +293,17 @@ namespace HomeCalendarWPF
             int filterCategoryId = filterCategoryCmbx.SelectedIndex + 1;
             presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, filterCategoryId, filterStartDatePicker.SelectedDate, filterEndDatePicker.SelectedDate);
         }
-    
+        /// <summary>
+        /// Sets all of the data grid's column names depending on the different group by flags specified.
+        /// </summary>
+        /// <param name="groupByMonthFlag">Specifies whether the information should be grouped by month.</param>
+        /// <param name="groupByCatFlag">Specifies whether the information should be grouped by category.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// // Makes the data grid's columns those associated with the categories group by
+        /// SetGridColumns(groupByMonthFlag=false, groupByCatFlag=true);
+        /// ]]></code></example>
         public void SetGridColumns(bool groupByMonthFlag, bool groupByCatFlag)
         {
             // Columns to loop over for the normal events grid 
