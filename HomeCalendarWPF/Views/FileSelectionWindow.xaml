@@ -5,9 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HomeCalendarWPF"
         mc:Ignorable="d"
-        Title="Select a Database File" Height="110" Width="600"
-        WindowStartupLocation="CenterScreen"
-        ResizeMode="NoResize">
+        Title="Select a Database File" Height="200" Width="1000"
+        WindowStartupLocation="CenterScreen">
     <Window.Background>
         <ImageBrush  x:Name="child_window_background_theme" ImageSource="../images/stardew-backdrop.jpg"></ImageBrush>
     </Window.Background>
@@ -24,26 +23,34 @@
             </LinearGradientBrush>
         </Grid.Background>
 
-        <StackPanel Grid.Row="0" Margin="20,0">
-            <TextBlock Text="Choose Database File and Directory:"/>
-            <TextBlock x:Name="tbDir" Background="LightGray" Text="Path"/>
-        </StackPanel>
+        <Grid Grid.Row="0" Margin="20,0">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBlock VerticalAlignment="Center" Text="Choose Database File and Directory:"/>
+            <TextBlock x:Name="tbDir" Background="LightGray" Text="Path" Grid.Row="1"/>
+        </Grid>
 
-        <Grid Grid.Row="1" Margin="20,0">
-            <StackPanel Orientation="Horizontal">
+         <Grid Grid.Row="1" Margin="20, 0" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
                 <Button Click="Btn_Click_PickNewFileDir" VerticalAlignment="Center" Margin="0,0,10,0" Style="{StaticResource button}">
                     Pick New File
                 </Button>
-                <Button Click="Btn_Click_PickExistingFileDir" VerticalAlignment="Center" Margin="0,0,10,0" Style="{StaticResource button}">
+                <Button Grid.Column="1" Click="Btn_Click_PickExistingFileDir" VerticalAlignment="Center" Margin="0,0,10,0" Style="{StaticResource button}">
                     Pick Existing File
                 </Button>
-                <Button Click="Btn_Click_OpenRecentFile" VerticalAlignment="Center" Style="{StaticResource button}">
+                <Button Grid.Column="2" Click="Btn_Click_OpenRecentFile" VerticalAlignment="Center" Margin="0,0,10,0" Style="{StaticResource button}">
                     Open Most Recent Calendar
                 </Button>
-            </StackPanel>
-            <Button x:Name="btnConfirm" Click="Btn_Click_Confirm" VerticalAlignment="Center" HorizontalAlignment="Right" IsEnabled="False" Style="{StaticResource button}">
-                Confirm Choice
-            </Button>
-        </Grid>
+                <Button Grid.Column="3" x:Name="btnConfirm" Click="Btn_Click_Confirm" HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="False" Style="{StaticResource button}">
+                    Confirm Choice
+                </Button>
+            </Grid>
     </Grid>
 </Window>

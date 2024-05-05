@@ -7,8 +7,7 @@
         mc:Ignorable="d"
         FontFamily="Verdana"
         Title="Calendar" Height="800" Width="1065"
-        WindowStartupLocation="CenterScreen"
-        ResizeMode="NoResize">
+        WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -177,12 +176,12 @@
                 </StackPanel>
             </GroupBox>
             <!--Tree images-->
-            <Image Grid.Row="2" Grid.Column="2" Grid.RowSpan="2" Visibility="Visible" VerticalAlignment="Bottom" Margin="20" x:Name="light_tree_image">
+            <Image Grid.Row="2" Grid.Column="2" Grid.RowSpan="2" Visibility="Visible" VerticalAlignment="Bottom" Margin="20" x:Name="light_tree_image" MinHeight="100" MaxHeight="260">
                 <Image.Source>
                     <BitmapImage UriSource="../images/light-tree.png"/>
                 </Image.Source>
             </Image>
-            <Image Grid.Row="2" Grid.Column="2" Grid.RowSpan="2" Visibility="Collapsed" Margin="20" x:Name="dark_tree_image" Height="260">
+            <Image Grid.Row="2" Grid.Column="2" Grid.RowSpan="2" Visibility="Collapsed" Margin="20" x:Name="dark_tree_image" MinHeight="100" MaxHeight="260">
                 <Image.Source>
                     <BitmapImage UriSource="../images/dark-tree.png"/>
                 </Image.Source>

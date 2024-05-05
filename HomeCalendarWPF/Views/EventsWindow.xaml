@@ -7,8 +7,7 @@
         mc:Ignorable="d"
         FontFamily="Verdana"
         Title="Events" Height="600" Width="1000"
-        WindowStartupLocation="CenterScreen"
-        ResizeMode="NoResize">
+        WindowStartupLocation="CenterScreen">
     <Window.Background>
         <ImageBrush x:Name="child_window_background_theme" ImageSource="../images/stardew-backdrop.jpg"></ImageBrush>
     </Window.Background>
