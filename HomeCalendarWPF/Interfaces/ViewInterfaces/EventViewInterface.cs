@@ -7,7 +7,7 @@ using Calendar;
 
 namespace HomeCalendarWPF.Interfaces.ViewInterfaces
 {
-    public interface EventInterface : ViewInterface
+    public interface EventViewInterface : ViewInterface
     {
         /// <summary>
         /// Displays the default categories in the categories dropdown list.

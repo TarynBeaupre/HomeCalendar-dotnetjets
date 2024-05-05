@@ -11,7 +11,7 @@ namespace HomeCalendarWPF.Interfaces.Views
     /// <summary>
     /// Represents the interface for the Events view in the MVP design.
     /// </summary>
-    public interface EventsViewInterface : EventInterface
+    public interface AddEventsViewInterface : EventViewInterface
     {
         /// <summary>
         /// Resets the event form by clearing input fields and setting default values.

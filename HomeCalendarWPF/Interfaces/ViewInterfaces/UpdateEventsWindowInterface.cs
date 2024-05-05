@@ -8,7 +8,7 @@ using HomeCalendarWPF.Interfaces.ViewInterfaces;
 
 namespace HomeCalendarWPF.Interfaces.Views
 {
-    internal interface UpdateEventsWindowInterface : EventInterface
+    internal interface UpdateEventsWindowInterface : EventViewInterface
     {
         void PopulateFields();
     }
