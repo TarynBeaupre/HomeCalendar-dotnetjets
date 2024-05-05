@@ -131,7 +131,7 @@ namespace HomeCalendarWPF
                 startHour = date.Hour + 1;
                 cmbStartTimeMins.SelectedIndex = 0;
             }
-            cmbStartTimeHour.SelectedIndex = startHour - 1; //-1 because it index 0 in the cmb is hour 1 of the day
+            cmbStartTimeHour.SelectedIndex = (startHour - 1 + 24) % 24; //-1 because it index 0 in the cmb is hour 1 of the day
 
             //=== Set default duration (30 mins) ===
             txbDuration.Text = "30";
