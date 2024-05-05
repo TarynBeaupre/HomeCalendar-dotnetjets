@@ -49,7 +49,7 @@ namespace HomeCalendarWPF.Presenters
                 try
                 {
                     var tmp = (DateTime)startdp.SelectedDate!;
-                    var date = new DateTime(tmp.Year, tmp.Month, tmp.Day, int.Parse(cmbStartTimeHour.Text), int.Parse(cmbStartTimeMins.Text), 0);
+                    var date = new DateTime(tmp.Year, tmp.Month, tmp.Day, int.Parse(cmbStartTimeHour.Text) % 24, int.Parse(cmbStartTimeMins.Text), 0);
                     double duration = Convert.ToDouble(txbDuration.Text);
                     model.events.UpdateProperties(eventId, date, categoryId + 1, duration, details);
                     view.ShowMessage("Event successfully updated!");
