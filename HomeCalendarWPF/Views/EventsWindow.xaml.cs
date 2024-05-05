@@ -46,7 +46,7 @@ namespace HomeCalendarWPF
             int categoryId = categoriescmb.SelectedIndex;
 
             var tmp = (DateTime)startdp.SelectedDate!;
-            previousDate = new DateTime(tmp.Year, tmp.Month, tmp.Day, int.Parse(cmbStartTimeHour.Text) % 24, int.Parse(cmbStartTimeMins.Text), 0);
+            previousDate = new DateTime(tmp.Year, tmp.Month, tmp.Day, int.Parse(cmbStartTimeHour.Text + 24) % 24, int.Parse(cmbStartTimeMins.Text), 0);
 
             double duration = Convert.ToDouble(txbDuration.Text);
 
