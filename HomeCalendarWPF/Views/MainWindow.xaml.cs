@@ -45,11 +45,6 @@ namespace HomeCalendarWPF
         public List<CalendarItemsByCategory> eventsGridListByCat = new();
         public List<Dictionary<string, object>> eventsGridListByCatAndMonth = new();
 
-        public bool groupByMonthFlag = false, groupByCatFlag = false;
-
-        // Filtering variables
-        public bool filterByDateFlag = false, filterByCatFlag = false;
-
         public static readonly string REGISTRY_SUB_KEY_NAME = "DotNetJetsCalendar";
 
         private MainWindowPresenter presenter;
@@ -117,7 +112,7 @@ namespace HomeCalendarWPF
             if (eventToDelete is null)
                 return;
 
-            presenter.CheckValidDeletedEvent(groupByMonthFlag, groupByCatFlag, eventToDelete);
+            presenter.CheckValidDeletedEvent(eventToDelete);
 
             var choice = MessageBox.Show("Are you sure you want to delete Event?", "Delete Confirmation", MessageBoxButton.YesNo);
             if (choice == MessageBoxResult.Yes)
@@ -279,20 +274,10 @@ namespace HomeCalendarWPF
             // Populate the list with the right events
             if (awaitFilterInput)
             {
-                FindFilter();
+                presenter.FindFilter(filterCategoryToggle, filterStartDatePicker, filterEndDatePicker);
                 int filterCategoryId = filterCategoryCmbx.SelectedIndex + 1;
-                presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag, filterByCatFlag, filterCategoryId, filterStartDatePicker.SelectedDate, filterEndDatePicker.SelectedDate);
-                SetGridColumns();
+                presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, filterCategoryId, filterStartDatePicker.SelectedDate, filterEndDatePicker.SelectedDate);
             }
-        }
-
-        private void FindFilter()
-        {
-            bool catToggle = filterCategoryToggle.IsChecked == true;
-            bool dateToggle = filterStartDatePicker.SelectedDate != null && filterEndDatePicker.SelectedDate != null;
-
-            presenter.FilterToggle(catToggle, dateToggle, ref filterByCatFlag, ref filterByDateFlag);
-
         }
 
         #endregion
@@ -301,22 +286,15 @@ namespace HomeCalendarWPF
         private void CheckBox_Changed(object sender, RoutedEventArgs e)
         {
             // Calls a method that checks which checkbox is checked and changes value of global variable
-            FindGroupBy();
+            presenter.FindGroupBy(GroupByMonthToggle, GroupByCategoryToggle);
 
             // Populate the list with the right events
             //presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
             int filterCategoryId = filterCategoryCmbx.SelectedIndex + 1;
-            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag, filterByCatFlag, filterCategoryId, filterStartDatePicker.SelectedDate, filterEndDatePicker.SelectedDate);
-            SetGridColumns();
+            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, filterCategoryId, filterStartDatePicker.SelectedDate, filterEndDatePicker.SelectedDate);
         }
-        private void FindGroupBy()
-        {
-            bool monthToggle = GroupByMonthToggle.IsChecked == true;
-            bool catToggle = GroupByCategoryToggle.IsChecked == true;
-
-            presenter.GroupByToggle(monthToggle, catToggle, ref groupByMonthFlag, ref groupByCatFlag);
-        }
-        private void SetGridColumns()
+    
+        public void SetGridColumns(bool groupByMonthFlag, bool groupByCatFlag)
         {
             // Columns to loop over for the normal events grid 
             List<string> columnProperties = new List<string>
@@ -417,13 +395,12 @@ namespace HomeCalendarWPF
                 EventsGrid.Columns.Add(column);
 
                 int filterCategoryId = filterCategoryCmbx.SelectedIndex + 1;
-                presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag, filterByCatFlag, filterCategoryId, filterStartDatePicker.SelectedDate, filterEndDatePicker.SelectedDate);
+                presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, filterCategoryId, filterStartDatePicker.SelectedDate, filterEndDatePicker.SelectedDate);
             }
         }
         private void RefreshGrid()
         {
-            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
-            SetGridColumns();
+            presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat);
         }
         #endregion
 
