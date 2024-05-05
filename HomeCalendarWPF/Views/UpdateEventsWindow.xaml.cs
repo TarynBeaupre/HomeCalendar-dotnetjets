@@ -45,7 +45,7 @@ namespace HomeCalendarWPF
         }
         private void Btn_Click_UpdateEvent(object sender, RoutedEventArgs e)
         {
-            if (!ValidateEventForm())
+            if (!presenter.ValidateEventForm())
                 return;
 
             string details = txbEventDescription.Text;
@@ -57,9 +57,9 @@ namespace HomeCalendarWPF
             double duration = Convert.ToDouble(txbDuration.Text);
 
             presenter.UpdateEvent(eventToUpdate.EventID, date, categoryId, duration, details);
-            MessageBox.Show("Event successfully updated");
             this.Close();
         }
+
         private void Btn_Click_CancelUpdate(object sender, RoutedEventArgs e)
         {
             this.Close();
@@ -84,6 +84,7 @@ namespace HomeCalendarWPF
         }
         public void ShowDefaultDateTime()
         {
+            //Looks like a lot of logic but only deals with UI tasks
             //Creating a drop down for 24 hour selection
             List<string> hourList = new List<string> { };
             for (int i = 1; i <= 24; i++)
@@ -145,22 +146,17 @@ namespace HomeCalendarWPF
                 dark_theme_star.Visibility = Visibility.Collapsed;
             }
         }
-        private bool ValidateEventForm()
-        {
-            //Check that start date has a value
-            if (!startdp.SelectedDate.HasValue)
-            {
-                ShowError("Please select a start date.");
-                return false;
-            }
 
-            // Check if duration is provided and is a positive double
-            if (!double.TryParse(txbDuration.Text, out double duration) || duration <= 0)
-            {
-                ShowError("Please provide a valid duration in minutes. The duration should be a positive number.");
-                return false;
-            }
-            return true;
+        #endregion
+
+        #region Presenter Data Getters
+        public bool IsDateSelected()
+        {
+            return startdp.SelectedDate.HasValue;
+        }
+        public bool IsValidDuration()
+        {
+            return double.TryParse(txbDuration.Text, out double duration) || duration <= 0;
         }
         #endregion
     }

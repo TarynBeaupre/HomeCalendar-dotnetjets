@@ -13,5 +13,7 @@ namespace HomeCalendarWPF.Interfaces.Views
         void ShowDefaultCategories(List<Category> categoriesList);
         void ShowDefaultDateTime();
         void PopulateFields();
+        bool IsDateSelected();
+        bool IsValidDuration();
     }
 }
