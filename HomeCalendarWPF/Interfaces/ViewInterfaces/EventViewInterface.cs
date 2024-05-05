@@ -29,5 +29,17 @@ namespace HomeCalendarWPF.Interfaces.ViewInterfaces
         /// ShowDefaultDateTime();
         /// ]]></code></example>
         void ShowDefaultDateTime();
-    }
+        /// <summary>
+        /// Resets the event form by clearing input fields and setting default values.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// ResetEventForm();
+        /// ]]></code></example>
+        void ResetEventForm();
+        bool HasSelectedDate();
+        bool IsEndValue();
+        bool HasDurationValue();
+    };
 }

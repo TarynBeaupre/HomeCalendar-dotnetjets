@@ -215,13 +215,31 @@ namespace HomeCalendarWPF.Presenters
             view.ShowFilteredDateEventsInGrid(filteredEvents);
         }*/
 
+        public void GetCategoryList(ref List<Category> cats)
+        {
+            cats = model!.categories.List();
+        }
         public void DeleteEvent(CalendarItem? chosenEvent)
         {
             var eventId = chosenEvent!.EventID;
-
             // Delete the event in the db
             model!.events.Delete(eventId);
         }
+
+        public void CheckValidDeletedEvent(bool groupByMonthFlag, bool groupByCatFlag, CalendarItem eventToDelete)
+        {
+            if (groupByMonthFlag || groupByCatFlag)
+            {
+                view!.ShowError("Need to select singular event.");
+                return;
+            }
+            else if (eventToDelete is null)
+            {
+                view!.ShowError("Event is null");
+                return;
+            }
+        }
+
     }
     #endregion
 }

@@ -118,5 +118,30 @@ namespace HomeCalendarWPF.Presenters
         {
             view.ShowDefaultCategories(model.categories.List());
         }
+
+        public bool ValidateEventForm()
+        {
+            //Check that start date has a value
+            if (!view.HasSelectedDate())
+            {
+                view.ShowError("Please select a start date.");
+                return false;
+            }
+
+            // Check that end date has a value
+            if (!view.IsEndValue())
+            {
+                view.ShowError("Please select an end date.");
+                return false;
+            }
+
+            // Check if duration is provided and is a positive double
+            if (!view.HasDurationValue())
+            {
+                view.ShowError("Please provide a valid duration in minutes. The duration should be a positive number.");
+                return false;
+            }
+            return true;
+        }
     }
 }

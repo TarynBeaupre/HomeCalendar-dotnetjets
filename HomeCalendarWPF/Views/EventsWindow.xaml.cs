@@ -38,7 +38,7 @@ namespace HomeCalendarWPF
         private void Btn_Click_Add_Event(object sender, RoutedEventArgs e)
         {
             //Validating form data
-            if (!ValidateEventForm())
+            if (!presenter.ValidateEventForm())
                 return;
 
             //Add the event to the database via the presenter
@@ -184,24 +184,6 @@ namespace HomeCalendarWPF
         #endregion
 
         #region Private Methods
-        private bool ValidateEventForm()
-        {
-            //Check that start date has a value
-            if (!startdp.SelectedDate.HasValue)
-            {
-                ShowError("Please select a start date.");
-                return false;
-            }
-
-            // Check if duration is provided and is a positive double
-            if (!double.TryParse(txbDuration.Text, out double duration) || duration <= 0)
-            {
-                ShowError("Please provide a valid duration in minutes. The duration should be a positive number.");
-                return false;
-            }
-            return true;
-        }
-
         private void SetTheme(bool darkmode)
         {
             if (darkmode)
@@ -218,6 +200,21 @@ namespace HomeCalendarWPF
                 light_theme_star.Visibility = Visibility.Visible;
                 dark_theme_star.Visibility = Visibility.Collapsed;
             }
+        }
+        #endregion
+
+        #region Presenter Data Getters
+        public bool HasSelectedDate()
+        {
+            return startdp.SelectedDate.HasValue;
+        }        
+        public bool IsEndValue()
+        {
+            return enddp.SelectedDate.HasValue;
+        }
+        public bool HasDurationValue()
+        {
+            return double.TryParse(txbDuration.Text, out double duration) || duration <= 0;
         }
         #endregion
     }
