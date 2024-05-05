@@ -56,7 +56,8 @@ namespace HomeCalendarWPF
         {
             InitializeComponent();
             presenter = new MainWindowPresenter(this);
-
+            filterStartDatePicker.SelectedDate = DateTime.Now.AddYears(-1);
+            filterEndDatePicker.SelectedDate = DateTime.Now;
             if (calendarFiletxb.Text != "path here")
             {
                 if (darkMode)
