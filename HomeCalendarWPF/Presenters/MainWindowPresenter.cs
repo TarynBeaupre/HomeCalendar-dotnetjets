@@ -250,32 +250,6 @@ namespace HomeCalendarWPF.Presenters
             else
                 groupByCatFlag = false;
         }
-
-        public void GroupByToggle(bool monthToggle, bool catToggle, ref bool groupByMonthFlag, ref bool groupByCatFlag)
-        {
-            if (monthToggle)
-                groupByMonthFlag = true;
-            else
-                groupByMonthFlag = false;
-            if (catToggle)
-                groupByCatFlag = true;
-            else
-                groupByCatFlag = false;
-        }
-
-        public void FilterToggle(bool catToggle, bool dateToggle, ref bool filterByCatFlag, ref bool filterByDateFlag)
-        {
-            if (catToggle== true)
-                filterByCatFlag = true;
-            else
-                filterByCatFlag = false;
-
-            if (dateToggle)
-                filterByDateFlag = true;
-            else
-                filterByDateFlag = false;
-        }
-
     }
     #endregion
 }
