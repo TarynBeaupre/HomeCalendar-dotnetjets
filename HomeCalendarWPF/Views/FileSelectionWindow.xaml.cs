@@ -138,6 +138,15 @@ namespace HomeCalendarWPF
         {
             return tbDir.Text;
         }
+        /// <summary>
+        /// Shows messages to the user.
+        /// </summary>
+        /// <param name="message">The message to be displayed.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// ShowMessage("You're doing good, lad!");
+        /// ]]></code></example>
         public void ShowMessage(string message)
         {
             MessageBox.Show(message, "Message", MessageBoxButton.OK, MessageBoxImage.Error);

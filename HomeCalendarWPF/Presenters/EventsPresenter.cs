@@ -118,7 +118,16 @@ namespace HomeCalendarWPF.Presenters
         {
             view.ShowDefaultCategories(model.categories.List());
         }
-
+        /// <summary>
+        /// Checks to see if the add event form has been filled correctly.
+        /// </summary>
+        /// <returns>A boolean representing if the add event form has been filled correctly.</returns>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// if (ValidateEventForm())
+        ///     view.ShowMessage("That form's been stuffed full (of correct data)");
+        /// ]]></code></example>
         public bool ValidateEventForm()
         {
             //Check that start date has a value

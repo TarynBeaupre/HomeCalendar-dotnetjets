@@ -22,7 +22,27 @@ namespace HomeCalendarWPF.Interfaces.Views
         /// ResetEventForm();
         /// ]]></code></example>
         void ResetEventForm();
+        /// <summary>
+        /// Checks if a date is selected in the view.
+        /// </summary>
+        /// <returns>A boolean representing whether a date is selected in the view.</returns>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// if (HasSelectedDate())
+        ///     ShowMessage("Yep, that's a date that's selected");
+        /// ]]></code></example>
         bool HasSelectedDate();
+        /// <summary>
+        /// Checks if a duration is set in the view.
+        /// </summary>
+        /// <returns>A boolean representing whether a duration is set in the view.</returns>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// if (HasDurationValue())
+        ///     ShowMessage("Yep, that's a duration with a value");
+        /// ]]></code></example>
         bool HasDurationValue();
     };
 }

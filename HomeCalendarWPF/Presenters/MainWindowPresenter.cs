@@ -56,44 +56,12 @@ namespace HomeCalendarWPF.Presenters
         #region Initialization Methods
         private void SetDefaults()
         {
-            view!.SetDefaultDateTime();
             List<Category> categoryList = model!.categories.List();
-            view.SetDefaultCategories(categoryList);
+            view!.SetDefaultCategories(categoryList);
         }
         #endregion
 
         #region Public Methods
-        public void FilterByCategory(int categoryIndex)
-        {
-            //1 get the events from the model
-            //2 set the events into the grid
-        }
-
-        public void ShowAllEvents()
-        {
-            //show all events in the grid
-        }
-
-        /*
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Presenter"/> class with the specified view interface, file path, and new database flag.
-        /// </summary>
-        /// <param name="view">View interface associated with the presenter.</param>
-        /// <param name="filePath">The file path for the calendar.</param>
-        /// <param name="newDB">A flag indicating whether a new database should be created.</param>
-        /// <example>
-        /// <code>
-        /// For this example, assume we have well implemented IView
-        /// <![CDATA[
-        /// view = IView;
-        /// presenter = new Presenter(view, "./hello", true);
-        /// ]]></code></example>
-        public MainWindowPresenter(ViewInterface view, string filePath, bool newDB = false)
-        {
-            this.model = new HomeCalendar(filePath, newDB);
-            this.view = view;
-        } */
-
         /// <summary>
         /// Shows a warning message to the user.
         /// </summary>

@@ -25,6 +25,21 @@ namespace HomeCalendarWPF.Presenters
             this.view.PopulateFields();
         }
 
+        /// <summary>
+        /// Updates an event in the database.
+        /// </summary>
+        /// <param name="eventId">The id of the event to be updated.</param>
+        /// <param name="startdp">The datepicker element containing the start date.</param>
+        /// <param name="categoryId">The id of the category to be updated to.</param>
+        /// <param name="txbDuration">The textblock element containing the duration.</param>
+        /// <param name="details">The new details of the event.</param>
+        /// <param name="cmbStartTimeHour">The combobox containing the start time's hour.</param>
+        /// <param name="cmbStartTimeMins">The combobox comtaining the start time's minutes.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// UpdateEvent(eventToUpdate.EventID, startdp, categoriescmb.SelectedIndex, txbDuration, txbEventDescription.Text, cmbStartTimeHour, cmbStartTimeMins);
+        /// ]]></code></example>
         public void UpdateEvent(int eventId, DatePicker startdp, int categoryId, TextBox txbDuration, string details, ComboBox cmbStartTimeHour, ComboBox cmbStartTimeMins)
         {
             if (!ValidateEventForm(startdp, txbDuration))
@@ -45,6 +60,14 @@ namespace HomeCalendarWPF.Presenters
                 }
             }
         }
+        /// <summary>
+        /// Gets the categories list from the database.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// GetDefaultCategories();
+        /// ]]></code></example>
         public void GetDefaultCategories()
         {
             view.ShowDefaultCategories(model.categories.List());
