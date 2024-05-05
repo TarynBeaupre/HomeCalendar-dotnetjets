@@ -4,33 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Calendar;
+using HomeCalendarWPF.Interfaces.ViewInterfaces;
 
-namespace HomeCalendarWPF
+namespace HomeCalendarWPF.Interfaces.Views
 {
-    public interface CategoriesViewInterface
+    public interface CategoriesViewInterface : ViewInterface
     {
-        /// <summary>
-        /// Displays a message box with the specified message.
-        /// </summary>
-        /// <param name="msg">THe message to display.</param>
-        /// <example>
-        /// <code>
-        /// <![CDATA[
-        /// ShowMessage("You're bad.");
-        /// ]]>
-        /// </code></example>
-        void ShowMessage(string msg);
-        /// <summary>
-        /// Displays a error box with the specified error.
-        /// </summary>
-        /// <param name="msg">THe error to display.</param>
-        /// <example>
-        /// <code>
-        /// <![CDATA[
-        /// ShowError("Error: You're bad.");
-        /// ]]>
-        /// </code></example>
-        void ShowError(string msg);
         /// <summary>
         /// Resets the categories form by clearing the text box for category description.
         /// </summary>

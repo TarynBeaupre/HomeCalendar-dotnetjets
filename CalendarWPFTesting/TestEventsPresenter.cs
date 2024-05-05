@@ -3,14 +3,15 @@ using Xunit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HomeCalendarWPF;
 using System.Data.SQLite;
 using System.Windows.Controls;
 using System.Windows;
+using HomeCalendarWPF.Interfaces.Views;
+using HomeCalendarWPF.Presenters;
 
 namespace CalendarWPFTesting
 {
-    public class TestView : EventsViewInterface
+    public class TestView : AddEventsViewInterface
     {
         public bool calledView_ShowError = false, calledView_ShowMessage = false, calledView_ShowDefaultCat = false, calledView_ShowDefaultDate = false, calledView_Reset = false;
 
@@ -45,7 +46,7 @@ namespace CalendarWPFTesting
             TestView view = new TestView();
 
             // Act
-            EventsPresenter presenter = new EventsPresenter(view, "testPath");
+            EventsPresenter presenter = new EventsPresenter(view, new HomeCalendar("testPath"), "testPath");
 
             // Assert
             Assert.True(view.calledView_ShowDefaultDate);
@@ -56,7 +57,7 @@ namespace CalendarWPFTesting
         {
             // Arrange
             TestView view = new TestView();
-            EventsPresenter presenter = new EventsPresenter(view, "testPath");
+            EventsPresenter presenter = new EventsPresenter(view, new HomeCalendar("testPath"), "testPath");
 
             // Act
             presenter.AddNewEvent("Event details", 1, DateTime.Now, 60, "");
@@ -71,7 +72,7 @@ namespace CalendarWPFTesting
         {
             // Arrange
             TestView view = new TestView();
-            EventsPresenter presenter = new EventsPresenter(view, "testPath");
+            EventsPresenter presenter = new EventsPresenter(view, new HomeCalendar("testPath"), "testPath");
 
             // Act
             presenter.AddNewCategory("TestCategory");
@@ -85,7 +86,7 @@ namespace CalendarWPFTesting
         {
             // Arrange
             TestView view = new TestView();
-            EventsPresenter presenter = new EventsPresenter(view, "testPath");
+            EventsPresenter presenter = new EventsPresenter(view, new HomeCalendar("testPath"), "testPath");
 
             // Act
             presenter.GetDefaultCategories();

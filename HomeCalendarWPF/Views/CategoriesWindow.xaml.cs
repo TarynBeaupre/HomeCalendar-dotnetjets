@@ -1,4 +1,6 @@
 ﻿using Calendar;
+using HomeCalendarWPF.Interfaces.Views;
+using HomeCalendarWPF.Presenters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,15 +30,58 @@ namespace HomeCalendarWPF
         /// Initializes a new instance of the <see cref="CategoriesWindow"/> class.
         /// </summary>
         /// <param name="darkMode">Specifies which theme should be picked for Window, if true then display dark mode.</param>
-        public CategoriesWindow(bool darkMode)
+        public CategoriesWindow(HomeCalendar model, bool darkMode)
         {
             InitializeComponent();
             txbCalendarFileinCategories.Text = ((MainWindow)Application.Current.MainWindow).calendarFiletxb.Text;
-            this.presenter = new CategoriesPresenter(this, txbCalendarFileinCategories.Text);
+            this.presenter = new CategoriesPresenter(this, model, txbCalendarFileinCategories.Text);
 
             this.Initialize();
 
             SetTheme(darkMode);
+        }
+
+        #region Event Handlers
+        private void Btn_Click_Cancel_Category(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+        private void Btn_Click_Add_Category(object sender, RoutedEventArgs e)
+        {
+            int index = categoryTypesCmb.SelectedIndex + 1;
+            presenter.AddNewCategory(txbCategoryDescription.Text, (Category.CategoryType)index);
+            Close();
+        }
+        #endregion
+
+        #region Interface Methods
+        /// <summary>
+        /// Resets the categories form by clearing the text box for category description.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// ResetCategoriesForm();
+        /// ]]>
+        /// </code></example>
+        public void ResetCategoriesForm()
+        {
+            txbCategoryDescription.Text = "";
+        }
+        /// <summary>
+        /// Sets the options for the category types combo box.
+        /// </summary>
+        /// <example>
+        /// For this example, assume we have a correctly implemented Category.CategoryType[] called categoryTypes
+        /// <code>
+        /// <![CDATA[
+        /// SetComboBoxOptions(catgoryTypes);
+        /// ]]>
+        /// </code></example>
+        public void SetComboBoxOptions(Category.CategoryType[] categoryTypes)
+        {
+            categoryTypesCmb.SelectedIndex = previousCategoryTypeIndex;
+            categoryTypesCmb.ItemsSource = categoryTypes;
         }
         /// <summary>
         /// Displays a message box with the specified message.
@@ -66,43 +111,9 @@ namespace HomeCalendarWPF
         {
             MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-        /// <summary>
-        /// Resets the categories form by clearing the text box for category description.
-        /// </summary>
-        /// <example>
-        /// <code>
-        /// <![CDATA[
-        /// ResetCategoriesForm();
-        /// ]]>
-        /// </code></example>
-        public void ResetCategoriesForm()
-        {
-            txbCategoryDescription.Text = "";
-        }
-        /// <summary>
-        /// Sets the options for the category types combo box.
-        /// </summary>
-        /// <example>
-        /// For this example, assume we have a correctly implemented Category.CategoryType[] called categoryTypes
-        /// <code>
-        /// <![CDATA[
-        /// SetComboBoxOptions(catgoryTypes);
-        /// ]]>
-        /// </code></example>
-        public void SetComboBoxOptions(Category.CategoryType[] categoryTypes)
-        {
-            categoryTypesCmb.SelectedIndex = previousCategoryTypeIndex;
-            categoryTypesCmb.ItemsSource = categoryTypes;
-        }
-        private void Btn_Click_Cancel_Category(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
-        private void Btn_Click_Add_Category(object sender, RoutedEventArgs e)
-        {
-            int index = categoryTypesCmb.SelectedIndex + 1;
-            presenter.AddNewCategory(txbCategoryDescription.Text, (Category.CategoryType)index);
-        }
+        #endregion
+
+        #region Private Methods
         private void Initialize()
         {
             this.presenter.GetCategoryTypes();
@@ -124,5 +135,6 @@ namespace HomeCalendarWPF
                 dark_theme_star.Visibility = Visibility.Collapsed;
             }
         }
+        #endregion
     }
 }

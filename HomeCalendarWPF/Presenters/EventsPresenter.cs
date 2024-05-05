@@ -1,17 +1,18 @@
 ﻿using Calendar;
+using HomeCalendarWPF.Interfaces.Views;
 using System.Data.SQLite;
 using System.Runtime.CompilerServices;
-[assembly: InternalsVisibleToAttribute("CalendarWPFTesting")]
+[assembly: InternalsVisibleTo("CalendarWPFTesting")]
 
-namespace HomeCalendarWPF
+namespace HomeCalendarWPF.Presenters
 {
     /// <summary>
     /// Represents the Presenter for Events Window in MVP design.
     /// </summary>
     public class EventsPresenter
     {
-        private readonly EventsViewInterface view;
-        private readonly HomeCalendar model;
+        private readonly AddEventsViewInterface view;
+        public readonly HomeCalendar model;
 
         private List<Category> categoriesList;
 
@@ -28,13 +29,14 @@ namespace HomeCalendarWPF
         /// path = "./calendar.db";
         /// presenter = new EventsPresenter(view, path);
         /// ]]></code></example>
-        public EventsPresenter(EventsViewInterface view, string path)
+        public EventsPresenter(AddEventsViewInterface view, HomeCalendar model, string path)
         {
-            this.model = new HomeCalendar(path, false);
+            this.model = model;
             this.view = view;
-            view.ShowDefaultDateTime();
 
             categoriesList = model.categories.List();
+            view.ShowDefaultDateTime();
+            view.ShowDefaultCategories(categoriesList);
         }
 
         /// <summary>
@@ -92,7 +94,7 @@ namespace HomeCalendarWPF
         public void AddNewCategory(string categoryName)
         {
             // All new categories added in the events page will have the category type event
-            Calendar.Category.CategoryType type = Calendar.Category.CategoryType.Event;
+            Category.CategoryType type = Category.CategoryType.Event;
             try
             {
                 view.ShowMessage($"A new category {categoryName} of type Event has been added!");
@@ -114,9 +116,34 @@ namespace HomeCalendarWPF
         /// </code></example>
         public void GetDefaultCategories()
         {
-            view.ShowDefaultCategories(categoriesList);
+            view.ShowDefaultCategories(model.categories.List());
         }
+        /// <summary>
+        /// Checks to see if the add event form has been filled correctly.
+        /// </summary>
+        /// <returns>A boolean representing if the add event form has been filled correctly.</returns>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// if (ValidateEventForm())
+        ///     view.ShowMessage("That form's been stuffed full (of correct data)");
+        /// ]]></code></example>
+        public bool ValidateEventForm()
+        {
+            //Check that start date has a value
+            if (!view.HasSelectedDate())
+            {
+                view.ShowError("Please select a start date.");
+                return false;
+            }
 
-
+            // Check if duration is provided and is a positive double
+            if (!view.HasDurationValue())
+            {
+                view.ShowError("Please provide a valid duration in minutes. The duration should be a positive number.");
+                return false;
+            }
+            return true;
+        }
     }
 }

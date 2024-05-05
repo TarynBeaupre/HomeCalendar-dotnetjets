@@ -7,10 +7,9 @@
         mc:Ignorable="d"
         FontFamily="Verdana"
         Title="Events" Height="600" Width="1000"
-        WindowStartupLocation="CenterScreen"
-        ResizeMode="NoResize">
+        WindowStartupLocation="CenterScreen">
     <Window.Background>
-        <ImageBrush x:Name="child_window_background_theme" ImageSource="images/stardew-backdrop.jpg"></ImageBrush>
+        <ImageBrush x:Name="child_window_background_theme" ImageSource="../images/stardew-backdrop.jpg"></ImageBrush>
     </Window.Background>
 
     <Grid Margin="20" HorizontalAlignment="Center">
@@ -25,13 +24,13 @@
             <!--Stardew stardrop image-->
             <Image Margin="5, 0, 20, 0" Visibility="Visible" Width="40" x:Name="light_theme_star">
                 <Image.Source>
-                    <BitmapImage UriSource="images/stardew-star.png" />
+                    <BitmapImage UriSource="../images/stardew-star.png" />
                 </Image.Source>
             </Image>
 
             <Image Margin="5, 0, 20, 0" Width="40" Visibility="Collapsed" x:Name="dark_theme_star">
                 <Image.Source>
-                    <BitmapImage UriSource="images/stardew-star-dark.png"/>
+                    <BitmapImage UriSource="../images/stardew-star-dark.png"/>
                 </Image.Source>
             </Image>
             <!--Title-->
@@ -99,12 +98,6 @@
                 <Label Grid.Column="0">Start:</Label>
                 <DatePicker x:Name="startdp" Grid.Column="1">
                     <!--TODO: add blackout dates, cannot add an event before present-->
-                    <DatePicker.BlackoutDates>
-                    </DatePicker.BlackoutDates>
-                </DatePicker>
-                <Label Grid.Row="1">End:</Label>
-                <DatePicker x:Name="enddp" Grid.Column="1" Grid.Row="1">
-                    <!--TODO: add blackout, cannot end event before start-->
                     <DatePicker.BlackoutDates>
                     </DatePicker.BlackoutDates>
                 </DatePicker>
