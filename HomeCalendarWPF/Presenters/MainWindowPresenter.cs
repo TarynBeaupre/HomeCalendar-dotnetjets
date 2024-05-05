@@ -107,7 +107,13 @@ namespace HomeCalendarWPF.Presenters
         {
             view!.ShowMessage("If you close the next window, unsaved changes will be lost.");
         }
-
+        /// <summary>
+        /// Sets the color theme depening on the user's choice.
+        /// </summary>
+        /// <param name="theme">A string representing whether the theme should be set to light or dark.</param>
+        /// <example><code><![CDATA[
+        /// SetTheme("button_dark_theme");
+        /// ]]></code></example>
         public void SetTheme(string theme)
         {
             SaveThemeSettingsToRegistry();

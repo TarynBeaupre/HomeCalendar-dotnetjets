@@ -160,10 +160,30 @@ namespace HomeCalendarWPF
         #endregion
 
         #region Presenter Data Getters
+        /// <summary>
+        /// Checks to see if the Datepicker has a value selected.
+        /// </summary>
+        /// <returns>A boolean representing if the datepicker has a value.</returns>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// if (!IsDateSelected())
+        ///     ShowWarning("Select a date");
+        /// ]]></code></example>
         public bool IsDateSelected()
         {
             return startdp.SelectedDate.HasValue;
         }
+        /// <summary>
+        /// Checks to see if the textbox representing the duration of the event contains valid data.
+        /// </summary>
+        /// <returns>A boolean representing if the data is valid.</returns>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// if (!IsValidDuration())
+        ///     ShowWarning("Enter a valid duration");
+        /// ]]></code></example>
         public bool IsValidDuration()
         {
             return double.TryParse(txbDuration.Text, out double duration) || duration <= 0;
