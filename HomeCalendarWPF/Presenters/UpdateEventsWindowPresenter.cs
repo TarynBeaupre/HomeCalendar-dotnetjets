@@ -24,7 +24,7 @@ namespace HomeCalendarWPF.Presenters
 
         public void UpdateEvent(int eventId, DatePicker startdp, int categoryId, TextBox txbDuration, string details, ComboBox cmbStartTimeHour, ComboBox cmbStartTimeMins)
         {
-            if (ValidateEventForm(startdp, txbDuration))
+            if (!ValidateEventForm(startdp, txbDuration))
                 return;
             else
             {

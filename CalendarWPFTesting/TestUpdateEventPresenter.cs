@@ -106,7 +106,6 @@ namespace CalendarWPFTesting
 
             // Assert
             Assert.True(testview.calledShowError);
-            //Add a check for the message?
         }
 
         [Fact]
@@ -116,9 +115,9 @@ namespace CalendarWPFTesting
             TestUpdateView testview = new TestUpdateView();
             UpdateEventsWindowPresenter presenter = new UpdateEventsWindowPresenter(testview, new HomeCalendar("testPath"));
             DatePicker datedp = new DatePicker();
+            // No date should not be allowed
             datedp.SelectedDate = null;
             TextBox duration = new TextBox();
-            // negative duration should not be allowed
             duration.Text = "30";
 
             ComboBox startHour = new ComboBox();
@@ -133,7 +132,6 @@ namespace CalendarWPFTesting
 
             // Assert
             Assert.True(testview.calledShowError);
-            //Add a check for the message?
         }
     }
 }
