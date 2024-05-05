@@ -395,7 +395,6 @@ namespace HomeCalendarWPF
                 EventsGrid.Columns.Add(column);
 
                 int filterCategoryId = filterCategoryCmbx.SelectedIndex + 1;
-                presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, filterCategoryId, filterStartDatePicker.SelectedDate, filterEndDatePicker.SelectedDate);
             }
         }
         private void RefreshGrid()
