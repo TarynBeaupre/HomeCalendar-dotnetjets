@@ -102,12 +102,6 @@
                     <DatePicker.BlackoutDates>
                     </DatePicker.BlackoutDates>
                 </DatePicker>
-                <Label Grid.Row="1">End:</Label>
-                <DatePicker x:Name="enddp" Grid.Column="1" Grid.Row="1">
-                    <!--TODO: add blackout, cannot end event before start-->
-                    <DatePicker.BlackoutDates>
-                    </DatePicker.BlackoutDates>
-                </DatePicker>
 
                 <!--Start Time-->
                 <Label Grid.Row="2">Start Time:</Label>

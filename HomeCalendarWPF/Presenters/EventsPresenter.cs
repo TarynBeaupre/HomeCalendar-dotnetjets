@@ -33,9 +33,10 @@ namespace HomeCalendarWPF.Presenters
         {
             this.model = model;
             this.view = view;
-            view.ShowDefaultDateTime();
 
             categoriesList = model.categories.List();
+            view.ShowDefaultDateTime();
+            view.ShowDefaultCategories(categoriesList);
         }
 
         /// <summary>

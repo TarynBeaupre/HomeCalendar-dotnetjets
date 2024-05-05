@@ -30,10 +30,6 @@ namespace HomeCalendarWPF
             this.presenter = new EventsPresenter(this, model, filePath);
             this.darkMode = darkmode;
 
-            // Sets default date and times on the window
-            ShowDefaultDateTime();
-            // Sets default categories on the window
-            presenter.GetDefaultCategories();
             // Set the theme from the mainWindow
             SetTheme(this.darkMode);
         }
@@ -50,7 +46,7 @@ namespace HomeCalendarWPF
             int categoryId = categoriescmb.SelectedIndex;
 
             var tmp = (DateTime)startdp.SelectedDate!;
-            previousDate = new DateTime(tmp.Year, tmp.Month, tmp.Day, int.Parse(cmbStartTimeHour.Text), int.Parse(cmbStartTimeMins.Text), 0);
+            previousDate = new DateTime(tmp.Year, tmp.Month, tmp.Day, int.Parse(cmbStartTimeHour.Text) % 24, int.Parse(cmbStartTimeMins.Text), 0);
 
             double duration = Convert.ToDouble(txbDuration.Text);
 
@@ -59,7 +55,7 @@ namespace HomeCalendarWPF
             previousCategoryIndex = categoryId;
 
             presenter.AddNewEvent(details, categoryId, previousDate, duration, categoriescmb.Text);
-            presenter.GetDefaultCategories();
+            Close();
         }
         private void Btn_Click_Cancel_Event(object sender, EventArgs e)
         {
@@ -70,10 +66,6 @@ namespace HomeCalendarWPF
         {
             CategoriesWindow categoryWindow = new CategoriesWindow(presenter.model, darkMode);
             categoryWindow.ShowDialog();
-
-            // this is so ugly and definitely doesn't follow mvp, but it's the only thing i found would work, sorry! -ec
-            //string filePath = txbCalendarFileinEvents.Text;
-            //this.presenter = new EventsPresenter(this, filePath);
 
             previousCategoryIndex = -1;
             presenter.GetDefaultCategories();
@@ -95,8 +87,8 @@ namespace HomeCalendarWPF
         {
             // if previousCategoryIndex is -1 this means that a new category was added so
             // we can just set it to the length of the list -1 as it's added at the end.
-            categoriescmb.SelectedIndex = previousCategoryIndex != -1 ? previousCategoryIndex : categoriesList.Count - 1;
             categoriescmb.ItemsSource = categoriesList;
+            categoriescmb.SelectedIndex = previousCategoryIndex != -1 ? previousCategoryIndex : categoriesList.Count - 1;
         }
         /// <summary>
         /// Sets the default date and time values on the window.
@@ -110,8 +102,6 @@ namespace HomeCalendarWPF
         {
             //=== Set Start/End date defaults ===
             startdp.SelectedDate = previousDate;
-            enddp.SelectedDate = previousDate;
-
 
             //Creating a drop down for 24 hour selection
             List<string> hourList = new List<string> { };
@@ -200,13 +190,6 @@ namespace HomeCalendarWPF
             if (!startdp.SelectedDate.HasValue)
             {
                 ShowError("Please select a start date.");
-                return false;
-            }
-
-            // Check that end date has a value
-            if (!enddp.SelectedDate.HasValue)
-            {
-                ShowError("Please select an end date.");
                 return false;
             }
 
