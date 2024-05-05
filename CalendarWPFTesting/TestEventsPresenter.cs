@@ -3,10 +3,11 @@ using Xunit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HomeCalendarWPF;
 using System.Data.SQLite;
 using System.Windows.Controls;
 using System.Windows;
+using HomeCalendarWPF.Interfaces.Views;
+using HomeCalendarWPF.Presenters;
 
 namespace CalendarWPFTesting
 {

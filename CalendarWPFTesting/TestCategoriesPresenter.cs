@@ -1,6 +1,7 @@
 ﻿using Xunit;
 using Calendar;
-using HomeCalendarWPF;
+using HomeCalendarWPF.Interfaces.Views;
+using HomeCalendarWPF.Presenters;
 
 namespace CalendarWPFTesting
 {

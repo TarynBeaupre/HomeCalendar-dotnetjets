@@ -13,8 +13,9 @@ using System.Data.SQLite;
 using static HomeCalendarWPF.MainWindow;
 using Microsoft.Win32;
 using System.Windows.Media.Animation;
+using HomeCalendarWPF.Interfaces.Views;
 
-namespace HomeCalendarWPF
+namespace HomeCalendarWPF.Presenters
 {
     /// <summary>
     /// Represents the Presenter for MainWindow in MVP design.
@@ -39,12 +40,12 @@ namespace HomeCalendarWPF
         /// ]]></code></example>
         public MainWindowPresenter(ViewInterface view)
         {
-            InitializationParams initParams = this.GetInitParams();
+            InitializationParams initParams = GetInitParams();
             if (initParams.filePath is not null)
             {
                 //GetTheme();
 
-                this.model = new HomeCalendar(initParams.filePath, initParams.newDB);
+                model = new HomeCalendar(initParams.filePath, initParams.newDB);
                 this.view = view;
                 view.SetCalendarFilePath(initParams.filePath);
                 SetDefaults();
@@ -56,7 +57,7 @@ namespace HomeCalendarWPF
         private void SetDefaults()
         {
             view!.SetDefaultDateTime();
-            List<Category> categoryList  = model!.categories.List();
+            List<Category> categoryList = model!.categories.List();
             view.SetDefaultCategories(categoryList);
         }
         #endregion
@@ -128,10 +129,10 @@ namespace HomeCalendarWPF
             // Credit for how to check if key exists in registry https://stackoverflow.com/a/4276150
 
             // Open software folder under HKEY_CURRENT_USER
-            Microsoft.Win32.RegistryKey rKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("Software", true)!;
+            RegistryKey rKey = Registry.CurrentUser.OpenSubKey("Software", true)!;
 
             // Check if software folder in registry has our program's info (if not, must be first use)
-            return !rKey.GetSubKeyNames().Contains(MainWindow.REGISTRY_SUB_KEY_NAME);
+            return !rKey.GetSubKeyNames().Contains(REGISTRY_SUB_KEY_NAME);
         }
 
         private void ReadyForUse()
@@ -139,13 +140,13 @@ namespace HomeCalendarWPF
             // Credit for how to create & write to registry: https://stackoverflow.com/a/7230427 as well as C# Docs
 
             // Open software folder under HKEY_CURRENT_USER
-            Microsoft.Win32.RegistryKey rKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("Software", true)!;
+            RegistryKey rKey = Registry.CurrentUser.OpenSubKey("Software", true)!;
 
             // creates our folder in the software folder
             rKey.CreateSubKey(REGISTRY_SUB_KEY_NAME);
 
             // Have to do it this way because just rKey.SetValue("FIRST_USE", 0) doesn't work (should work)
-            string keyName = @$"HKEY_CURRENT_USER\Software\{MainWindow.REGISTRY_SUB_KEY_NAME}";
+            string keyName = @$"HKEY_CURRENT_USER\Software\{REGISTRY_SUB_KEY_NAME}";
             Registry.SetValue(keyName, "FIRST_USE", 0);
             Registry.SetValue(keyName, "DARK_THEME", 0);
         }
@@ -157,7 +158,7 @@ namespace HomeCalendarWPF
             else
                 GetTheme();
 
-            FileSelectionWindow newFileSelectWindow = new FileSelectionWindow(MainWindow.darkMode);
+            FileSelectionWindow newFileSelectWindow = new FileSelectionWindow(darkMode);
             newFileSelectWindow.ShowDialog();
 
             return new InitializationParams(newFileSelectWindow.initParams.filePath, newFileSelectWindow.initParams.newDB);
@@ -165,21 +166,21 @@ namespace HomeCalendarWPF
 
         private void GetTheme()
         {
-            string keyName = @$"HKEY_CURRENT_USER\Software\{MainWindow.REGISTRY_SUB_KEY_NAME}";
+            string keyName = @$"HKEY_CURRENT_USER\Software\{REGISTRY_SUB_KEY_NAME}";
             var a = Registry.GetValue(keyName, "DARK_THEME", 0);
             int b = (int)a!;
-            MainWindow.darkMode = b == 1 ? true : false;
+            darkMode = b == 1 ? true : false;
         }
 
         private void SaveThemeSettingsToRegistry()
         {
-            string keyName = @$"HKEY_CURRENT_USER\Software\{MainWindow.REGISTRY_SUB_KEY_NAME}";
-            Registry.SetValue(keyName, "DARK_THEME", (MainWindow.darkMode == true) ? 1 : 0);
+            string keyName = @$"HKEY_CURRENT_USER\Software\{REGISTRY_SUB_KEY_NAME}";
+            Registry.SetValue(keyName, "DARK_THEME", darkMode == true ? 1 : 0);
         }
 
-        public void SetGridEventsList(ref List<CalendarItem> eventsList, ref List<Dictionary<string, object>> eventsListByCatMonth, 
+        public void SetGridEventsList(ref List<CalendarItem> eventsList, ref List<Dictionary<string, object>> eventsListByCatMonth,
             ref List<CalendarItemsByMonth> eventsListByMonth, ref List<CalendarItemsByCategory> eventsListByCategory,
-            bool groupByMonth = false, bool groupByCat = false, bool filterByCat = false,  int filterCategoryId = 0, DateTime? filterByStartDate = null, DateTime? filterByEndDate = null)
+            bool groupByMonth = false, bool groupByCat = false, bool filterByCat = false, int filterCategoryId = 0, DateTime? filterByStartDate = null, DateTime? filterByEndDate = null)
         {
             // Presenter populates the list
             //! Yeah always passing all the lists is not super efficient...To improve - jh

@@ -1,11 +1,12 @@
 ﻿using Calendar;
+using HomeCalendarWPF.Interfaces.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeCalendarWPF
+namespace HomeCalendarWPF.Presenters
 {
     internal class UpdateEventsWindowPresenter
     {
@@ -19,12 +20,12 @@ namespace HomeCalendarWPF
             this.view = view;
             this.model = model;
 
-            this.categoriesList = model.categories.List();
+            categoriesList = model.categories.List();
 
             this.view.ShowDefaultCategories(categoriesList);
             this.view.ShowDefaultDateTime();
             this.view.PopulateFields();
-        } 
+        }
         public void GetDefaultCategories()
         {
             view.ShowDefaultCategories(categoriesList);

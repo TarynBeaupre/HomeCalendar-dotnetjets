@@ -12,12 +12,12 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="RessourceDictionary.xaml"/>
+                <ResourceDictionary Source="../RessourceDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
     <Window.Background>
-        <ImageBrush x:Name="background_theme" ImageSource="images/stardew-backdrop.jpg"></ImageBrush>
+        <ImageBrush x:Name="background_theme" ImageSource="../images/stardew-backdrop.jpg"></ImageBrush>
     </Window.Background>
 
     <Grid Margin="20" >
@@ -40,13 +40,13 @@
             <!--Stardew stardrop image-->
             <Image Margin="5, 0, 20, 0" Width="40" Visibility="Visible" x:Name="light_theme_star">
                 <Image.Source>
-                    <BitmapImage UriSource="images/stardew-star.png"/>
+                    <BitmapImage UriSource="../images/stardew-star.png"/>
                 </Image.Source>
             </Image>
 
             <Image Margin="5, 0, 20, 0" Width="40" Visibility="Collapsed" x:Name="dark_theme_star">
                 <Image.Source>
-                    <BitmapImage UriSource="images/stardew-star-dark.png"/>
+                    <BitmapImage UriSource="../images/stardew-star-dark.png"/>
                 </Image.Source>
             </Image>
             <!--Title-->
@@ -94,13 +94,13 @@
             <!--Chicken picture-->
             <Image Grid.Row="2" Visibility="Visible"  Height="150" VerticalAlignment="Bottom" Margin="0, 0, 0, 10" x:Name="light_chicken_image">
                 <Image.Source>
-                    <BitmapImage UriSource="images/chicken-light.png"/>
+                    <BitmapImage UriSource="../images/chicken-light.png"/>
                 </Image.Source>
             </Image>
 
             <Image Grid.Row="2" Visibility="Collapsed"  Height="90" VerticalAlignment="Bottom" Margin="0, 0, 5, 30" x:Name="dark_chicken_image">
                 <Image.Source>
-                    <BitmapImage UriSource="images/chicken-dark.png"/>
+                    <BitmapImage UriSource="../images/chicken-dark.png"/>
                 </Image.Source>
             </Image>
 
@@ -179,12 +179,12 @@
             <!--Tree images-->
             <Image Grid.Row="2" Grid.Column="2" Grid.RowSpan="2" Visibility="Visible" VerticalAlignment="Bottom" Margin="20" x:Name="light_tree_image">
                 <Image.Source>
-                    <BitmapImage UriSource="images/light-tree.png"/>
+                    <BitmapImage UriSource="../images/light-tree.png"/>
                 </Image.Source>
             </Image>
             <Image Grid.Row="2" Grid.Column="2" Grid.RowSpan="2" Visibility="Collapsed" Margin="20" x:Name="dark_tree_image" Height="260">
                 <Image.Source>
-                    <BitmapImage UriSource="images/dark-tree.png"/>
+                    <BitmapImage UriSource="../images/dark-tree.png"/>
                 </Image.Source>
             </Image>
         </StackPanel>

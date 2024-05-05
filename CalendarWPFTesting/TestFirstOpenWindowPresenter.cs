@@ -12,6 +12,8 @@ using HomeCalendarWPF;
 using System.Data.SQLite;
 using System.Windows.Controls;
 using Microsoft.Win32;
+using HomeCalendarWPF.Interfaces.Views;
+using HomeCalendarWPF.Presenters;
 
 namespace CalendarWPFTesting
 {

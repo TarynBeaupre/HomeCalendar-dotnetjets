@@ -1,15 +1,16 @@
-﻿<Window x:Class="HomeCalendarWPF.UpdateEventsWindow"
+﻿<Window x:Class="HomeCalendarWPF.EventsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HomeCalendarWPF"
         mc:Ignorable="d"
-        Title="Update Event" Height="600" Width="1000"
+        FontFamily="Verdana"
+        Title="Events" Height="600" Width="1000"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
     <Window.Background>
-        <ImageBrush x:Name="child_window_background_theme" ImageSource="images/stardew-backdrop.jpg"></ImageBrush>
+        <ImageBrush x:Name="child_window_background_theme" ImageSource="../images/stardew-backdrop.jpg"></ImageBrush>
     </Window.Background>
 
     <Grid Margin="20" HorizontalAlignment="Center">
@@ -24,17 +25,17 @@
             <!--Stardew stardrop image-->
             <Image Margin="5, 0, 20, 0" Visibility="Visible" Width="40" x:Name="light_theme_star">
                 <Image.Source>
-                    <BitmapImage UriSource="images/stardew-star.png" />
+                    <BitmapImage UriSource="../images/stardew-star.png" />
                 </Image.Source>
             </Image>
 
             <Image Margin="5, 0, 20, 0" Width="40" Visibility="Collapsed" x:Name="dark_theme_star">
                 <Image.Source>
-                    <BitmapImage UriSource="images/stardew-star-dark.png"/>
+                    <BitmapImage UriSource="../images/stardew-star-dark.png"/>
                 </Image.Source>
             </Image>
             <!--Title-->
-            <TextBlock VerticalAlignment="Center" FontSize="24" FontWeight="Bold" FontStyle="Italic">Update Event ~</TextBlock>
+            <TextBlock VerticalAlignment="Center" FontSize="24" FontWeight="Bold" FontStyle="Italic">Add Event ~</TextBlock>
         </StackPanel>
 
         <!--Form details-->
@@ -101,14 +102,20 @@
                     <DatePicker.BlackoutDates>
                     </DatePicker.BlackoutDates>
                 </DatePicker>
+                <Label Grid.Row="1">End:</Label>
+                <DatePicker x:Name="enddp" Grid.Column="1" Grid.Row="1">
+                    <!--TODO: add blackout, cannot end event before start-->
+                    <DatePicker.BlackoutDates>
+                    </DatePicker.BlackoutDates>
+                </DatePicker>
 
                 <!--Start Time-->
                 <Label Grid.Row="2">Start Time:</Label>
                 <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
-                    <ComboBox x:Name="cmbStartTimeHour" Grid.Row="2" Grid.Column="1" IsEditable="True">
+                    <ComboBox x:Name="cmbStartTimeHour" Grid.Row="2" Grid.Column="1">
                     </ComboBox>
                     <TextBlock>:</TextBlock>
-                    <ComboBox x:Name="cmbStartTimeMins" Grid.Row="2" Grid.Column="1" IsEditable="True">
+                    <ComboBox x:Name="cmbStartTimeMins" Grid.Row="2" Grid.Column="1">
                     </ComboBox>
                 </StackPanel>
 
@@ -126,16 +133,16 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Button Click="Btn_Click_UpdateEvent" Grid.Column="1" Style="{StaticResource button}" Foreground="White" Background="#FF61B63B" BorderThickness="4, 3, 4, 0">
+            <Button Click="Btn_Click_Add_Event" Grid.Column="1" Style="{StaticResource button}" Foreground="White" Background="#FF61B63B" BorderThickness="4, 3, 4, 0">
                 <Button.BorderBrush>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="#FF71FF33" Offset="0.107"/>
                         <GradientStop Color="#FF1F7125" Offset="1"/>
                         <GradientStop Color="White" Offset="0"/>
                     </LinearGradientBrush>
-                </Button.BorderBrush> Update event
+                </Button.BorderBrush> Add new event
             </Button>
-            <Button Click="Btn_Click_CancelUpdate" Grid.Column="3" Style="{StaticResource button}" Foreground="White" Background="Red" BorderThickness="4, 3, 4, 0">
+            <Button Click="Btn_Click_Cancel_Event" Grid.Column="3" Style="{StaticResource button}" Foreground="White" Background="Red" BorderThickness="4, 3, 4, 0">
                 <Button.BorderBrush>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="#FFFF9B35" Offset="0.107"/>

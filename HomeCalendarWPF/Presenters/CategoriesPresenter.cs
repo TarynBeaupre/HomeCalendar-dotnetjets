@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 using Calendar;
 using System.Data.SQLite;
 using System.Threading.Channels;
+using HomeCalendarWPF.Interfaces.Views;
 
-namespace HomeCalendarWPF
+namespace HomeCalendarWPF.Presenters
 {
     public class CategoriesPresenter
     {
@@ -62,7 +63,7 @@ namespace HomeCalendarWPF
             try
             {
                 //TODO: This makes it bug out, says categories table doesnt exist in db
-                model.categories.Add(description, type); 
+                model.categories.Add(description, type);
                 view.ResetCategoriesForm();
                 CategoriesWindow.previousCategoryTypeIndex = (int)type - 1;
 

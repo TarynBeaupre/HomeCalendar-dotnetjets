@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Calendar;
 
-namespace HomeCalendarWPF
+namespace HomeCalendarWPF.Interfaces.Views
 {
     public interface CategoriesViewInterface
     {

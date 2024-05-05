@@ -8,15 +8,8 @@
         Title="Select a Database File" Height="110" Width="600"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="RessourceDictionary.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Window.Resources>
     <Window.Background>
-        <ImageBrush  x:Name="child_window_background_theme" ImageSource="images/stardew-backdrop.jpg"></ImageBrush>
+        <ImageBrush  x:Name="child_window_background_theme" ImageSource="../images/stardew-backdrop.jpg"></ImageBrush>
     </Window.Background>
     <Grid Margin="20,0,20,0">
         <Grid.RowDefinitions>

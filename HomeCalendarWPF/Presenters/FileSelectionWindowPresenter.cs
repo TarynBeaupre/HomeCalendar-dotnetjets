@@ -1,8 +1,9 @@
-﻿using Microsoft.Win32;
+﻿using HomeCalendarWPF.Interfaces.Views;
+using Microsoft.Win32;
 using System.IO;
 
 
-namespace HomeCalendarWPF
+namespace HomeCalendarWPF.Presenters
 {
     /// <summary>
     /// Manages file selection from WPF Window
@@ -24,7 +25,7 @@ namespace HomeCalendarWPF
         /// ]]></code></example>
         public FileSelectionWindowPresenter(FileSelectionWindowInterface view)
         {
-            this.fopView = view;
+            fopView = view;
         }
 
         /// <summary>
@@ -41,7 +42,7 @@ namespace HomeCalendarWPF
         /// </code></example>
         public void PickNewFileDir()
         {
-            Microsoft.Win32.SaveFileDialog fileSelector = new Microsoft.Win32.SaveFileDialog();
+            SaveFileDialog fileSelector = new SaveFileDialog();
 
             fileSelector.DefaultExt = ".db";
             fileSelector.Filter = "Database Files (*.db)|*.db|All Files (*)|*";
@@ -72,7 +73,7 @@ namespace HomeCalendarWPF
         public void PickExistingFileDir()
         {
             // Credit: https://stackoverflow.com/a/10315283
-            Microsoft.Win32.OpenFileDialog fileSelector = new Microsoft.Win32.OpenFileDialog();
+            OpenFileDialog fileSelector = new OpenFileDialog();
 
             // Sets default file extension to be used when searching for files
             fileSelector.DefaultExt = ".db";

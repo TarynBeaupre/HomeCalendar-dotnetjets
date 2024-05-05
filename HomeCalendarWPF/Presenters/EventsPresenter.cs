@@ -1,9 +1,10 @@
 ﻿using Calendar;
+using HomeCalendarWPF.Interfaces.Views;
 using System.Data.SQLite;
 using System.Runtime.CompilerServices;
-[assembly: InternalsVisibleToAttribute("CalendarWPFTesting")]
+[assembly: InternalsVisibleTo("CalendarWPFTesting")]
 
-namespace HomeCalendarWPF
+namespace HomeCalendarWPF.Presenters
 {
     /// <summary>
     /// Represents the Presenter for Events Window in MVP design.
@@ -92,7 +93,7 @@ namespace HomeCalendarWPF
         public void AddNewCategory(string categoryName)
         {
             // All new categories added in the events page will have the category type event
-            Calendar.Category.CategoryType type = Calendar.Category.CategoryType.Event;
+            Category.CategoryType type = Category.CategoryType.Event;
             try
             {
                 view.ShowMessage($"A new category {categoryName} of type Event has been added!");

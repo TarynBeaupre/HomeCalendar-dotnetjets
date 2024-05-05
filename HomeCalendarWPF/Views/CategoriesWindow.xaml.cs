@@ -1,4 +1,6 @@
 ﻿using Calendar;
+using HomeCalendarWPF.Interfaces.Views;
+using HomeCalendarWPF.Presenters;
 using System;
 using System.Collections.Generic;
 using System.Linq;

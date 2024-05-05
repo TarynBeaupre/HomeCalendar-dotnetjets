@@ -1,4 +1,6 @@
 ﻿using Calendar;
+using HomeCalendarWPF.Interfaces.Views;
+using HomeCalendarWPF.Presenters;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
@@ -79,6 +81,10 @@ namespace HomeCalendarWPF
                 RefreshGrid();
                 //presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
                 //SetGridColumns();
+            }
+            else
+            {
+                Close();
             }
         }
 

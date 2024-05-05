@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Calendar;
-using HomeCalendarWPF;
 
-namespace HomeCalendarWPF
+namespace HomeCalendarWPF.Interfaces.Views
 {
     internal interface UpdateEventsWindowInterface
     {

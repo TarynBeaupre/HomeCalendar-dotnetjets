@@ -1,4 +1,6 @@
 ﻿using Calendar;
+using HomeCalendarWPF.Interfaces.Views;
+using HomeCalendarWPF.Presenters;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;

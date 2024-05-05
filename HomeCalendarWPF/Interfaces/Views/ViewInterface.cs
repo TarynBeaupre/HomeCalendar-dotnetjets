@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeCalendarWPF
+namespace HomeCalendarWPF.Interfaces.Views
 {
     /// <summary>
     /// Represents the interface for the View component in MVP design.
