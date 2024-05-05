@@ -42,5 +42,6 @@ namespace HomeCalendarWPF.Interfaces.Views
         /// ResetEventForm();
         /// ]]></code></example>
         void ResetEventForm();
+        bool HasSelectedDate();
     };
 }
