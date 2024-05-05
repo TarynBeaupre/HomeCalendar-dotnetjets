@@ -159,7 +159,21 @@ namespace HomeCalendarWPF.Presenters
             string keyName = @$"HKEY_CURRENT_USER\Software\{REGISTRY_SUB_KEY_NAME}";
             Registry.SetValue(keyName, "DARK_THEME", darkMode == true ? 1 : 0);
         }
-
+        /// <summary>
+        /// Sets the grid's item source to the specified event list depending on all the flags set by the user.
+        /// </summary>
+        /// <param name="eventsList">List of calendarItem used when no flags are set.</param>
+        /// <param name="eventsListByCatMonth">List of dictionary used when both flags are set</param>
+        /// <param name="eventsListByMonth">List of calendarItemByMonth used when the groupByMonthFlag is set.</param>
+        /// <param name="eventsListByCategory">List of calendarItemByCategory used when the groupbyCategory flag is set.</param>
+        /// <param name="filterCategoryId">Id of the category the method should filter by.</param>
+        /// <param name="filterByStartDate">Start date the method should filter by.</param>
+        /// <param name="filterByEndDate">End date the method should filter by.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, filterCategoryId, filterStartDatePicker.SelectedDate, filterEndDatePicker.SelectedDate);
+        /// ]]></code></example>
         public void SetGridEventsList(ref List<CalendarItem> eventsList, ref List<Dictionary<string, object>> eventsListByCatMonth,
             ref List<CalendarItemsByMonth> eventsListByMonth, ref List<CalendarItemsByCategory> eventsListByCategory, int filterCategoryId = 0, DateTime? filterByStartDate = null, DateTime? filterByEndDate = null)
         {
@@ -194,26 +208,53 @@ namespace HomeCalendarWPF.Presenters
             }
 
         }
-
-        /*
-        internal void GetFilteredDateEvents(DateTime? selectedDate1, DateTime? selectedDate2, bool filterFlag, int categoryId)
-        {
-            List<CalendarItemsByMonth> filteredEvents = model.GetCalendarItemsByMonth(selectedDate1, selectedDate2, filterFlag, categoryId);
-            view.ShowFilteredDateEventsInGrid(filteredEvents);
-        }*/
-
+        /// <summary>
+        /// List all of the categories in the database.
+        /// </summary>
+        /// <param name="cats">The category list to be updated.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// var catList = new List<Category>();
+        /// GetCategoryList(ref catList);
+        /// ]]></code></example>
         public void GetCategoryList(ref List<Category> cats)
         {
             cats = model!.categories.List();
         }
+        /// <summary>
+        /// Deletes the chosen event from the database permanently.
+        /// </summary>
+        /// <param name="chosenEvent">The event to be removed.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// try {
+        ///     DeleteEvent(new CalendarItem() { EventId = 1 });
+        /// }
+        /// catch (Exception e) {
+        ///     Trace.WriteLine(e.Message);
+        /// }
+        /// ]]></code></example>
         public void DeleteEvent(CalendarItem? chosenEvent)
         {
             var eventId = chosenEvent!.EventID;
             // Delete the event in the db
             model!.events.Delete(eventId);
         }
-
-        public void CheckValidDeletedEvent(CalendarItem eventToDelete)
+        /// <summary>
+        /// Checks if the event is able to be deleted.
+        /// </summary>
+        /// <param name="eventToDelete">Row in the datagrid used to check if it can be deleted.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// if (CheckValidDeletedEvent(null))
+        ///     view.ShowMessage("Yep, that event can be deleted");
+        /// else
+        ///     view.ShowError("You can't delete that one :(");
+        /// ]]></code></example>
+        public void CheckValidDeletedEvent(CalendarItem? eventToDelete)
         {
             if (groupByMonthFlag || groupByCatFlag)
             {
