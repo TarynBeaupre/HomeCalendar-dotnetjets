@@ -38,6 +38,35 @@ namespace HomeCalendarWPF
             this.SetTheme(MainWindow.darkMode);
         }
 
+        #region Event Handlers
+        private void Btn_Click_AddNewCategory(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+        private void Btn_Click_UpdateEvent(object sender, RoutedEventArgs e)
+        {
+            if (!ValidateEventForm())
+                return;
+
+            string details = txbEventDescription.Text;
+            int categoryId = categoriescmb.SelectedIndex;
+
+            var tmp = (DateTime)startdp.SelectedDate!;
+            var date = new DateTime(tmp.Year, tmp.Month, tmp.Day, int.Parse(cmbStartTimeHour.Text), int.Parse(cmbStartTimeMins.Text), 0);
+
+            double duration = Convert.ToDouble(txbDuration.Text);
+
+            presenter.UpdateEvent(eventToUpdate.EventID, date, categoryId, duration, details);
+            MessageBox.Show("Event successfully updated");
+            this.Close();
+        }
+        private void Btn_Click_CancelUpdate(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+        #endregion
+
+        #region Interface Methods
         public void ShowDefaultCategories(List<Category> categoriesList)
         {
             categoriescmb.ItemsSource = categoriesList;
@@ -88,36 +117,17 @@ namespace HomeCalendarWPF
             //=== Set default duration (30 mins) ===
             txbDuration.Text = "30";
         }
-        public void ShowError(string message)
+        public void ShowMessage(string message)
         {
-            MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(message, "Message", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-
-        private void Btn_Click_AddNewCategory(object sender, RoutedEventArgs e)
+        public void ShowError(string error)
         {
-            throw new NotImplementedException();
+            MessageBox.Show(error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-        private void Btn_Click_UpdateEvent(object sender, RoutedEventArgs e)
-        {
-            if (!ValidateEventForm())
-                return;
+        #endregion
 
-            string details = txbEventDescription.Text;
-            int categoryId = categoriescmb.SelectedIndex;
-
-            var tmp = (DateTime)startdp.SelectedDate!;
-            var date = new DateTime(tmp.Year, tmp.Month, tmp.Day, int.Parse(cmbStartTimeHour.Text), int.Parse(cmbStartTimeMins.Text), 0);
-
-            double duration = Convert.ToDouble(txbDuration.Text);
-
-            presenter.UpdateEvent(eventToUpdate.EventID, date, categoryId, duration, details);
-            MessageBox.Show("Event successfully updated");
-            this.Close();
-        }
-        private void Btn_Click_CancelUpdate(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
+        #region Private Methods
         private void SetTheme(bool darkmode)
         {
             if (darkmode)
@@ -152,5 +162,6 @@ namespace HomeCalendarWPF
             }
             return true;
         }
+        #endregion
     }
 }

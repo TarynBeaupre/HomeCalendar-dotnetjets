@@ -38,22 +38,7 @@ namespace HomeCalendarWPF
             SetTheme(this.darkMode);
         }
 
-        // If user types in a category that doesn't exist, runs the addCategory code
-        /// <summary>
-        /// Adds a new category based on the user selection.
-        /// </summary>
-        /// <example>
-        /// <code>
-        /// <![CDATA[
-        /// AddNewCategory();
-        /// ]]></code></example>
-        public void AddNewCategory()
-        {
-            ComboBoxItem typeItem = (ComboBoxItem)categoriescmb.SelectedItem;
-            string categoryName = typeItem.Content.ToString()!;
-            presenter.AddNewCategory(categoryName);
-        }
-
+        #region Event Handlers
         private void Btn_Click_Add_Event(object sender, RoutedEventArgs e)
         {
             //Validating form data
@@ -81,77 +66,21 @@ namespace HomeCalendarWPF
             // if user cancels addition, resent the default values for the category and the dates
             this.Close();
         }
-
-        private bool ValidateEventForm()
+        private void Btn_Click_AddNewCategory(object sender, RoutedEventArgs e)
         {
-            //Check that start date has a value
-            if (!startdp.SelectedDate.HasValue)
-            {
-                ShowError("Please select a start date.");
-                return false;
-            }
+            CategoriesWindow categoryWindow = new CategoriesWindow(presenter.model, darkMode);
+            categoryWindow.ShowDialog();
 
-            // Check that end date has a value
-            if (!enddp.SelectedDate.HasValue)
-            {
-                ShowError("Please select an end date.");
-                return false;
-            }
+            // this is so ugly and definitely doesn't follow mvp, but it's the only thing i found would work, sorry! -ec
+            //string filePath = txbCalendarFileinEvents.Text;
+            //this.presenter = new EventsPresenter(this, filePath);
 
-            // Check if duration is provided and is a positive double
-            if (!double.TryParse(txbDuration.Text, out double duration) || duration <= 0)
-            {
-                ShowError("Please provide a valid duration in minutes. The duration should be a positive number.");
-                return false;
-            }
-            return true;
+            previousCategoryIndex = -1;
+            presenter.GetDefaultCategories();
         }
+        #endregion
 
-        private void SetTheme(bool darkmode)
-        {
-            if (darkmode)
-            {
-                child_window_background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop-dark.jpg", UriKind.Relative));
-                menu_gradient.Color = Colors.Gray;
-                light_theme_star.Visibility = Visibility.Collapsed;
-                dark_theme_star.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                child_window_background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop.jpg", UriKind.Relative));
-                menu_gradient.Color = Colors.LightGreen;
-                light_theme_star.Visibility = Visibility.Visible;
-                dark_theme_star.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        //===== VIEW INTERFACE METHODS =====
-        /// <summary>
-        /// Shows an error message in message box.
-        /// </summary>
-        /// <param name="message">Error message to display.</param>
-        /// <example>
-        /// <code>
-        /// <![CDATA[
-        /// ShowError("You're bad");
-        /// ]]></code></example>
-        public void ShowError(string message)
-        {
-            MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-        /// <summary>
-        /// Shows a message in message box.
-        /// </summary>
-        /// <param name="message">Message to be displayed.</param>
-        /// <example>
-        /// <code>
-        /// <![CDATA[
-        /// ShowMessage("You're cool");
-        /// ]]></code></example>
-        public void ShowMessage(string message)
-        {
-            MessageBox.Show(message);
-        }
+        #region Interface Methods
         /// <summary>
         /// Displays the default categories in the categories dropdown list.
         /// </summary>
@@ -236,18 +165,77 @@ namespace HomeCalendarWPF
             //Reset time and date 
             ShowDefaultDateTime();
         }
-
-        private void Btn_Click_AddNewCategory(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Shows an error message in message box.
+        /// </summary>
+        /// <param name="message">Error message to display.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// ShowError("You're bad");
+        /// ]]></code></example>
+        public void ShowError(string message)
         {
-            CategoriesWindow categoryWindow = new CategoriesWindow(presenter.model, darkMode);
-            categoryWindow.ShowDialog();
-
-            // this is so ugly and definitely doesn't follow mvp, but it's the only thing i found would work, sorry! -ec
-            //string filePath = txbCalendarFileinEvents.Text;
-            //this.presenter = new EventsPresenter(this, filePath);
-
-            previousCategoryIndex = -1;
-            presenter.GetDefaultCategories();
+            MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+        /// <summary>
+        /// Shows a message in message box.
+        /// </summary>
+        /// <param name="message">Message to be displayed.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// ShowMessage("You're cool");
+        /// ]]></code></example>
+        public void ShowMessage(string message)
+        {
+            MessageBox.Show(message);
+        }
+        #endregion
+
+        #region Private Methods
+        private bool ValidateEventForm()
+        {
+            //Check that start date has a value
+            if (!startdp.SelectedDate.HasValue)
+            {
+                ShowError("Please select a start date.");
+                return false;
+            }
+
+            // Check that end date has a value
+            if (!enddp.SelectedDate.HasValue)
+            {
+                ShowError("Please select an end date.");
+                return false;
+            }
+
+            // Check if duration is provided and is a positive double
+            if (!double.TryParse(txbDuration.Text, out double duration) || duration <= 0)
+            {
+                ShowError("Please provide a valid duration in minutes. The duration should be a positive number.");
+                return false;
+            }
+            return true;
+        }
+
+        private void SetTheme(bool darkmode)
+        {
+            if (darkmode)
+            {
+                child_window_background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop-dark.jpg", UriKind.Relative));
+                menu_gradient.Color = Colors.Gray;
+                light_theme_star.Visibility = Visibility.Collapsed;
+                dark_theme_star.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                child_window_background_theme.ImageSource = new BitmapImage(new Uri("../../../images/stardew-backdrop.jpg", UriKind.Relative));
+                menu_gradient.Color = Colors.LightGreen;
+                light_theme_star.Visibility = Visibility.Visible;
+                dark_theme_star.Visibility = Visibility.Collapsed;
+            }
+        }
+        #endregion
     }
 }

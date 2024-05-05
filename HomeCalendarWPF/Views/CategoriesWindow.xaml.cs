@@ -40,34 +40,21 @@ namespace HomeCalendarWPF
 
             SetTheme(darkMode);
         }
-        /// <summary>
-        /// Displays a message box with the specified message.
-        /// </summary>
-        /// <param name="msg">THe message to display.</param>
-        ///         /// <example>
-        /// <code>
-        /// <![CDATA[
-        /// ShowMessage("You're bad.");
-        /// ]]>
-        /// </code></example>
-        public void ShowMessage(string msg)
+
+        #region Event Handlers
+        private void Btn_Click_Cancel_Category(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(msg, "Category added", MessageBoxButton.OK, MessageBoxImage.Information);
+            this.Close();
         }
-        /// <summary>
-        /// Displays a error box with the specified error.
-        /// </summary>
-        /// <param name="msg">THe error to display.</param>
-        /// <example>
-        /// <code>
-        /// <![CDATA[
-        /// ShowError("Error: You're bad.");
-        /// ]]>
-        /// </code></example>
-        public void ShowError(string msg)
+        private void Btn_Click_Add_Category(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            int index = categoryTypesCmb.SelectedIndex + 1;
+            presenter.AddNewCategory(txbCategoryDescription.Text, (Category.CategoryType)index);
+            Close();
         }
+        #endregion
+
+        #region Interface Methods
         /// <summary>
         /// Resets the categories form by clearing the text box for category description.
         /// </summary>
@@ -96,16 +83,37 @@ namespace HomeCalendarWPF
             categoryTypesCmb.SelectedIndex = previousCategoryTypeIndex;
             categoryTypesCmb.ItemsSource = categoryTypes;
         }
-        private void Btn_Click_Cancel_Category(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Displays a message box with the specified message.
+        /// </summary>
+        /// <param name="msg">THe message to display.</param>
+        ///         /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// ShowMessage("You're bad.");
+        /// ]]>
+        /// </code></example>
+        public void ShowMessage(string msg)
         {
-            this.Close();
+            MessageBox.Show(msg, "Category added", MessageBoxButton.OK, MessageBoxImage.Information);
         }
-        private void Btn_Click_Add_Category(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Displays a error box with the specified error.
+        /// </summary>
+        /// <param name="msg">THe error to display.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// ShowError("Error: You're bad.");
+        /// ]]>
+        /// </code></example>
+        public void ShowError(string msg)
         {
-            int index = categoryTypesCmb.SelectedIndex + 1;
-            presenter.AddNewCategory(txbCategoryDescription.Text, (Category.CategoryType)index);
-            Close();
+            MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+        #endregion
+
+        #region Private Methods
         private void Initialize()
         {
             this.presenter.GetCategoryTypes();
@@ -127,5 +135,6 @@ namespace HomeCalendarWPF
                 dark_theme_star.Visibility = Visibility.Collapsed;
             }
         }
+        #endregion
     }
 }

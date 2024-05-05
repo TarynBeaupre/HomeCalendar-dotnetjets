@@ -15,10 +15,8 @@ namespace HomeCalendarWPF
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, ViewInterface
+    public partial class MainWindow : Window, MainWindowInterface
     {
-        #region Initialization methods
-
         /// <summary>
         /// Represents initialization parameters used to configure the model.
         /// </summary>
@@ -51,12 +49,7 @@ namespace HomeCalendarWPF
         // Filtering variables
         public bool filterByDateFlag = false, filterByCatFlag = false;
 
-        // -------------------------------------------------
-        // ACTUALLY SUPER IMPORTANT DO NOT FORGET ABOUT THIS
-        // -------------------------------------------------
-        // TODO: Change to DotNetJetsCalendar (Intentional spelling mistake: Calendary)
-        // This is for debugging, ONLY REMOVE IF DONE TESTING
-        public static readonly string REGISTRY_SUB_KEY_NAME = "DotNetJetsCalendary";
+        public static readonly string REGISTRY_SUB_KEY_NAME = "DotNetJetsCalendar";
 
         private MainWindowPresenter presenter;
 
@@ -88,23 +81,11 @@ namespace HomeCalendarWPF
             }
         }
 
-        private void OpenEvent(object sender, RoutedEventArgs e)
-        {
-            EventsWindow eventWindow = new EventsWindow(presenter.model!, darkMode);
-            eventWindow.ShowDialog();
-            RefreshGrid();
-        }
-        private void OpenCategory(object sender, RoutedEventArgs e)
-        {
-            CategoriesWindow categoryWindow = new CategoriesWindow(presenter.model!, darkMode);
-            categoryWindow.ShowDialog();
-            RefreshGrid();
-        }
+        #region Event Handlers
         private void Btn_Click_ChangeDBFile(object sender, RoutedEventArgs e)
         {
             presenter = new MainWindowPresenter(this);
         }
-
         private void Btn_Click_Change_Theme(object sender, RoutedEventArgs e)
         {
             Button? clickedButton = sender as Button;
@@ -115,13 +96,70 @@ namespace HomeCalendarWPF
                 presenter.SetTheme(theme);
             }
         }
-
         private void Btn_Click_ShowWarning(object sender, RoutedEventArgs e)
         {
             presenter.ShowWarning();
             Application.Current.Shutdown();
         }
+        private void Event_Update_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedItem = EventsGrid.CurrentItem as CalendarItem;
 
+            if (selectedItem is null)
+                return;
+
+            var updateEventsWindow = new UpdateEventsWindow(presenter.model!, calendarFiletxb.Text, selectedItem);
+            updateEventsWindow.ShowDialog();
+            RefreshGrid();
+        }
+        private void Event_Delete_Click(object sender, RoutedEventArgs e)
+        {
+            var a = EventsGrid.CurrentItem;
+            var eventToDelete = EventsGrid.CurrentItem as CalendarItem;
+
+            var b = a.GetType();
+
+            if (groupByMonthFlag || groupByCatFlag)
+            {
+                MessageBox.Show("Need to select singular event.");
+                return;
+            }
+            else if (eventToDelete is null)
+            {
+                MessageBox.Show("Event is null");
+                return;
+            }
+
+            var choice = MessageBox.Show("Are you sure you want to delete Event?", "Delete Confirmation", MessageBoxButton.YesNo);
+
+            if (choice == MessageBoxResult.Yes)
+            {
+                presenter.DeleteEvent(eventToDelete);
+                // Yeah not efficient repopulating all the list everytime
+                this.RefreshGrid();
+            }
+        }
+        private void Event_Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+        private void EventsGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            // Type that EventsGrid.CurrentItem returns is object, but actual type of
+            // the object is Dictionary<string, object> if you check with a.GetType()
+            // so I immediately cast it as such
+            var a = EventsGrid.CurrentItem as CalendarItem;
+
+            if (a is null)
+                return;
+
+            var updateEventsWindow = new UpdateEventsWindow(presenter.model!, calendarFiletxb.Text, a);
+            updateEventsWindow.ShowDialog();
+            RefreshGrid();
+        }
+        #endregion
+
+        #region Interface Methods
         /// <summary>
         /// Sets the file path for the calendar and updates the path text block.
         /// </summary>
@@ -136,22 +174,6 @@ namespace HomeCalendarWPF
         {
             calendarFiletxb.Text = filePath;
         }
-
-        /// <summary>
-        /// Shows error messages to the user
-        /// </summary>
-        /// <param name="message">Error message</param>
-        /// <example>
-        /// <code>
-        /// <![CDATA[
-        /// ShowMessage("Error, you're bad.");
-        /// ]]>
-        /// </code></example>
-        public void ShowMessage(string message)
-        {
-            MessageBox.Show(message, "Message", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-
         /// <summary>
         /// Sets the theme of the application to light mode.
         /// </summary>
@@ -178,7 +200,6 @@ namespace HomeCalendarWPF
             dark_theme_star.Visibility = Visibility.Collapsed;
             dark_tree_image.Visibility = Visibility.Collapsed;
         }
-
         /// <summary>
         /// Sets the theme of the application to dark mode.
         /// </summary>
@@ -217,8 +238,31 @@ namespace HomeCalendarWPF
             filterCategoryCmbx.SelectedIndex = 0;
             filterCategoryCmbx.ItemsSource = categoryList;
         }
+        public void SetEventsInGrid<T>(List<T> eventsList)
+        {
+            EventsGrid.ItemsSource = eventsList;
+        }
+        /// <summary>
+        /// Shows error messages to the user
+        /// </summary>
+        /// <param name="message">Error message</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// ShowMessage("Error, you're bad.");
+        /// ]]>
+        /// </code></example>
+        public void ShowMessage(string message)
+        {
+            MessageBox.Show(message, "Message", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        public void ShowError(string error)
+        {
+            MessageBox.Show(error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
         #endregion
 
+        #region Private Methods
 
         #region Filtering Events
         private void FilterChoiceChanged(object sender, RoutedEventArgs e)
@@ -258,8 +302,7 @@ namespace HomeCalendarWPF
 
         #endregion
 
-        // >>>GRID CODE<<<
-
+        #region Grid Methods
         private void CheckBox_Changed(object sender, RoutedEventArgs e)
         {
             // Calls a method that checks which checkbox is checked and changes value of global variable
@@ -271,12 +314,6 @@ namespace HomeCalendarWPF
             presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag, filterByCatFlag, filterCategoryId, filterStartDatePicker.SelectedDate, filterEndDatePicker.SelectedDate);
             SetGridColumns();
         }
-
-        public void SetEventsInGrid<T>(List<T> eventsList)
-        {
-            EventsGrid.ItemsSource = eventsList;
-        }
-
         private void FindGroupBy()
         {
             if (GroupByMonthToggle.IsChecked == true)
@@ -288,12 +325,6 @@ namespace HomeCalendarWPF
             else
                 groupByCatFlag = false;
         }
-
-        public void SetEventsInGrid(List<Event> eventsList)
-        {
-            EventsGrid.ItemsSource = eventsList;
-        }
-
         private void SetGridColumns()
         {
             // Columns to loop over for the normal events grid 
@@ -398,75 +429,26 @@ namespace HomeCalendarWPF
                 presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag, filterByCatFlag, filterCategoryId, filterStartDatePicker.SelectedDate, filterEndDatePicker.SelectedDate);
             }
         }
-
-        private void Event_Update_Click(object sender, RoutedEventArgs e)
-        {
-            var selectedItem = EventsGrid.CurrentItem as CalendarItem;
-
-            if (selectedItem is null)
-                return;
-
-            var updateEventsWindow = new UpdateEventsWindow(presenter.model!, calendarFiletxb.Text, selectedItem);
-            updateEventsWindow.ShowDialog();
-            RefreshGrid();
-        }
-
-        private void Event_Delete_Click(object sender, RoutedEventArgs e)
-        {
-            var a = EventsGrid.CurrentItem;
-            var eventToDelete = EventsGrid.CurrentItem as CalendarItem;
-
-            var b = a.GetType();
-
-            if (groupByMonthFlag || groupByCatFlag)
-            {
-                MessageBox.Show("Need to select singular event.");
-                return;
-            }
-            else if (eventToDelete is null)
-            {
-                MessageBox.Show("Event is null");
-                return;
-            }
-
-            var choice = MessageBox.Show("Are you sure you want to delete Event?", "Delete Confirmation", MessageBoxButton.YesNo);
-
-            if (choice == MessageBoxResult.Yes)
-            {
-                presenter.DeleteEvent(eventToDelete);
-                // Yeah not efficient repopulating all the list everytime
-                this.RefreshGrid();
-            }
-        }
-
-        private void Event_Cancel_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        private void EventsGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            // Type that EventsGrid.CurrentItem returns is object, but actual type of
-            // the object is Dictionary<string, object> if you check with a.GetType()
-            // so I immediately cast it as such
-            var a = EventsGrid.CurrentItem as CalendarItem;
-
-            if (a is null)
-                return;
-
-            var updateEventsWindow = new UpdateEventsWindow(presenter.model!, calendarFiletxb.Text, a);
-            updateEventsWindow.ShowDialog();
-            RefreshGrid();
-        }
         private void RefreshGrid()
         {
             presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
             SetGridColumns();
         }
-        protected override void OnClosing(CancelEventArgs e)
+        #endregion
+
+        private void OpenEvent(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            EventsWindow eventWindow = new EventsWindow(presenter.model!, darkMode);
+            eventWindow.ShowDialog();
+            RefreshGrid();
         }
+        private void OpenCategory(object sender, RoutedEventArgs e)
+        {
+            CategoriesWindow categoryWindow = new CategoriesWindow(presenter.model!, darkMode);
+            categoryWindow.ShowDialog();
+            RefreshGrid();
+        }
+        #endregion
     }
 
 }

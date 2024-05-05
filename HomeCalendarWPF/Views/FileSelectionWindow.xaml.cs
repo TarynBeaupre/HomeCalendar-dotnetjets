@@ -40,7 +40,7 @@ namespace HomeCalendarWPF
             this.initParams = new MainWindow.InitializationParams();
         }
 
-        // Methods called from the view to the presenter
+        #region Event Handlers
         private void Btn_Click_PickNewFileDir(object sender, RoutedEventArgs e)
         {
             presenter.PickNewFileDir();
@@ -57,16 +57,9 @@ namespace HomeCalendarWPF
         {
             presenter.Confirm();
         }
-        //protected override void OnClosing(CancelEventArgs e)
-        //{
-        //    if (btnConfirm.IsEnabled == true || overrideClosing)
-        //        base.OnClosing(e);
-        //    else
-        //        e.Cancel = true;
-        //}
+        #endregion
 
-
-        // Methods called by the presenter on the view
+        #region Interface Methods
         /// <summary>
         /// Sets the file path for the calendar and updates the path text block.
         /// </summary>
@@ -81,7 +74,6 @@ namespace HomeCalendarWPF
         {
             tbDir.Text = path;
         }
-
         /// <summary>
         /// Enables confirm button, once file is chosen or created
         /// </summary>
@@ -112,23 +104,6 @@ namespace HomeCalendarWPF
         {
             initParams.filePath = filePath;
             initParams.newDB = newDB;
-        }
-        /// <summary>
-        /// Shows error messages to the user
-        /// </summary>
-        /// <param name="message">Error message</param>
-        /// <example>
-        /// <code>
-        /// <![CDATA[
-        /// if (filepath && newDB)
-        ///     SetInitializationParams(filepath, newDB);
-        /// else
-        ///     ShowError("Error: FilePath is null");
-        /// ]]>
-        /// </code></example>
-        public void ShowError(string message)
-        {
-            MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
         /// <summary>
         /// Closes the current window
@@ -163,6 +138,30 @@ namespace HomeCalendarWPF
         {
             return tbDir.Text;
         }
+        public void ShowMessage(string message)
+        {
+            MessageBox.Show(message, "Message", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        /// <summary>
+        /// Shows error messages to the user
+        /// </summary>
+        /// <param name="error">Error message</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// if (filepath && newDB)
+        ///     SetInitializationParams(filepath, newDB);
+        /// else
+        ///     ShowError("Error: FilePath is null");
+        /// ]]>
+        /// </code></example>
+        public void ShowError(string error)
+        {
+            MessageBox.Show(error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        #endregion
+
+        #region Private Methods
         private void SetThemeFilePopup(bool darkmode)
         {
             if (darkmode)
@@ -176,5 +175,6 @@ namespace HomeCalendarWPF
                 menu_gradient.Color = Colors.LightGreen;
             }
         }
+        #endregion
     }
 }

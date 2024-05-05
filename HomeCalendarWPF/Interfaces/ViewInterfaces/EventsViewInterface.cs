@@ -4,34 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Calendar;
+using HomeCalendarWPF.Interfaces.ViewInterfaces;
 
 namespace HomeCalendarWPF.Interfaces.Views
 {
     /// <summary>
     /// Represents the interface for the Events view in the MVP design.
     /// </summary>
-    public interface EventsViewInterface
+    public interface EventsViewInterface : ViewInterface
     {
-        /// <summary>
-        /// Shows an error message in message box.
-        /// </summary>
-        /// <param name="message">Error message to display.</param>
-        /// <example>
-        /// <code>
-        /// <![CDATA[
-        /// ShowError("You're bad");
-        /// ]]></code></example>
-        void ShowError(string message);
-        /// <summary>
-        /// Shows a message in message box.
-        /// </summary>
-        /// <param name="message">Message to be displayed.</param>
-        /// <example>
-        /// <code>
-        /// <![CDATA[
-        /// ShowMessage("You're cool");
-        /// ]]></code></example>
-        void ShowMessage(string message);
         /// <summary>
         /// Displays the default categories in the categories dropdown list.
         /// </summary>

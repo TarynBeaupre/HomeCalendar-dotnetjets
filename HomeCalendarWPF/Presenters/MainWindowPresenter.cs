@@ -23,7 +23,7 @@ namespace HomeCalendarWPF.Presenters
     public class MainWindowPresenter
     {
         // Links from view, model to Presenter
-        private readonly ViewInterface? view;
+        private readonly MainWindowInterface? view;
         public readonly HomeCalendar? model;
 
         #region Constructor
@@ -38,7 +38,7 @@ namespace HomeCalendarWPF.Presenters
         /// view = IView;
         /// presenter = new Presenter(view);
         /// ]]></code></example>
-        public MainWindowPresenter(ViewInterface view)
+        public MainWindowPresenter(MainWindowInterface view)
         {
             InitializationParams initParams = GetInitParams();
             if (initParams.filePath is not null)

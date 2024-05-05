@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HomeCalendarWPF.Interfaces.ViewInterfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace HomeCalendarWPF.Interfaces.Views
     /// <summary>
     /// Represents the interface for the View component in MVP design.
     /// </summary>
-    public interface FileSelectionWindowInterface
+    public interface FileSelectionWindowInterface : ViewInterface
     {
         /// <summary>
         /// Sets the file path for the calendar and updates the path text block.
@@ -38,20 +39,6 @@ namespace HomeCalendarWPF.Interfaces.Views
         /// ]]>
         /// </code></example>
         void SetInitializationParams(string filePath, bool newDB);
-        /// <summary>
-        /// Shows error messages to the user
-        /// </summary>
-        /// <param name="message">Error message</param>
-        /// <example>
-        /// <code>
-        /// <![CDATA[
-        /// if (filepath && newDB)
-        ///     SetInitializationParams(filepath, newDB);
-        /// else
-        ///     ShowError("Error: FilePath is null");
-        /// ]]>
-        /// </code></example>
-        void ShowError(string message);
         /// <summary>
         /// Closes the current window
         /// </summary>
