@@ -65,7 +65,11 @@ namespace HomeCalendarWPF.Interfaces.Views
         /// SetEventsInGrid(new List<Category>() {});
         /// ]]></code></example>
         void SetEventsInGrid<T>(List<T> eventsList);
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="groupByMonth"></param>
+        /// <param name="groupByCat"></param>
         void SetGridColumns(bool groupByMonth, bool groupByCat);
     }
 }
