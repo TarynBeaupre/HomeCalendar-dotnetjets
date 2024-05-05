@@ -14,6 +14,7 @@ using static HomeCalendarWPF.MainWindow;
 using Microsoft.Win32;
 using System.Windows.Media.Animation;
 using HomeCalendarWPF.Interfaces.Views;
+using System.Windows.Controls;
 
 namespace HomeCalendarWPF.Presenters
 {
@@ -25,6 +26,13 @@ namespace HomeCalendarWPF.Presenters
         // Links from view, model to Presenter
         private readonly MainWindowInterface? view;
         public readonly HomeCalendar? model;
+
+        // Flags ==================================================
+        public bool groupByMonthFlag = false, groupByCatFlag = false;
+
+        // Filtering variables
+        public bool filterByDateFlag = false, filterByCatFlag = false;
+        // ========================================================
 
         #region Constructor
         /// <summary>
@@ -153,31 +161,36 @@ namespace HomeCalendarWPF.Presenters
         }
 
         public void SetGridEventsList(ref List<CalendarItem> eventsList, ref List<Dictionary<string, object>> eventsListByCatMonth,
-            ref List<CalendarItemsByMonth> eventsListByMonth, ref List<CalendarItemsByCategory> eventsListByCategory,
-            bool groupByMonth = false, bool groupByCat = false, bool filterByCat = false, int filterCategoryId = 0, DateTime? filterByStartDate = null, DateTime? filterByEndDate = null)
+            ref List<CalendarItemsByMonth> eventsListByMonth, ref List<CalendarItemsByCategory> eventsListByCategory, int filterCategoryId = 0, DateTime? filterByStartDate = null, DateTime? filterByEndDate = null)
         {
             // Presenter populates the list
             //! Yeah always passing all the lists is not super efficient...To improve - jh
-            if (groupByMonth && groupByCat)
+            if (groupByMonthFlag && groupByCatFlag)
             {
-                eventsListByCatMonth = model!.GetCalendarDictionaryByCategoryAndMonth(filterByStartDate, filterByEndDate, filterByCat, filterCategoryId);
+                eventsListByCatMonth = model!.GetCalendarDictionaryByCategoryAndMonth(filterByStartDate, filterByEndDate, filterByCatFlag, filterCategoryId);
                 view!.SetEventsInGrid(eventsListByCatMonth);
+                view.SetGridColumns(groupByMonthFlag, groupByCatFlag);
             }
-            else if (groupByMonth)
+            else if (groupByMonthFlag)
             {
-                eventsListByMonth = model!.GetCalendarItemsByMonth(filterByStartDate, filterByEndDate, filterByCat, filterCategoryId);
+                eventsListByMonth = model!.GetCalendarItemsByMonth(filterByStartDate, filterByEndDate, filterByCatFlag, filterCategoryId);
                 view!.SetEventsInGrid(eventsListByMonth);
+                view.SetGridColumns(groupByMonthFlag, groupByCatFlag);
+
 
             }
-            else if (groupByCat)
+            else if (groupByCatFlag)
             {
-                eventsListByCategory = model!.GetCalendarItemsByCategory(filterByStartDate, filterByEndDate, filterByCat, filterCategoryId);
+                eventsListByCategory = model!.GetCalendarItemsByCategory(filterByStartDate, filterByEndDate, filterByCatFlag, filterCategoryId);
                 view!.SetEventsInGrid(eventsListByCategory);
+                view.SetGridColumns(groupByMonthFlag, groupByCatFlag);
+
             }
             else
             {
-                eventsList = model!.GetCalendarItems(filterByStartDate, filterByEndDate, filterByCat, filterCategoryId);
+                eventsList = model!.GetCalendarItems(filterByStartDate, filterByEndDate, filterByCatFlag, filterCategoryId);
                 view!.SetEventsInGrid(eventsList);
+                view.SetGridColumns(groupByMonthFlag, groupByCatFlag);
             }
 
         }
@@ -200,7 +213,7 @@ namespace HomeCalendarWPF.Presenters
             model!.events.Delete(eventId);
         }
 
-        public void CheckValidDeletedEvent(bool groupByMonthFlag, bool groupByCatFlag, CalendarItem eventToDelete)
+        public void CheckValidDeletedEvent(CalendarItem eventToDelete)
         {
             if (groupByMonthFlag || groupByCatFlag)
             {
@@ -212,6 +225,30 @@ namespace HomeCalendarWPF.Presenters
                 view!.ShowError("Event is null");
                 return;
             }
+        }
+
+        public void FindFilter(CheckBox filterCategoryToggle, DatePicker filterStartDatePicker, DatePicker filterEndDatePicker)
+        {
+            if (filterCategoryToggle.IsChecked == true)
+                filterByCatFlag = true;
+            else
+                filterByCatFlag = false;
+
+            if (filterStartDatePicker.SelectedDate != null && filterEndDatePicker.SelectedDate != null)
+                filterByDateFlag = true;
+            else
+                filterByDateFlag = false;
+        }
+        public void FindGroupBy(CheckBox GroupByMonthToggle, CheckBox GroupByCategoryToggle)
+        {
+            if (GroupByMonthToggle.IsChecked == true)
+                groupByMonthFlag = true;
+            else
+                groupByMonthFlag = false;
+            if (GroupByCategoryToggle.IsChecked == true)
+                groupByCatFlag = true;
+            else
+                groupByCatFlag = false;
         }
 
     }
