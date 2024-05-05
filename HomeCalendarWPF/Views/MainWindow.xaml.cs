@@ -1,4 +1,5 @@
 ﻿using Calendar;
+using DocumentFormat.OpenXml.Bibliography;
 using HomeCalendarWPF.Interfaces.Views;
 using HomeCalendarWPF.Presenters;
 using System.ComponentModel;
@@ -287,15 +288,11 @@ namespace HomeCalendarWPF
 
         private void FindFilter()
         {
-            if (filterCategoryToggle.IsChecked == true)
-                filterByCatFlag = true;
-            else
-                filterByCatFlag = false;
+            bool catToggle = filterCategoryToggle.IsChecked == true;
+            bool dateToggle = filterStartDatePicker.SelectedDate != null && filterEndDatePicker.SelectedDate != null;
 
-            if (filterStartDatePicker.SelectedDate != null && filterEndDatePicker.SelectedDate != null)
-                filterByDateFlag = true;
-            else
-                filterByDateFlag = false;
+            presenter.FilterToggle(catToggle, dateToggle, ref filterByCatFlag, ref filterByDateFlag);
+
         }
 
         #endregion
@@ -314,14 +311,10 @@ namespace HomeCalendarWPF
         }
         private void FindGroupBy()
         {
-            if (GroupByMonthToggle.IsChecked == true)
-                groupByMonthFlag = true;
-            else
-                groupByMonthFlag = false;
-            if (GroupByCategoryToggle.IsChecked == true)
-                groupByCatFlag = true;
-            else
-                groupByCatFlag = false;
+            bool monthToggle = GroupByMonthToggle.IsChecked == true;
+            bool catToggle = GroupByCategoryToggle.IsChecked == true;
+
+            presenter.GroupByToggle(monthToggle, catToggle, ref groupByMonthFlag, ref groupByCatFlag);
         }
         private void SetGridColumns()
         {
