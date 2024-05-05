@@ -11,24 +11,20 @@ namespace HomeCalendarWPF.Presenters
     internal class UpdateEventsWindowPresenter
     {
         readonly private UpdateEventsWindowInterface view;
-        readonly private HomeCalendar model;
-
-        private List<Category> categoriesList;
+        readonly public HomeCalendar model;
 
         public UpdateEventsWindowPresenter(UpdateEventsWindowInterface view, HomeCalendar model)
         {
             this.view = view;
             this.model = model;
 
-            categoriesList = model.categories.List();
-
-            this.view.ShowDefaultCategories(categoriesList);
+            this.view.ShowDefaultCategories(model.categories.List());
             this.view.ShowDefaultDateTime();
             this.view.PopulateFields();
         }
         public void GetDefaultCategories()
         {
-            view.ShowDefaultCategories(categoriesList);
+            view.ShowDefaultCategories(model.categories.List());
         }
         public void UpdateEvent(int eventId, DateTime startDateTime, int categoryId, double durationInMinutes, string details)
         {

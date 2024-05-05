@@ -11,7 +11,7 @@ namespace HomeCalendarWPF.Presenters
     /// </summary>
     public class EventsPresenter
     {
-        private readonly EventsViewInterface view;
+        private readonly AddEventsViewInterface view;
         public readonly HomeCalendar model;
 
         private List<Category> categoriesList;
@@ -29,7 +29,7 @@ namespace HomeCalendarWPF.Presenters
         /// path = "./calendar.db";
         /// presenter = new EventsPresenter(view, path);
         /// ]]></code></example>
-        public EventsPresenter(EventsViewInterface view, HomeCalendar model, string path)
+        public EventsPresenter(AddEventsViewInterface view, HomeCalendar model, string path)
         {
             this.model = model;
             this.view = view;
