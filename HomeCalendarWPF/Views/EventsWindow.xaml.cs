@@ -204,10 +204,30 @@ namespace HomeCalendarWPF
         #endregion
 
         #region Presenter Data Getters
+        /// <summary>
+        /// Checks if a date is selected in the view.
+        /// </summary>
+        /// <returns>A boolean representing whether a date is selected in the view.</returns>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// if (HasSelectedDate())
+        ///     ShowMessage("Yep, that's a date that's selected");
+        /// ]]></code></example>
         public bool HasSelectedDate()
         {
             return startdp.SelectedDate.HasValue;
         }
+        /// <summary>
+        /// Checks if a duration is set in the view.
+        /// </summary>
+        /// <returns>A boolean representing whether a duration is set in the view.</returns>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// if (HasDurationValue())
+        ///     ShowMessage("Yep, that's a duration with a value");
+        /// ]]></code></example>
         public bool HasDurationValue()
         {
             return double.TryParse(txbDuration.Text, out double duration) || duration <= 0;

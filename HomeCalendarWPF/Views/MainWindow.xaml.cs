@@ -113,6 +113,9 @@ namespace HomeCalendarWPF
         private void Event_Delete_Click(object sender, RoutedEventArgs e)
         {
             var eventToDelete = EventsGrid.CurrentItem as CalendarItem;
+            if (eventToDelete is null)
+                return;
+
             presenter.CheckValidDeletedEvent(groupByMonthFlag, groupByCatFlag, eventToDelete);
 
             var choice = MessageBox.Show("Are you sure you want to delete Event?", "Delete Confirmation", MessageBoxButton.YesNo);
@@ -209,18 +212,30 @@ namespace HomeCalendarWPF
             light_chicken_image.Visibility = Visibility.Collapsed;
             light_tree_image.Visibility = Visibility.Collapsed;
         }
-
-        public void SetDefaultDateTime()
-        {
-            //filterStartDatePicker.SelectedDate = DateTime.Now;
-            //filterEndDatePicker.SelectedDate = DateTime.Now;
-        }
-
+        /// <summary>
+        /// Sets the categories combobox's itemsource.
+        /// </summary>
+        /// <param name="categoryList">The list to be made itemsource.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// SetDefaultCategories(new List<Categories>() {});
+        /// ]]></code></example>
         public void SetDefaultCategories(List<Category> categoryList)
         {
             filterCategoryCmbx.SelectedIndex = 0;
             filterCategoryCmbx.ItemsSource = categoryList;
         }
+        /// <summary>
+        /// Sets the datagrid's itemsource.
+        /// </summary>
+        /// <typeparam name="T">Type of the data contained in the list.</typeparam>
+        /// <param name="eventsList">List to be made itemsource.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// SetEventsInGrid(new List<Category>() {});
+        /// ]]></code></example>
         public void SetEventsInGrid<T>(List<T> eventsList)
         {
             EventsGrid.ItemsSource = eventsList;

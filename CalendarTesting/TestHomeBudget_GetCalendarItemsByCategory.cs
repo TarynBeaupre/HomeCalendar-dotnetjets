@@ -37,7 +37,7 @@ namespace CalendarCodeTests
             // verify 1st record
             Assert.Equal(firstRecord.Category, firstRecordTest.Category);
             Assert.Equal(firstRecord.TotalBusyTime, firstRecordTest.TotalBusyTime);
-            Assert.Equal(firstRecord.Items.Count, firstRecordTest.Items.Count);
+            Assert.Equal(firstRecord.Items!.Count, firstRecordTest.Items!.Count);
             for (int record = 0; record < firstRecord.Items.Count; record++)
             {
                 CalendarItem validItem = firstRecord.Items[record];
@@ -101,7 +101,7 @@ namespace CalendarCodeTests
         // verify 1st record
         Assert.Equal(firstRecord.Category, firstRecordTest.Category);
         Assert.Equal(firstRecord.TotalBusyTime, firstRecordTest.TotalBusyTime);
-        Assert.Equal(firstRecord.Items.Count, firstRecordTest.Items.Count);
+        Assert.Equal(firstRecord.Items!.Count, firstRecordTest.Items!.Count);
         for (int record = 0; record < firstRecord.Items.Count; record++)
         {
             CalendarItem validItem = firstRecord.Items[record];
@@ -139,7 +139,7 @@ namespace CalendarCodeTests
             // verify 1st record
             Assert.Equal(firstRecord.Category, firstRecordTest.Category);
             Assert.Equal(firstRecord.TotalBusyTime, firstRecordTest.TotalBusyTime);
-            Assert.Equal(firstRecord.Items.Count, firstRecordTest.Items.Count);
+            Assert.Equal(firstRecord.Items!.Count, firstRecordTest.Items!.Count);
             for (int record = 0; record < firstRecord.Items.Count; record++)
             {
                 CalendarItem validItem = firstRecord.Items[record];

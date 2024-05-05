@@ -60,6 +60,16 @@ namespace HomeCalendarWPF
         #endregion
 
         #region Interface Methods
+        /// <summary>
+        /// Displays the default categories in the categories dropdown list.
+        /// </summary>
+        /// <param name="categoriesList">The list of default categories to display.</param>
+        /// <example>
+        /// <code>
+        /// For this example, assume we have implemented a categoriesList
+        /// <![CDATA[
+        /// ShowDefaultCategories(categoriesList);
+        /// ]]></code></example>
         public void ShowDefaultCategories(List<Category> categoriesList)
         {
             categoriescmb.ItemsSource = categoriesList;
@@ -67,6 +77,14 @@ namespace HomeCalendarWPF
             if (previousCategoryIndex == -1) previousCategoryIndex = categoriesList.Count - 1;
             categoriescmb.SelectedIndex = previousCategoryIndex;
         }
+        /// <summary>
+        /// Prefills all of the data fields with the information from the event the user decided to update.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// PopulateFields();
+        /// ]]></code></example>
         public void PopulateFields()
         {
             txbEventDescription.Text = eventToUpdate.ShortDescription;
@@ -81,6 +99,14 @@ namespace HomeCalendarWPF
             cmbStartTimeMins.SelectedIndex = eventToUpdate.StartDateTime.Minute / 15;
             txbDuration.Text = eventToUpdate.DurationInMinutes.ToString();
         }
+        /// <summary>
+        /// Sets the default date and time values on the window.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// ShowDefaultDateTime();
+        /// ]]></code></example>
         public void ShowDefaultDateTime()
         {
             //Looks like a lot of logic but only deals with UI tasks
@@ -117,10 +143,26 @@ namespace HomeCalendarWPF
             //=== Set default duration (30 mins) ===
             txbDuration.Text = "30";
         }
+        /// <summary>
+        /// Shows a message to the user.
+        /// </summary>
+        /// <param name="message">The message to be shown.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// ShowMessage("You're doing good, lad!");]]></code></example>
         public void ShowMessage(string message)
         {
             MessageBox.Show(message, "Message", MessageBoxButton.OK);
         }
+        /// <summary>
+        /// Shows an error message to the user.
+        /// </summary>
+        /// <param name="error">The error message to be shown.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// ShowError("Error! Chat, is he being fr right now?");]]></code></example>
         public void ShowError(string error)
         {
             MessageBox.Show(error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);

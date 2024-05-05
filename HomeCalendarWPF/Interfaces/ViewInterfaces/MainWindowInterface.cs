@@ -44,8 +44,26 @@ namespace HomeCalendarWPF.Interfaces.Views
         /// ]]>
         /// </code></example>
         void SetThemeDark();
-        void SetDefaultDateTime();
+        /// <summary>
+        /// Sets the categories combobox's itemsource.
+        /// </summary>
+        /// <param name="categoryList">The list to be made itemsource.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// SetDefaultCategories(new List<Categories>() {});
+        /// ]]></code></example>
         void SetDefaultCategories(List<Category> categoryList);
+        /// <summary>
+        /// Sets the datagrid's itemsource.
+        /// </summary>
+        /// <typeparam name="T">Type of the data contained in the list.</typeparam>
+        /// <param name="eventsList">List to be made itemsource.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// SetEventsInGrid(new List<Category>() {});
+        /// ]]></code></example>
         void SetEventsInGrid<T>(List<T> eventsList);
     }
 }
