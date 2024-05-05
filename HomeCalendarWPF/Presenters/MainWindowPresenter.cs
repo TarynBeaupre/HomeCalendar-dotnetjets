@@ -268,6 +268,20 @@ namespace HomeCalendarWPF.Presenters
             }
         }
 
+        /// <summary>
+        /// When a filter option is changed, updates the value of the filters by which to filter the events.
+        /// </summary>
+        /// <param name="filterCategoryToggle">If checked, this will filter to display only the selected category.</param>
+        /// <param name="filterStartDatePicker">If specified, the start date by which to filter events.</param>
+        /// <param name="filterEndDatePicker">If specified, the end date by which we want to filter events.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// CheckBox categoryFilterCheckbox = new CheckBox();
+        /// DatePicker startDatePicker, endDatePicker = new DatePicker();
+        /// presenter.FindFilter(categoryFilterCheckbox, startDatePicker, endDatePicker);
+        /// ]]>
+        /// </code></example>
         public void FindFilter(CheckBox filterCategoryToggle, DatePicker filterStartDatePicker, DatePicker filterEndDatePicker)
         {
             if (filterCategoryToggle.IsChecked == true)
@@ -280,6 +294,18 @@ namespace HomeCalendarWPF.Presenters
             else
                 filterByDateFlag = false;
         }
+        /// <summary>
+        /// When a group by option is changed, updates the value of the group by which to group the events.
+        /// </summary>
+        /// <param name="GroupByMonthToggle">If checked, this will group the events in the grid by month and year.</param>
+        /// <param name="GroupByCategoryToggle">If checked, this will group the events in the grid by category.</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// CheckBox monthGroupToggle = new CheckBox();
+        /// CheckBox categoryGroupToggle = new CheckBox();
+        /// presenter.FindGroupBy(monthGroupToggle, categoryGroupToggle);
+        /// ]]></code></example>
         public void FindGroupBy(CheckBox GroupByMonthToggle, CheckBox GroupByCategoryToggle)
         {
             if (GroupByMonthToggle.IsChecked == true)

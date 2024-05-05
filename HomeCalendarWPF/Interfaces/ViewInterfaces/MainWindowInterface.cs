@@ -66,10 +66,11 @@ namespace HomeCalendarWPF.Interfaces.Views
         /// ]]></code></example>
         void SetEventsInGrid<T>(List<T> eventsList);
         /// <summary>
-        /// 
+        /// Sets the grid column headers.
         /// </summary>
-        /// <param name="groupByMonth"></param>
-        /// <param name="groupByCat"></param>
+        /// <param name="groupByMonth">If true, columns for the by Month display will be shown.</param>
+        /// <param name="groupByCat">if true, columns for the by Category display will be shown.</param>
+        /// <remarks>If neither group is true, default column headers are shown.</remarks>
         void SetGridColumns(bool groupByMonth, bool groupByCat);
     }
 }
