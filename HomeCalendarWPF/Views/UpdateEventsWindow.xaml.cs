@@ -120,7 +120,7 @@ namespace HomeCalendarWPF
         }
         public void ShowMessage(string message)
         {
-            MessageBox.Show(message, "Message", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(message, "Message", MessageBoxButton.OK);
         }
         public void ShowError(string error)
         {
