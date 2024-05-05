@@ -128,13 +128,6 @@ namespace HomeCalendarWPF.Presenters
                 return false;
             }
 
-            // Check that end date has a value
-            if (!view.IsEndValue())
-            {
-                view.ShowError("Please select an end date.");
-                return false;
-            }
-
             // Check if duration is provided and is a positive double
             if (!view.HasDurationValue())
             {

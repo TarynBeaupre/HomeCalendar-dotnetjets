@@ -37,9 +37,5 @@ namespace HomeCalendarWPF.Interfaces.ViewInterfaces
         /// <![CDATA[
         /// ResetEventForm();
         /// ]]></code></example>
-        void ResetEventForm();
-        bool HasSelectedDate();
-        bool IsEndValue();
-        bool HasDurationValue();
     };
 }

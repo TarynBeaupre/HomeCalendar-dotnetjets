@@ -226,6 +226,20 @@ namespace HomeCalendarWPF
             EventsGrid.ItemsSource = eventsList;
         }
         /// <summary>
+        /// Shows messages to the user
+        /// </summary>
+        /// <param name="message">Error message</param>
+        /// <example>
+        /// <code>
+        /// <![CDATA[
+        /// ShowMessage("you're good.");
+        /// ]]>
+        /// </code></example>
+        public void ShowMessage(string message)
+        {
+            MessageBox.Show(message, "Message", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        /// <summary>
         /// Shows error messages to the user
         /// </summary>
         /// <param name="message">Error message</param>
@@ -235,10 +249,6 @@ namespace HomeCalendarWPF
         /// ShowMessage("Error, you're bad.");
         /// ]]>
         /// </code></example>
-        public void ShowMessage(string message)
-        {
-            MessageBox.Show(message, "Message", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
         public void ShowError(string error)
         {
             MessageBox.Show(error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);

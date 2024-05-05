@@ -11,7 +11,5 @@ namespace HomeCalendarWPF.Interfaces.Views
     internal interface UpdateEventsWindowInterface : EventViewInterface
     {
         void PopulateFields();
-        bool IsDateSelected();
-        bool IsValidDuration();
     }
 }

@@ -207,10 +207,6 @@ namespace HomeCalendarWPF
         public bool HasSelectedDate()
         {
             return startdp.SelectedDate.HasValue;
-        }        
-        public bool IsEndValue()
-        {
-            return enddp.SelectedDate.HasValue;
         }
         public bool HasDurationValue()
         {

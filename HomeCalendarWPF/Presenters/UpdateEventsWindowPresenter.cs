@@ -45,6 +45,10 @@ namespace HomeCalendarWPF.Presenters
                 }
             }
         }
+        public void GetDefaultCategories()
+        {
+            view.ShowDefaultCategories(model.categories.List());
+        }
 
         private bool ValidateEventForm(DatePicker startdp, TextBox txbDuration)
         {
