@@ -8,10 +8,8 @@ using HomeCalendarWPF.Interfaces.ViewInterfaces;
 
 namespace HomeCalendarWPF.Interfaces.Views
 {
-    internal interface UpdateEventsWindowInterface : ViewInterface
+    internal interface UpdateEventsWindowInterface : EventInterface
     {
-        void ShowDefaultCategories(List<Category> categoriesList);
-        void ShowDefaultDateTime();
         void PopulateFields();
     }
 }
