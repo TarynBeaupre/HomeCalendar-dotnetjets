@@ -49,18 +49,7 @@ namespace HomeCalendarWPF
         }
         private void Btn_Click_UpdateEvent(object sender, RoutedEventArgs e)
         {
-            if (!presenter.ValidateEventForm())
-                return;
-
-            string details = txbEventDescription.Text;
-            int categoryId = categoriescmb.SelectedIndex;
-
-            var tmp = (DateTime)startdp.SelectedDate!;
-            var date = new DateTime(tmp.Year, tmp.Month, tmp.Day, int.Parse(cmbStartTimeHour.Text), int.Parse(cmbStartTimeMins.Text), 0);
-
-            double duration = Convert.ToDouble(txbDuration.Text);
-
-            presenter.UpdateEvent(eventToUpdate.EventID, date, categoryId, duration, details);
+            presenter.UpdateEvent(eventToUpdate.EventID, startdp, categoriescmb.SelectedIndex, txbDuration, txbEventDescription.Text, cmbStartTimeHour, cmbStartTimeMins);
             this.Close();
         }
 
@@ -156,38 +145,7 @@ namespace HomeCalendarWPF
                 dark_theme_star.Visibility = Visibility.Collapsed;
             }
         }
-
-        #endregion
-
-        #region Presenter Data Getters
-        /// <summary>
-        /// Checks to see if the Datepicker has a value selected.
-        /// </summary>
-        /// <returns>A boolean representing if the datepicker has a value.</returns>
-        /// <example>
-        /// <code>
-        /// <![CDATA[
-        /// if (!IsDateSelected())
-        ///     ShowWarning("Select a date");
-        /// ]]></code></example>
-        public bool IsDateSelected()
-        {
-            return startdp.SelectedDate.HasValue;
-        }
-        /// <summary>
-        /// Checks to see if the textbox representing the duration of the event contains valid data.
-        /// </summary>
-        /// <returns>A boolean representing if the data is valid.</returns>
-        /// <example>
-        /// <code>
-        /// <![CDATA[
-        /// if (!IsValidDuration())
-        ///     ShowWarning("Enter a valid duration");
-        /// ]]></code></example>
-        public bool IsValidDuration()
-        {
-            return double.TryParse(txbDuration.Text, out double duration) || duration <= 0;
-        }
+        
         #endregion
     }
 }
