@@ -108,7 +108,24 @@
         <!--CENTER-->
         <!--Event data grid -->
         <Grid Opacity="0.9" Grid.Column="1" Margin="10,10,10,10" Grid.Row="1" Grid.RowSpan="2">
-            <DataGrid Background="LightGray" Name="EventsGrid" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="EventsGrid_MouseDoubleClick">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid Background="LightGray">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="200"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <TextBox  Width="138" Margin="0 0 10 0" VerticalAlignment="Center" Height="20"/>
+                    <Button Height="20" Background="LightGray" BorderBrush="#555" BorderThickness="1">Search</Button>
+                </StackPanel>
+            </Grid>
+
+            <DataGrid Background="LightGray" Name="EventsGrid" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="EventsGrid_MouseDoubleClick" Grid.Row="1">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem Click="Event_Update_Click" Header="Update"></MenuItem>
