@@ -349,6 +349,16 @@ namespace HomeCalendarWPF
                     }
                     else
                         column.Binding = new Binding(columnProperties[i]);
+                    
+                    // Add the style
+                    if (columnProperties[i] == "DurationInMinutes" || columnProperties[i] == "BusyTime")
+                    {
+                        Style s = new Style();
+                        s.Setters.Add(new Setter(TextBlock.TextAlignmentProperty,
+                                                TextAlignment.Right));
+                        column.CellStyle = s;
+                    }
+
                     EventsGrid.Columns.Add(column);
                 }
             }
