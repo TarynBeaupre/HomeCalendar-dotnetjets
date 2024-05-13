@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Bibliography;
 using HomeCalendarWPF.Interfaces.Views;
 using HomeCalendarWPF.Presenters;
 using System.ComponentModel;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -354,8 +355,7 @@ namespace HomeCalendarWPF
                     if (columnProperties[i] == "DurationInMinutes" || columnProperties[i] == "BusyTime")
                     {
                         Style s = new Style();
-                        s.Setters.Add(new Setter(TextBlock.TextAlignmentProperty,
-                                                TextAlignment.Right));
+                        s.Setters.Add(new Setter(TextBlock.TextAlignmentProperty, TextAlignment.Right));
                         column.CellStyle = s;
                     }
 
@@ -384,6 +384,12 @@ namespace HomeCalendarWPF
                 var TBTcolumn = new DataGridTextColumn();
                 TBTcolumn.Header = "TotalBusyTime";
                 TBTcolumn.Binding = new Binding($"[TotalBusyTime]") { StringFormat = "0.00" };
+                
+                // Add the styles
+                Style s = new Style();
+                s.Setters.Add(new Setter(TextBlock.TextAlignmentProperty, TextAlignment.Right));
+                TBTcolumn.CellStyle = s;
+
                 EventsGrid.Columns.Add(TBTcolumn);
             }
             else if (groupByMonthFlag)
@@ -398,6 +404,12 @@ namespace HomeCalendarWPF
                 column = new DataGridTextColumn();
                 column.Header = "Total Busy Time";
                 column.Binding = new Binding("TotalBusyTime") { StringFormat = "0.00" };
+
+                // Add the styles
+                Style s = new Style();
+                s.Setters.Add(new Setter(TextBlock.TextAlignmentProperty, TextAlignment.Right));
+                column.CellStyle = s;
+
                 EventsGrid.Columns.Add(column);
             }
 
@@ -413,6 +425,12 @@ namespace HomeCalendarWPF
                 column = new DataGridTextColumn();
                 column.Header = "Total Busy Time";
                 column.Binding = new Binding("TotalBusyTime") { StringFormat = "0.00" };
+                
+                // Add the styles
+                Style s = new Style();
+                s.Setters.Add(new Setter(TextBlock.TextAlignmentProperty, TextAlignment.Right));
+                column.CellStyle = s;
+
                 EventsGrid.Columns.Add(column);
 
                 int filterCategoryId = filterCategoryCmbx.SelectedIndex + 1;
