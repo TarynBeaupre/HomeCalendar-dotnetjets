@@ -140,6 +140,10 @@ namespace HomeCalendarWPF
             updateEventsWindow.ShowDialog();
             RefreshGrid();
         }
+        private void SearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            presenter.GetNextMatchingItem(txbSearchQuery.Text, EventsGrid.SelectedIndex);
+        }
         #endregion
 
         #region Interface Methods
@@ -428,6 +432,5 @@ namespace HomeCalendarWPF
         }
         #endregion
     }
-
 }
 

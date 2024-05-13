@@ -121,7 +121,7 @@
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
                     <TextBox Name="txbSearchQuery" Width="138" Margin="0 0 10 0" VerticalAlignment="Center" Height="20"/>
-                    <Button Name="btnSearch" Height="20" Background="LightGray" BorderBrush="#555" BorderThickness="1">Search</Button>
+                    <Button Name="btnSearch" Click="SearchButton_Click" Height="20" Background="LightGray" BorderBrush="#555" BorderThickness="1">Search</Button>
                 </StackPanel>
             </Grid>
 

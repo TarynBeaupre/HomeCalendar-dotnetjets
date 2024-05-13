@@ -15,6 +15,7 @@ using Microsoft.Win32;
 using System.Windows.Media.Animation;
 using HomeCalendarWPF.Interfaces.Views;
 using System.Windows.Controls;
+using System.Text.RegularExpressions;
 
 namespace HomeCalendarWPF.Presenters
 {
@@ -103,6 +104,22 @@ namespace HomeCalendarWPF.Presenters
             }
         }
 
+        public void GetNextMatchingItem(string query, int selectedIndex)
+        {
+            List<Event> eventsList = model!.events.List();
+            for (int i = 0; i < eventsList.Count; i++)
+            {
+                var curEvent = eventsList[i + selectedIndex + 1];
+                if (Regex.IsMatch($"{curEvent.Details} {curEvent.DurationInMinutes}", query))
+                {
+                    // Scroll to event, highlight it, 
+
+                    return;
+                }
+            }
+
+            view!.ShowMessage("No event matched provided pattern.");
+        }
         #endregion
 
         #region Private Methods
