@@ -5,11 +5,11 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <ApplicationIcon>calendarlogo-small32x32.ico</ApplicationIcon>
+    <ApplicationIcon>calendarlogo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="calendarlogo-small32x32.ico" />
+    <Content Include="calendarlogo.ico" />
   </ItemGroup>
 
   <ItemGroup>
