@@ -19,7 +19,7 @@ namespace CalendarWPFTesting
 {
     public class TestFirstOpenWindowPresenter : FileSelectionWindowInterface
     {
-        public bool calledView_CloseWindow, calledView_EnableConfirmButton, calledView_GetFilePath, calledView_SetDirectoryText, calledView_SetInitializationParams, calledView_ShowError;
+        public bool calledView_CloseWindow, calledView_EnableConfirmButton, calledView_GetFilePath, calledView_SetDirectoryText, calledView_SetInitializationParams, calledView_ShowError, calledView_ShowMessage;
 
         public void CloseWindow()
         {
@@ -50,6 +50,11 @@ namespace CalendarWPFTesting
         public void ShowError(string message)
         {
             calledView_ShowError = true;
+        }
+
+        public void ShowMessage(string message)
+        {
+            calledView_ShowMessage = true;
         }
 
         [Fact]
@@ -126,5 +131,6 @@ namespace CalendarWPFTesting
             Assert.Equal("test", recentFilePath);
         }
 
+      
     }
 }
