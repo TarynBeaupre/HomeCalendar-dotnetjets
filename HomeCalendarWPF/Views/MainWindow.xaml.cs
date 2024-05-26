@@ -269,6 +269,17 @@ namespace HomeCalendarWPF
         {
             MessageBox.Show(error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+        public void SelectGridItem(int index)
+        {
+            EventsGrid.SelectedIndex = index;
+            EventsGrid.ScrollIntoView(EventsGrid.SelectedItem);
+            EventsGrid.Focus();
+        }
+        public void ChangeSearchButtonState(bool enabled)
+        {
+            btnSearch.Visibility = enabled ? Visibility.Visible : Visibility.Collapsed;
+            txbSearchQuery.Visibility = enabled ? Visibility.Visible : Visibility.Collapsed;
+        }
         #endregion
 
         #region Private Methods
@@ -415,6 +426,7 @@ namespace HomeCalendarWPF
         private void RefreshGrid()
         {
             presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat);
+            presenter.EnableSearchButtonIfValid();
         }
         #endregion
 

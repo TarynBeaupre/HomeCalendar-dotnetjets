@@ -107,13 +107,16 @@ namespace HomeCalendarWPF.Presenters
         public void GetNextMatchingItem(string query, int selectedIndex)
         {
             List<Event> eventsList = model!.events.List();
-            for (int i = 0; i < eventsList.Count; i++)
+            for (int i = selectedIndex; i < eventsList.Count + selectedIndex; i++)
             {
-                var curEvent = eventsList[i + selectedIndex + 1];
-                if (Regex.IsMatch($"{curEvent.Details} {curEvent.DurationInMinutes}", query))
+                // index is i + 1 to start at event under current selected item
+                var curEvent = eventsList[(i + 1) % eventsList.Count];
+
+                string regexStr = curEvent.Details.ToLower() + curEvent.DurationInMinutes.ToString();
+                if (Regex.IsMatch(regexStr, query.ToLower()))
                 {
                     // Scroll to event, highlight it, 
-
+                    view!.SelectGridItem((i + 1) % eventsList.Count);
                     return;
                 }
             }
@@ -333,6 +336,10 @@ namespace HomeCalendarWPF.Presenters
                 groupByCatFlag = true;
             else
                 groupByCatFlag = false;
+        }
+        public void EnableSearchButtonIfValid()
+        {
+            view!.ChangeSearchButtonState(model!.events.List().Count > 0);
         }
     }
     #endregion
