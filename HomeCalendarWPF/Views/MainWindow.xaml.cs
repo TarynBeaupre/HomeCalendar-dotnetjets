@@ -142,7 +142,8 @@ namespace HomeCalendarWPF
         }
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            presenter.GetNextMatchingItem(txbSearchQuery.Text, EventsGrid.SelectedIndex);
+            var a = EventsGrid.ItemsSource as List<CalendarItem>;
+            presenter.GetNextMatchingItem(a!, txbSearchQuery.Text, EventsGrid.SelectedIndex);
         }
         #endregion
 

@@ -104,19 +104,18 @@ namespace HomeCalendarWPF.Presenters
             }
         }
 
-        public void GetNextMatchingItem(string query, int selectedIndex)
+        public void GetNextMatchingItem(List<CalendarItem> data, string query, int selectedIndex)
         {
-            List<Event> eventsList = model!.events.List();
-            for (int i = selectedIndex; i < eventsList.Count + selectedIndex; i++)
+            for (int i = selectedIndex; i < data.Count + selectedIndex; i++)
             {
                 // index is i + 1 to start at event under current selected item
-                var curEvent = eventsList[(i + 1) % eventsList.Count];
+                var curEvent = data[(i + 1) % data.Count];
 
-                string regexStr = curEvent.Details.ToLower() + curEvent.DurationInMinutes.ToString();
+                string regexStr = curEvent.ShortDescription!.ToLower() + curEvent.DurationInMinutes.ToString();
                 if (Regex.IsMatch(regexStr, query.ToLower()))
                 {
                     // Scroll to event, highlight it, 
-                    view!.SelectGridItem((i + 1) % eventsList.Count);
+                    view!.SelectGridItem((i + 1) % data.Count);
                     return;
                 }
             }
