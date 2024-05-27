@@ -119,8 +119,23 @@ namespace HomeCalendarWPF
             var choice = MessageBox.Show("Are you sure you want to delete Event?", "Delete Confirmation", MessageBoxButton.YesNo);
             if (choice == MessageBoxResult.Yes)
             {
+                int selectedIndex = EventsGrid.SelectedIndex;
+
                 presenter.DeleteEvent(eventToDelete);
                 this.RefreshGrid();
+
+                // Wrap around the selected index if necessary
+                if (selectedIndex >= EventsGrid.Items.Count)
+                {
+                    selectedIndex = selectedIndex % EventsGrid.Items.Count;
+                }
+
+                // Select the next item if available (If last is deleted, goes back to first event selected)
+                if (selectedIndex >= 0 && EventsGrid.Items.Count > 0)
+                {
+                    EventsGrid.SelectedIndex = selectedIndex;
+                    EventsGrid.ScrollIntoView(EventsGrid.SelectedItem);
+                }
             }
         }
         private void Event_Cancel_Click(object sender, RoutedEventArgs e)
