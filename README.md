@@ -24,6 +24,6 @@ Stage 1:
 ![AppDevImage](https://github.com/TarynBeaupre/HomeCalendar-dotnetjets/assets/123277418/e92d555e-6a00-42ea-8014-2a655c9a3927)
 
 Final Product:
-https://github.com/TarynBeaupre/HomeCalendar-dotnetjets/assets/123277418/0b3748d8-11db-4f09-8a07-656ba9e14b0d
 
+https://github.com/TarynBeaupre/HomeCalendar-dotnetjets/assets/123277418/1305aeb9-6d70-442d-97d7-d23ddbd74d62
 
