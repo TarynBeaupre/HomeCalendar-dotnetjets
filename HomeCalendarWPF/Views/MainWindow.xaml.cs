@@ -281,7 +281,10 @@ namespace HomeCalendarWPF
         /// ]]></code></example>
         public void SetDefaultCategories(List<Category> categoryList)
         {
-            filterCategoryCmbx.SelectedItem = null;
+            if (categoryList.Count > 0)
+            {
+                filterCategoryCmbx.SelectedItem = categoryList[0];
+            }
             filterCategoryCmbx.ItemsSource = categoryList;
         }
         /// <summary>
@@ -370,7 +373,8 @@ namespace HomeCalendarWPF
 
             // Populate the list with the right events
             //presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
-            int filterCategoryId = filterCategoryCmbx.SelectedIndex + 1;
+            Category filterCategorySelected = filterCategoryCmbx.SelectedItem as Category;
+            int filterCategoryId = filterCategorySelected!.Id;
             presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, filterCategoryId, filterStartDatePicker.SelectedDate, filterEndDatePicker.SelectedDate);
         }
         /// <summary>
