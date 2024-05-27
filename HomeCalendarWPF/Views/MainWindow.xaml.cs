@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Bibliography;
 using HomeCalendarWPF.Interfaces.Views;
 using HomeCalendarWPF.Presenters;
 using System.ComponentModel;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -118,8 +119,23 @@ namespace HomeCalendarWPF
             var choice = MessageBox.Show("Are you sure you want to delete Event?", "Delete Confirmation", MessageBoxButton.YesNo);
             if (choice == MessageBoxResult.Yes)
             {
+                int selectedIndex = EventsGrid.SelectedIndex;
+
                 presenter.DeleteEvent(eventToDelete);
                 this.RefreshGrid();
+
+                // Wrap around the selected index if necessary
+                if (selectedIndex >= EventsGrid.Items.Count)
+                {
+                    selectedIndex = selectedIndex % EventsGrid.Items.Count;
+                }
+
+                // Select the next item if available (If last is deleted, goes back to first event selected)
+                if (selectedIndex >= 0 && EventsGrid.Items.Count > 0)
+                {
+                    EventsGrid.SelectedIndex = selectedIndex;
+                    EventsGrid.ScrollIntoView(EventsGrid.SelectedItem);
+                }
             }
         }
         private void Event_Cancel_Click(object sender, RoutedEventArgs e)
@@ -285,6 +301,23 @@ namespace HomeCalendarWPF
 
         #region Private Methods
 
+        private Style CreateTotalsRowStyle()
+        {
+            // Creates a trigger that adds style to only the TOTALS row in datagrid
+            var style = new Style(typeof(DataGridCell));
+
+            var trigger = new DataTrigger
+            {
+                Binding = new Binding("[Month]"),
+                Value = "TOTALS"
+            };
+            trigger.Setters.Add(new Setter(TextBlock.TextAlignmentProperty, TextAlignment.Right));
+
+            style.Triggers.Add(trigger);
+
+            return style;
+        }
+
         #region Filtering Events
         private void FilterChoiceChanged(object sender, RoutedEventArgs e)
         {
@@ -365,6 +398,15 @@ namespace HomeCalendarWPF
                     }
                     else
                         column.Binding = new Binding(columnProperties[i]);
+                    
+                    // Add the style right-aligned
+                    if (columnProperties[i] == "DurationInMinutes" || columnProperties[i] == "BusyTime")
+                    {
+                        Style s = new Style();
+                        s.Setters.Add(new Setter(TextBlock.TextAlignmentProperty, TextAlignment.Right));
+                        column.CellStyle = s;
+                    }
+
                     EventsGrid.Columns.Add(column);
                 }
             }
@@ -383,6 +425,7 @@ namespace HomeCalendarWPF
                     var column = new DataGridTextColumn();
                     column.Header = cat.Description;
                     column.Binding = new Binding($"[{cat.Description}]");
+                    column.CellStyle = CreateTotalsRowStyle();
                     EventsGrid.Columns.Add(column);
                 }
 
@@ -404,6 +447,12 @@ namespace HomeCalendarWPF
                 column = new DataGridTextColumn();
                 column.Header = "Total Busy Time";
                 column.Binding = new Binding("TotalBusyTime") { StringFormat = "0.00" };
+
+                // Add the styles
+                Style s = new Style();
+                s.Setters.Add(new Setter(TextBlock.TextAlignmentProperty, TextAlignment.Right));
+                column.CellStyle = s;
+
                 EventsGrid.Columns.Add(column);
             }
 
@@ -419,6 +468,12 @@ namespace HomeCalendarWPF
                 column = new DataGridTextColumn();
                 column.Header = "Total Busy Time";
                 column.Binding = new Binding("TotalBusyTime") { StringFormat = "0.00" };
+                
+                // Add the styles
+                Style s = new Style();
+                s.Setters.Add(new Setter(TextBlock.TextAlignmentProperty, TextAlignment.Right));
+                column.CellStyle = s;
+
                 EventsGrid.Columns.Add(column);
 
                 int filterCategoryId = filterCategoryCmbx.SelectedIndex + 1;
