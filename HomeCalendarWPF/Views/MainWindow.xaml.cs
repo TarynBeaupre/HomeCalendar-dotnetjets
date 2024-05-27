@@ -270,6 +270,23 @@ namespace HomeCalendarWPF
 
         #region Private Methods
 
+        private Style CreateTotalsRowStyle()
+        {
+            // Creates a trigger that adds style to only the TOTALS row in datagrid
+            var style = new Style(typeof(DataGridCell));
+
+            var trigger = new DataTrigger
+            {
+                Binding = new Binding("[Month]"),
+                Value = "TOTALS"
+            };
+            trigger.Setters.Add(new Setter(TextBlock.TextAlignmentProperty, TextAlignment.Right));
+
+            style.Triggers.Add(trigger);
+
+            return style;
+        }
+
         #region Filtering Events
         private void FilterChoiceChanged(object sender, RoutedEventArgs e)
         {
@@ -351,7 +368,7 @@ namespace HomeCalendarWPF
                     else
                         column.Binding = new Binding(columnProperties[i]);
                     
-                    // Add the style
+                    // Add the style right-aligned
                     if (columnProperties[i] == "DurationInMinutes" || columnProperties[i] == "BusyTime")
                     {
                         Style s = new Style();
@@ -377,6 +394,7 @@ namespace HomeCalendarWPF
                     var column = new DataGridTextColumn();
                     column.Header = cat.Description;
                     column.Binding = new Binding($"[{cat.Description}]");
+                    column.CellStyle = CreateTotalsRowStyle();
                     EventsGrid.Columns.Add(column);
                 }
 
@@ -384,12 +402,6 @@ namespace HomeCalendarWPF
                 var TBTcolumn = new DataGridTextColumn();
                 TBTcolumn.Header = "TotalBusyTime";
                 TBTcolumn.Binding = new Binding($"[TotalBusyTime]") { StringFormat = "0.00" };
-                
-                // Add the styles
-                Style s = new Style();
-                s.Setters.Add(new Setter(TextBlock.TextAlignmentProperty, TextAlignment.Right));
-                TBTcolumn.CellStyle = s;
-
                 EventsGrid.Columns.Add(TBTcolumn);
             }
             else if (groupByMonthFlag)
