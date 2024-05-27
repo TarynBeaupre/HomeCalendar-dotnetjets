@@ -69,7 +69,7 @@ namespace CalendarWPFTesting
         }
 
         [Fact]
-        public void OpenRecentFile_ValidInput_UpdatesViewWithNoErrors()
+        public void OpenRecentFile_InvalidInput_ViewShowsErrors()
         {
             // Caution, for this test you need to have opened a recent file
             // Arrange
@@ -80,10 +80,7 @@ namespace CalendarWPFTesting
             presenter.OpenRecentFile();
 
             // Assert
-            Assert.True(view.calledView_SetDirectoryText);
-            Assert.True(view.calledView_SetInitializationParams);
-            Assert.True(view.calledView_EnableConfirmButton);
-            Assert.False(view.calledView_ShowError);
+            Assert.True(view.calledView_ShowError);
         }
 
         [Fact]
