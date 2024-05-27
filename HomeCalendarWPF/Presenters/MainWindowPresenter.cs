@@ -15,6 +15,7 @@ using Microsoft.Win32;
 using System.Windows.Media.Animation;
 using HomeCalendarWPF.Interfaces.Views;
 using System.Windows.Controls;
+using System.Text.RegularExpressions;
 
 namespace HomeCalendarWPF.Presenters
 {
@@ -103,6 +104,24 @@ namespace HomeCalendarWPF.Presenters
             }
         }
 
+        public void GetNextMatchingItem(List<CalendarItem> data, string query, int selectedIndex)
+        {
+            for (int i = selectedIndex; i < data.Count + selectedIndex; i++)
+            {
+                // index is i + 1 to start at event under current selected item
+                var curEvent = data[(i + 1) % data.Count];
+
+                string regexStr = curEvent.ShortDescription!.ToLower() + curEvent.DurationInMinutes.ToString();
+                if (Regex.IsMatch(regexStr, query.ToLower()))
+                {
+                    // Scroll to event, highlight it, 
+                    view!.SelectGridItem((i + 1) % data.Count);
+                    return;
+                }
+            }
+
+            view!.ShowMessage("No event matched provided pattern.");
+        }
         #endregion
 
         #region Private Methods
@@ -316,6 +335,10 @@ namespace HomeCalendarWPF.Presenters
                 groupByCatFlag = true;
             else
                 groupByCatFlag = false;
+        }
+        public void EnableSearchButtonIfValid()
+        {
+            view!.ChangeSearchButtonState(model!.events.List().Count > 0);
         }
     }
     #endregion

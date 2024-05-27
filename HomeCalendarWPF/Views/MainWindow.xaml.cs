@@ -140,6 +140,11 @@ namespace HomeCalendarWPF
             updateEventsWindow.ShowDialog();
             RefreshGrid();
         }
+        private void SearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            var a = EventsGrid.ItemsSource as List<CalendarItem>;
+            presenter.GetNextMatchingItem(a!, txbSearchQuery.Text, EventsGrid.SelectedIndex);
+        }
         #endregion
 
         #region Interface Methods
@@ -264,6 +269,17 @@ namespace HomeCalendarWPF
         public void ShowError(string error)
         {
             MessageBox.Show(error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        public void SelectGridItem(int index)
+        {
+            EventsGrid.SelectedIndex = index;
+            EventsGrid.ScrollIntoView(EventsGrid.SelectedItem);
+            EventsGrid.Focus();
+        }
+        public void ChangeSearchButtonState(bool enabled)
+        {
+            btnSearch.Visibility = enabled ? Visibility.Visible : Visibility.Collapsed;
+            txbSearchQuery.Visibility = enabled ? Visibility.Visible : Visibility.Collapsed;
         }
         #endregion
 
@@ -411,6 +427,7 @@ namespace HomeCalendarWPF
         private void RefreshGrid()
         {
             presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat);
+            presenter.EnableSearchButtonIfValid();
         }
         #endregion
 
@@ -428,6 +445,5 @@ namespace HomeCalendarWPF
         }
         #endregion
     }
-
 }
 
