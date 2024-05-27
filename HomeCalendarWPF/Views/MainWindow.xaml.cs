@@ -104,9 +104,24 @@ namespace HomeCalendarWPF
             if (selectedItem is null)
                 return;
 
+            int selectedIndex = EventsGrid.SelectedIndex;
+
             var updateEventsWindow = new UpdateEventsWindow(presenter.model!, calendarFiletxb.Text, selectedItem);
             updateEventsWindow.ShowDialog();
             RefreshGrid();
+
+            if (selectedIndex >= 0 && selectedIndex < EventsGrid.Items.Count)
+            {
+                EventsGrid.SelectedIndex = selectedIndex;
+                EventsGrid.ScrollIntoView(EventsGrid.SelectedItem);
+
+                // Put colored background on the selected event
+                var selectedRow = EventsGrid.ItemContainerGenerator.ContainerFromIndex(selectedIndex) as DataGridRow;
+                if (selectedRow != null)
+                {
+                    selectedRow.Background = Brushes.LightGreen;
+                }
+            }
         }
         private void Event_Delete_Click(object sender, RoutedEventArgs e)
         {
@@ -136,10 +151,11 @@ namespace HomeCalendarWPF
                     EventsGrid.SelectedIndex = selectedIndex;
                     EventsGrid.ScrollIntoView(EventsGrid.SelectedItem);
 
+                    // Put colored background on the selected event
                     var selectedRow = EventsGrid.ItemContainerGenerator.ContainerFromIndex(selectedIndex) as DataGridRow;
                     if (selectedRow != null)
                     {
-                        selectedRow.Background = Brushes.Yellow;
+                        selectedRow.Background = Brushes.LightGreen;
                     }
                 }
             }
