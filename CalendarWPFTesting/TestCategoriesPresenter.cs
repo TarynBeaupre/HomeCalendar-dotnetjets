@@ -2,6 +2,7 @@
 using Calendar;
 using HomeCalendarWPF.Interfaces.Views;
 using HomeCalendarWPF.Presenters;
+using DocumentFormat.OpenXml.EMMA;
 
 namespace CalendarWPFTesting
 {
@@ -11,6 +12,7 @@ namespace CalendarWPFTesting
         public string lastMessage;
         public string lastError;
         public Category.CategoryType[] comboBoxOptions;
+        public HomeCalendar testcalendar;
 
         public void ShowMessage(string msg)
         {
@@ -38,7 +40,7 @@ namespace CalendarWPFTesting
         {
             // Arrange
             TestCategoriesPresenter view = new TestCategoriesPresenter();
-            CategoriesPresenter presenter = new CategoriesPresenter(view, "./../../../test.db");
+            CategoriesPresenter presenter = new CategoriesPresenter(view, testcalendar, "./../../../test.db");
 
             // Act
             presenter.AddNewCategory("Work", Category.CategoryType.Event);
@@ -53,7 +55,7 @@ namespace CalendarWPFTesting
         {
             // Arrange
             TestCategoriesPresenter view = new TestCategoriesPresenter();
-            CategoriesPresenter presenter = new CategoriesPresenter(view, "test.db");
+            CategoriesPresenter presenter = new CategoriesPresenter(view, testcalendar, "test.db");
 
             // Act
             presenter.AddNewCategory("", Category.CategoryType.Event);
@@ -69,7 +71,7 @@ namespace CalendarWPFTesting
         {
             // Arrange
             TestCategoriesPresenter view = new TestCategoriesPresenter();
-            CategoriesPresenter presenter = new CategoriesPresenter(view, "test.db");
+            CategoriesPresenter presenter = new CategoriesPresenter(view, testcalendar, "test.db");
 
             // Act
             presenter.GetCategoryTypes();
