@@ -135,6 +135,12 @@ namespace HomeCalendarWPF
                 {
                     EventsGrid.SelectedIndex = selectedIndex;
                     EventsGrid.ScrollIntoView(EventsGrid.SelectedItem);
+
+                    var selectedRow = EventsGrid.ItemContainerGenerator.ContainerFromIndex(selectedIndex) as DataGridRow;
+                    if (selectedRow != null)
+                    {
+                        selectedRow.Background = Brushes.Yellow;
+                    }
                 }
             }
         }
@@ -236,7 +242,7 @@ namespace HomeCalendarWPF
         /// ]]></code></example>
         public void SetDefaultCategories(List<Category> categoryList)
         {
-            filterCategoryCmbx.SelectedIndex = 0;
+            filterCategoryCmbx.SelectedItem = null;
             filterCategoryCmbx.ItemsSource = categoryList;
         }
         /// <summary>
@@ -287,7 +293,7 @@ namespace HomeCalendarWPF
 
         private Style CreateTotalsRowStyle()
         {
-            // Creates a trigger that adds style to only the TOTALS row in datagrid
+            // Creates a trigger that adds right-aligned style to only the TOTALS row in datagrid
             var style = new Style(typeof(DataGridCell));
 
             var trigger = new DataTrigger
@@ -309,7 +315,8 @@ namespace HomeCalendarWPF
             if (awaitFilterInput)
             {
                 presenter.FindFilter(filterCategoryToggle, filterStartDatePicker, filterEndDatePicker);
-                int filterCategoryId = filterCategoryCmbx.SelectedIndex + 1;
+                Category filterCategorySelected = filterCategoryCmbx.SelectedItem as Category;
+                int filterCategoryId = filterCategorySelected!.Id;
                 presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, filterCategoryId, filterStartDatePicker.SelectedDate, filterEndDatePicker.SelectedDate);
             }
         }
