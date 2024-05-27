@@ -119,7 +119,10 @@ namespace HomeCalendarWPF
                 var selectedRow = EventsGrid.ItemContainerGenerator.ContainerFromIndex(selectedIndex) as DataGridRow;
                 if (selectedRow != null)
                 {
-                    selectedRow.Background = Brushes.LightGreen;
+                    if (darkMode)
+                        selectedRow.Background = Brushes.LightGray;
+                    else
+                        selectedRow.Background = Brushes.LightGreen;
                 }
             }
         }
@@ -155,7 +158,10 @@ namespace HomeCalendarWPF
                     var selectedRow = EventsGrid.ItemContainerGenerator.ContainerFromIndex(selectedIndex) as DataGridRow;
                     if (selectedRow != null)
                     {
-                        selectedRow.Background = Brushes.LightGreen;
+                        if (darkMode)
+                            selectedRow.Background = Brushes.LightGray;
+                        else
+                            selectedRow.Background = Brushes.LightGreen;
                     }
                 }
             }
@@ -174,9 +180,26 @@ namespace HomeCalendarWPF
             if (calendarItem is null)
                 return;
 
+            int selectedIndex = EventsGrid.SelectedIndex;
+
             var updateEventsWindow = new UpdateEventsWindow(presenter.model!, calendarFiletxb.Text, calendarItem);
             updateEventsWindow.ShowDialog();
             RefreshGrid();
+
+            if (selectedIndex >= 0 && selectedIndex < EventsGrid.Items.Count)
+            {
+                EventsGrid.SelectedIndex = selectedIndex;
+                EventsGrid.ScrollIntoView(EventsGrid.SelectedItem);
+                // Put colored background on the selected event
+                var selectedRow = EventsGrid.ItemContainerGenerator.ContainerFromIndex(selectedIndex) as DataGridRow;
+                if (selectedRow != null)
+                {
+                    if (darkMode)
+                        selectedRow.Background = Brushes.LightGray;
+                    else
+                        selectedRow.Background = Brushes.LightGreen;
+                }
+            }
         }
         #endregion
 
