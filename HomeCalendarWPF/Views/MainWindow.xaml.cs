@@ -104,9 +104,27 @@ namespace HomeCalendarWPF
             if (selectedItem is null)
                 return;
 
+            int selectedIndex = EventsGrid.SelectedIndex;
+
             var updateEventsWindow = new UpdateEventsWindow(presenter.model!, calendarFiletxb.Text, selectedItem);
             updateEventsWindow.ShowDialog();
             RefreshGrid();
+
+            if (selectedIndex >= 0 && selectedIndex < EventsGrid.Items.Count)
+            {
+                EventsGrid.SelectedIndex = selectedIndex;
+                EventsGrid.ScrollIntoView(EventsGrid.SelectedItem);
+
+                // Put colored background on the selected event
+                var selectedRow = EventsGrid.ItemContainerGenerator.ContainerFromIndex(selectedIndex) as DataGridRow;
+                if (selectedRow != null)
+                {
+                    if (darkMode)
+                        selectedRow.Background = Brushes.LightGray;
+                    else
+                        selectedRow.Background = Brushes.LightGreen;
+                }
+            }
         }
         private void Event_Delete_Click(object sender, RoutedEventArgs e)
         {
@@ -135,6 +153,16 @@ namespace HomeCalendarWPF
                 {
                     EventsGrid.SelectedIndex = selectedIndex;
                     EventsGrid.ScrollIntoView(EventsGrid.SelectedItem);
+
+                    // Put colored background on the selected event
+                    var selectedRow = EventsGrid.ItemContainerGenerator.ContainerFromIndex(selectedIndex) as DataGridRow;
+                    if (selectedRow != null)
+                    {
+                        if (darkMode)
+                            selectedRow.Background = Brushes.LightGray;
+                        else
+                            selectedRow.Background = Brushes.LightGreen;
+                    }
                 }
             }
         }
@@ -152,9 +180,26 @@ namespace HomeCalendarWPF
             if (calendarItem is null)
                 return;
 
+            int selectedIndex = EventsGrid.SelectedIndex;
+
             var updateEventsWindow = new UpdateEventsWindow(presenter.model!, calendarFiletxb.Text, calendarItem);
             updateEventsWindow.ShowDialog();
             RefreshGrid();
+
+            if (selectedIndex >= 0 && selectedIndex < EventsGrid.Items.Count)
+            {
+                EventsGrid.SelectedIndex = selectedIndex;
+                EventsGrid.ScrollIntoView(EventsGrid.SelectedItem);
+                // Put colored background on the selected event
+                var selectedRow = EventsGrid.ItemContainerGenerator.ContainerFromIndex(selectedIndex) as DataGridRow;
+                if (selectedRow != null)
+                {
+                    if (darkMode)
+                        selectedRow.Background = Brushes.LightGray;
+                    else
+                        selectedRow.Background = Brushes.LightGreen;
+                }
+            }
         }
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
@@ -241,7 +286,10 @@ namespace HomeCalendarWPF
         /// ]]></code></example>
         public void SetDefaultCategories(List<Category> categoryList)
         {
-            filterCategoryCmbx.SelectedIndex = 0;
+            if (categoryList.Count > 0)
+            {
+                filterCategoryCmbx.SelectedItem = categoryList[0];
+            }
             filterCategoryCmbx.ItemsSource = categoryList;
         }
         /// <summary>
@@ -311,7 +359,7 @@ namespace HomeCalendarWPF
 
         private Style CreateTotalsRowStyle()
         {
-            // Creates a trigger that adds style to only the TOTALS row in datagrid
+            // Creates a trigger that adds right-aligned style to only the TOTALS row in datagrid
             var style = new Style(typeof(DataGridCell));
 
             var trigger = new DataTrigger
@@ -333,7 +381,8 @@ namespace HomeCalendarWPF
             if (awaitFilterInput)
             {
                 presenter.FindFilter(filterCategoryToggle, filterStartDatePicker, filterEndDatePicker);
-                int filterCategoryId = filterCategoryCmbx.SelectedIndex + 1;
+                Category filterCategorySelected = filterCategoryCmbx.SelectedItem as Category;
+                int filterCategoryId = filterCategorySelected!.Id;
                 presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, filterCategoryId, filterStartDatePicker.SelectedDate, filterEndDatePicker.SelectedDate);
             }
         }
@@ -348,7 +397,8 @@ namespace HomeCalendarWPF
 
             // Populate the list with the right events
             //presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, groupByMonthFlag, groupByCatFlag);
-            int filterCategoryId = filterCategoryCmbx.SelectedIndex + 1;
+            Category filterCategorySelected = filterCategoryCmbx.SelectedItem as Category;
+            int filterCategoryId = filterCategorySelected!.Id;
             presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat, filterCategoryId, filterStartDatePicker.SelectedDate, filterEndDatePicker.SelectedDate);
         }
         /// <summary>
