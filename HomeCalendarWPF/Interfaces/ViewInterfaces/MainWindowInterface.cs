@@ -72,5 +72,15 @@ namespace HomeCalendarWPF.Interfaces.Views
         /// <param name="groupByCat">if true, columns for the by Category display will be shown.</param>
         /// <remarks>If neither group is true, default column headers are shown.</remarks>
         void SetGridColumns(bool groupByMonth, bool groupByCat);
+        /// <summary>
+        /// Selects grid item matching index provided.
+        /// </summary>
+        /// <param name="index">Index to be selected.</param>
+        void SelectGridItem(int index);
+        /// <summary>
+        /// Enables or disables the search button based on the value of the bool passed to it.
+        /// </summary>
+        /// <param name="enabled">Determines whether the button will be enabled or disabled.</param>
+        void ChangeSearchButtonState(bool enabled);
     }
 }

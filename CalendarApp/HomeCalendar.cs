@@ -397,7 +397,8 @@ namespace Calendar
                 //    continue;
                 string month = reader.GetString(1);
                 string stringMonth = month.ToString();
-                DateTime startDateMonth = reader.GetDateTime(2);
+                DateTime startDateMonth = DateTime.ParseExact(reader.GetString(2), @"yyyy-MM-dd H:mm:ss", CultureInfo.InvariantCulture);
+
 
                 // Getting the start and end date time for the month
                 var startDateItems = new DateTime(startDateMonth.Year, startDateMonth.Month, 1);
@@ -561,7 +562,7 @@ namespace Calendar
                 if (FilterFlag && eventCategoryID != CategoryID)
                     continue;
                 int eventId = reader.GetInt32(0);
-                DateTime eventStartDateTime = DateTime.ParseExact(reader.GetString(1), @"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                DateTime eventStartDateTime = DateTime.ParseExact(reader.GetString(1), @"yyyy-MM-dd H:mm:ss", CultureInfo.InvariantCulture);
                 string eventDetails = reader.GetString(2);
                 double eventDurationInMinutes = reader.GetDouble(3);
                 string categoryDescription = reader.GetString(5);

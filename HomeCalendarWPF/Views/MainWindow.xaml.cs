@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Bibliography;
 using HomeCalendarWPF.Interfaces.Views;
 using HomeCalendarWPF.Presenters;
 using System.ComponentModel;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -118,8 +119,23 @@ namespace HomeCalendarWPF
             var choice = MessageBox.Show("Are you sure you want to delete Event?", "Delete Confirmation", MessageBoxButton.YesNo);
             if (choice == MessageBoxResult.Yes)
             {
+                int selectedIndex = EventsGrid.SelectedIndex;
+
                 presenter.DeleteEvent(eventToDelete);
                 this.RefreshGrid();
+
+                // Wrap around the selected index if necessary
+                if (selectedIndex >= EventsGrid.Items.Count)
+                {
+                    selectedIndex = selectedIndex % EventsGrid.Items.Count;
+                }
+
+                // Select the next item if available (If last is deleted, goes back to first event selected)
+                if (selectedIndex >= 0 && EventsGrid.Items.Count > 0)
+                {
+                    EventsGrid.SelectedIndex = selectedIndex;
+                    EventsGrid.ScrollIntoView(EventsGrid.SelectedItem);
+                }
             }
         }
         private void Event_Cancel_Click(object sender, RoutedEventArgs e)
@@ -139,6 +155,11 @@ namespace HomeCalendarWPF
             var updateEventsWindow = new UpdateEventsWindow(presenter.model!, calendarFiletxb.Text, calendarItem);
             updateEventsWindow.ShowDialog();
             RefreshGrid();
+        }
+        private void SearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            var a = EventsGrid.ItemsSource as List<CalendarItem>;
+            presenter.GetNextMatchingItem(a!, txbSearchQuery.Text, EventsGrid.SelectedIndex);
         }
         #endregion
 
@@ -265,9 +286,45 @@ namespace HomeCalendarWPF
         {
             MessageBox.Show(error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+        /// <summary>
+        /// Selects grid item matching index provided.
+        /// </summary>
+        /// <param name="index">Index to be selected.</param>
+        public void SelectGridItem(int index)
+        {
+            EventsGrid.SelectedIndex = index;
+            EventsGrid.ScrollIntoView(EventsGrid.SelectedItem);
+            EventsGrid.Focus();
+        }
+        /// <summary>
+        /// Enables or disables the search button based on the value of the bool passed to it.
+        /// </summary>
+        /// <param name="enabled">Determines whether the button will be enabled or disabled.</param>
+        public void ChangeSearchButtonState(bool enabled)
+        {
+            btnSearch.Visibility = enabled ? Visibility.Visible : Visibility.Collapsed;
+            txbSearchQuery.Visibility = enabled ? Visibility.Visible : Visibility.Collapsed;
+        }
         #endregion
 
         #region Private Methods
+
+        private Style CreateTotalsRowStyle()
+        {
+            // Creates a trigger that adds style to only the TOTALS row in datagrid
+            var style = new Style(typeof(DataGridCell));
+
+            var trigger = new DataTrigger
+            {
+                Binding = new Binding("[Month]"),
+                Value = "TOTALS"
+            };
+            trigger.Setters.Add(new Setter(TextBlock.TextAlignmentProperty, TextAlignment.Right));
+
+            style.Triggers.Add(trigger);
+
+            return style;
+        }
 
         #region Filtering Events
         private void FilterChoiceChanged(object sender, RoutedEventArgs e)
@@ -349,6 +406,15 @@ namespace HomeCalendarWPF
                     }
                     else
                         column.Binding = new Binding(columnProperties[i]);
+                    
+                    // Add the style right-aligned
+                    if (columnProperties[i] == "DurationInMinutes" || columnProperties[i] == "BusyTime")
+                    {
+                        Style s = new Style();
+                        s.Setters.Add(new Setter(TextBlock.TextAlignmentProperty, TextAlignment.Right));
+                        column.CellStyle = s;
+                    }
+
                     EventsGrid.Columns.Add(column);
                 }
             }
@@ -367,6 +433,7 @@ namespace HomeCalendarWPF
                     var column = new DataGridTextColumn();
                     column.Header = cat.Description;
                     column.Binding = new Binding($"[{cat.Description}]");
+                    column.CellStyle = CreateTotalsRowStyle();
                     EventsGrid.Columns.Add(column);
                 }
 
@@ -388,6 +455,12 @@ namespace HomeCalendarWPF
                 column = new DataGridTextColumn();
                 column.Header = "Total Busy Time";
                 column.Binding = new Binding("TotalBusyTime") { StringFormat = "0.00" };
+
+                // Add the styles
+                Style s = new Style();
+                s.Setters.Add(new Setter(TextBlock.TextAlignmentProperty, TextAlignment.Right));
+                column.CellStyle = s;
+
                 EventsGrid.Columns.Add(column);
             }
 
@@ -403,6 +476,12 @@ namespace HomeCalendarWPF
                 column = new DataGridTextColumn();
                 column.Header = "Total Busy Time";
                 column.Binding = new Binding("TotalBusyTime") { StringFormat = "0.00" };
+                
+                // Add the styles
+                Style s = new Style();
+                s.Setters.Add(new Setter(TextBlock.TextAlignmentProperty, TextAlignment.Right));
+                column.CellStyle = s;
+
                 EventsGrid.Columns.Add(column);
 
                 int filterCategoryId = filterCategoryCmbx.SelectedIndex + 1;
@@ -411,6 +490,7 @@ namespace HomeCalendarWPF
         private void RefreshGrid()
         {
             presenter.SetGridEventsList(ref eventsGridList, ref eventsGridListByCatAndMonth, ref eventsGridListByMonth, ref eventsGridListByCat);
+            presenter.EnableSearchButtonIfValid();
         }
         #endregion
 
@@ -428,6 +508,5 @@ namespace HomeCalendarWPF
         }
         #endregion
     }
-
 }
 

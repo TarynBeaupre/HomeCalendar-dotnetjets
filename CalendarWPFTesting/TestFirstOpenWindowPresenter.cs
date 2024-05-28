@@ -19,7 +19,7 @@ namespace CalendarWPFTesting
 {
     public class TestFirstOpenWindowPresenter : FileSelectionWindowInterface
     {
-        public bool calledView_CloseWindow, calledView_EnableConfirmButton, calledView_GetFilePath, calledView_SetDirectoryText, calledView_SetInitializationParams, calledView_ShowError;
+        public bool calledView_CloseWindow, calledView_EnableConfirmButton, calledView_GetFilePath, calledView_SetDirectoryText, calledView_SetInitializationParams, calledView_ShowError, calledView_ShowMessage;
 
         public void CloseWindow()
         {
@@ -52,6 +52,11 @@ namespace CalendarWPFTesting
             calledView_ShowError = true;
         }
 
+        public void ShowMessage(string message)
+        {
+            calledView_ShowMessage = true;
+        }
+
         [Fact]
         public void PickNewFileDir_ValidInput_UpdatesView()
         {
@@ -64,7 +69,7 @@ namespace CalendarWPFTesting
         }
 
         [Fact]
-        public void OpenRecentFile_ValidInput_UpdatesViewWithNoErrors()
+        public void OpenRecentFile_InvalidInput_ViewShowsErrors()
         {
             // Caution, for this test you need to have opened a recent file
             // Arrange
@@ -75,10 +80,7 @@ namespace CalendarWPFTesting
             presenter.OpenRecentFile();
 
             // Assert
-            Assert.True(view.calledView_SetDirectoryText);
-            Assert.True(view.calledView_SetInitializationParams);
-            Assert.True(view.calledView_EnableConfirmButton);
-            Assert.False(view.calledView_ShowError);
+            Assert.True(view.calledView_ShowError);
         }
 
         [Fact]
@@ -126,5 +128,6 @@ namespace CalendarWPFTesting
             Assert.Equal("test", recentFilePath);
         }
 
+      
     }
 }

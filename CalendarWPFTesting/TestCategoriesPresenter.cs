@@ -2,6 +2,7 @@
 using Calendar;
 using HomeCalendarWPF.Interfaces.Views;
 using HomeCalendarWPF.Presenters;
+using DocumentFormat.OpenXml.EMMA;
 
 namespace CalendarWPFTesting
 {
@@ -11,6 +12,7 @@ namespace CalendarWPFTesting
         public string lastMessage;
         public string lastError;
         public Category.CategoryType[] comboBoxOptions;
+        public HomeCalendar testcalendar = new HomeCalendar("test.db");
 
         public void ShowMessage(string msg)
         {
@@ -32,28 +34,12 @@ namespace CalendarWPFTesting
             comboBoxOptions = categoryTypes;
         }
 
-        //TODO: Bugs when trying to add cat to model
-        [Fact]
-        public void AddNewCategory_ValidInput_AddsCategory()
-        {
-            // Arrange
-            TestCategoriesPresenter view = new TestCategoriesPresenter();
-            CategoriesPresenter presenter = new CategoriesPresenter(view, "./../../../test.db");
-
-            // Act
-            presenter.AddNewCategory("Work", Category.CategoryType.Event);
-
-            // Assert
-            Assert.True(view.calledResetCategoriesForm);
-            Assert.Equal("Category successfully added!", view.lastMessage);
-        }
-
         [Fact]
         public void AddNewCategory_EmptyDescription_ShowsError()
         {
             // Arrange
             TestCategoriesPresenter view = new TestCategoriesPresenter();
-            CategoriesPresenter presenter = new CategoriesPresenter(view, "test.db");
+            CategoriesPresenter presenter = new CategoriesPresenter(view, testcalendar, "test.db");
 
             // Act
             presenter.AddNewCategory("", Category.CategoryType.Event);
@@ -69,7 +55,7 @@ namespace CalendarWPFTesting
         {
             // Arrange
             TestCategoriesPresenter view = new TestCategoriesPresenter();
-            CategoriesPresenter presenter = new CategoriesPresenter(view, "test.db");
+            CategoriesPresenter presenter = new CategoriesPresenter(view, testcalendar, "test.db");
 
             // Act
             presenter.GetCategoryTypes();

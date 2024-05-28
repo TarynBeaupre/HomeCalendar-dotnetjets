@@ -239,7 +239,7 @@ namespace Calendar
             while (reader.Read())
             {
                 int id = reader.GetInt32(0);
-                DateTime StartDateTime = DateTime.ParseExact(reader.GetString(1), @"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                DateTime StartDateTime = DateTime.ParseExact(reader.GetString(1), @"yyyy-MM-dd H:mm:ss", CultureInfo.InvariantCulture);
                 string details = reader.GetString(2);
                 double duration = reader.GetDouble(3);
                 int category = reader.GetInt32(4);

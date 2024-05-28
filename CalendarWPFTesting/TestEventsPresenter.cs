@@ -13,7 +13,7 @@ namespace CalendarWPFTesting
 {
     public class TestView : AddEventsViewInterface
     {
-        public bool calledView_ShowError = false, calledView_ShowMessage = false, calledView_ShowDefaultCat = false, calledView_ShowDefaultDate = false, calledView_Reset = false;
+        public bool calledView_ShowError, calledView_ShowMessage, calledView_ShowDefaultCat, calledView_ShowDefaultDate, calledView_Reset = false, calledView_HasSelectedDate, calledView_HasDuration = false;
 
         public void ShowError(string message)
         {
@@ -34,6 +34,18 @@ namespace CalendarWPFTesting
         public void ResetEventForm()
         {
             calledView_Reset = true;
+        }
+
+        public bool HasSelectedDate()
+        {
+            calledView_HasSelectedDate = true;
+            return calledView_HasSelectedDate;
+        }
+
+        public bool HasDurationValue()
+        {
+            calledView_HasDuration = true;
+            return calledView_HasDuration;
         }
     }
 
