@@ -103,23 +103,31 @@ namespace HomeCalendarWPF.Presenters
                 view!.SetThemeLight();
             }
         }
-
+        /// <summary>
+        /// Gets the next item matching the search query starting from the currently selected item.
+        /// </summary>
+        /// <param name="data">List of CalendarItems to look through to find next matching item.</param>
+        /// <param name="query">Search query used to determine if an item matches.</param>
+        /// <param name="selectedIndex">Index of the currently selected item.</param>
+        /// <example><code><![CDATA[
+        /// var nextMatch = GetNextMatchingItem(new List<CalendarItem>(), "Cool", 0);
+        /// ]]></code></example>
         public void GetNextMatchingItem(List<CalendarItem> data, string query, int selectedIndex)
         {
             for (int i = selectedIndex; i < data.Count + selectedIndex; i++)
             {
-                // index is i + 1 to start at event under current selected item
+                // curEvent always 1 more than index to start from under currently selected event
                 var curEvent = data[(i + 1) % data.Count];
 
                 string regexStr = curEvent.ShortDescription!.ToLower() + curEvent.DurationInMinutes.ToString();
                 if (Regex.IsMatch(regexStr, query.ToLower()))
                 {
-                    // Scroll to event, highlight it, 
                     view!.SelectGridItem((i + 1) % data.Count);
                     return;
                 }
             }
 
+            // Error message if nothing was found
             view!.ShowMessage("No event matched provided pattern.");
         }
         #endregion

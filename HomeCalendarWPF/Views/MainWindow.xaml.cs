@@ -286,12 +286,20 @@ namespace HomeCalendarWPF
         {
             MessageBox.Show(error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+        /// <summary>
+        /// Selects grid item matching index provided.
+        /// </summary>
+        /// <param name="index">Index to be selected.</param>
         public void SelectGridItem(int index)
         {
             EventsGrid.SelectedIndex = index;
             EventsGrid.ScrollIntoView(EventsGrid.SelectedItem);
             EventsGrid.Focus();
         }
+        /// <summary>
+        /// Enables or disables the search button based on the value of the bool passed to it.
+        /// </summary>
+        /// <param name="enabled">Determines whether the button will be enabled or disabled.</param>
         public void ChangeSearchButtonState(bool enabled)
         {
             btnSearch.Visibility = enabled ? Visibility.Visible : Visibility.Collapsed;
