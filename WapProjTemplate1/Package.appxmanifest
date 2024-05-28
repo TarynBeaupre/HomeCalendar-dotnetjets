@@ -9,7 +9,7 @@
   <Identity
     Name="dc2d9966-0b77-4340-9d55-e34db60f796a"
     Publisher="CN=DotNetJets"
-    Version="1.0.0.0" />
+    Version="1.0.1.0" />
 
   <Properties>
     <DisplayName>WapProjTemplate1</DisplayName>
